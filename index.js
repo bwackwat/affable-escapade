@@ -1,6 +1,7 @@
 window.onload = function() {
 
-var localStorageLoginTokenKey = "TOKEN_KEY";
+var localStorageLoginUsernameKey = "BWACKWAT_USERNAME_KEY";
+var localStorageLoginTokenKey = "BWACKWAT_TOKEN_KEY";
 var apiUrl = "https://" + window.location.hostname + "/api";
 
 var status = document.getElementById("status");
@@ -42,6 +43,7 @@ function callAPI(method, route, data, callback){
 			alert("HTTP ERROR!");
 		}
 	};
+	console.log("SEND: " + sendData);
 	http.send(sendData);
 }
 
@@ -107,7 +109,6 @@ if(loginButton !== null && loginButton !== "undefined"){
 				status.innerHTML = response.result;
 				localStorage.setItem(localStorageLoginUsernameKey, username.value);
 				localStorage.setItem(localStorageLoginTokenKey, response.token);
-				localStorage.setItem(localStorageLoginIdKey, response.id);
 				checkLogin();
 			}else{
 				status.innerHTML = response.error;
@@ -137,7 +138,6 @@ if(logoutButton !== null && logoutButton !== "undefined"){
 	logoutButton.onclick = function() {
 		localStorage.removeItem(localStorageLoginUsernameKey);
 		localStorage.removeItem(localStorageLoginTokenKey);
-		localStorage.removeItem(localStorageLoginIdKey);
 		checkLogin();
 	};
 }
