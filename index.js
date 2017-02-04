@@ -1,10 +1,14 @@
+var load_sub_script = null;
+
+var status;
+
 window.onload = function() {
 
 var localStorageLoginUsernameKey = "BWACKWAT_USERNAME_KEY";
 var localStorageLoginTokenKey = "BWACKWAT_TOKEN_KEY";
 var apiUrl = "https://" + window.location.hostname + "/api";
 
-var status = document.getElementById("status");
+status = document.getElementById("status");
 
 function callAPI(method, route, data, callback){
 	var sendData = JSON.stringify(data);
@@ -194,8 +198,12 @@ if(savePostButton !== null && savePostButton !== "undefined"){
 	};
 }
 
-if(status !== null && status !== "undefined"){
+if(status !== null && status !== "undefined" && logoutButton !== null && logoutButton != "undefined"){
 	checkLogin();
+}
+
+if(load_sub_script != null){
+	load_sub_script();
 }
 
 }

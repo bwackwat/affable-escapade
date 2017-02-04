@@ -10,9 +10,10 @@ button {
 	margin: 5px;
 }
 
-#demoMap {
+#poiMap {
 	border: 1px black solid;
 	height: 96vh;
+	width: 100vw;
 }
 
 #poiLongitude, #poiLatitude {
