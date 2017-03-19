@@ -28,6 +28,8 @@ p{
 }
 
 img{
+	margin: 0px;
+	padding: 0px;
 	padding-right: 10px;
 }
 
@@ -49,13 +51,13 @@ img{
 #icon {
 	display: table-cell;
 	vertical-align: middle;
+	padding-left: 5px;
 }
 
 #status {
 	vertical-align: middle;
 	float: left;
-	font-size: 24;
-	margin-left: -5px;
+	font-size: 20;
 	color: white;
 	text-decoration: none;
 }
@@ -77,6 +79,7 @@ img{
 }
 
 #content {
+	padding: 0px;
 	margin: 10px;
 	text-align: justify;
 }

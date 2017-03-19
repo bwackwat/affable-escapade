@@ -6,9 +6,9 @@ window.onload = function() {
 
 var localStorageLoginUsernameKey = "BWACKWAT_USERNAME_KEY";
 var localStorageLoginTokenKey = "BWACKWAT_TOKEN_KEY";
-var apiUrl = "https://" + window.location.hostname + "/api";
+var apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api";
 
-status = document.getElementById("status");
+var status = document.getElementById("status");
 
 function callAPI(method, route, data, callback){
 	var sendData = JSON.stringify(data);
@@ -17,10 +17,6 @@ function callAPI(method, route, data, callback){
 	http.open(method, apiUrl + route, true);
 	http.setRequestHeader("Content-type", "application/json");
 	http.onreadystatechange = function(){
-		if(http.responseText === ""){
-			//Bloody OPTIONS pre-flight...
-			return;
-		}
 		console.log("RECV: " + http.responseText);
 		if(http.readyState == 4){
 			if(http.status == 200){
@@ -36,7 +32,7 @@ function callAPI(method, route, data, callback){
 			//2: request received
 			//3: processing request
 			//4: request finished and response is ready
-		}else if(http.readyState == 2){
+		}else if(http.readyState === 2){
 			callback({"error":"Could not receive data."})
 		}else if(http.readyState == 1){
 			callback({"error":"Could not establish connection."})
