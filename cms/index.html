@@ -1,24 +1,45 @@
 <html>
 	<head>
-		<title>CMS</title>
-		<link rel='icon' type='image/x-icon' href='/cms/favicon.png'/>
+		<title>John Paul Hayes II</title>
+		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+
+		<link rel="stylesheet" type="text/css" href="/index.css">
 		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open Sans">
 		<script src="/index.js"></script>
 	</head>
 	<body>
-		<h1>Content Management Server</h1>
-		<a href="/cms/index.html">Login</a>
-		<a href="/cms/register.html">Register</a>
-		<a href="/cms/posts.html">Edit Posts</a>
-		<a href="/cms/newpost.html">New Post</a>
-		<br>
-		<div id="status"></div>
-		<input id="logoutButton" type="button" value="Logout"/><br>
-		<hr>
-		<input type="text" id="usernameField" placeholder="username"/><br>
+		<table id="banner"><tr><td>
+			<div id="bannerleft">
+				<div id="icon"><a href="/index.html"><img src="/favicon.ico"/></a></div>
+				<div id="status">Welcome.</div>
+			</div></td><td>
+			<div id="bannerright">
+				<div id="links">
+					<a class="bannerlink" href="/software.html">Software Portfolio</a>|
+					<a class="bannerlink" href="/hobbies.html">Hobbies</a>|
+					<a class="bannerlink" href="/blog/">Blog</a>|
+					<a class="bannerlink" href="/cms/">CMS</a>|
+					<a class="bannerlink" href="/about.html">About</a>
+				</div>
+			</div></td></tr>
+		</table>
+		<div id="contentborder">
+			<div id="content">
+				<h2>Content Management Server</h2>
+<a href="/cms/index.html">Login</a>
+<a href="/cms/register.html">Register</a>
+<a href="/cms/posts.html">Edit Posts</a>
+<a href="/cms/newpost.html">New Post</a>
+<br>
+<div id="status"></div>
+<input id="logoutButton" type="button" value="Logout"/><br>
+<hr>
+<input type="text" id="usernameField" placeholder="username"/><br>
 <input type="password" id="passwordField" placeholder="password"/><br>
 <input id="loginButton" type="button" value="Login"/><br>
 
-		<hr>
+
+			</div>
+		</div>
 	</body>
 </html>

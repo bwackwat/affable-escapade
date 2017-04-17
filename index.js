@@ -4,8 +4,8 @@ var status;
 
 window.onload = function() {
 
-var localStorageLoginUsernameKey = "BWACKWAT_USERNAME_KEY";
-var localStorageLoginTokenKey = "BWACKWAT_TOKEN_KEY";
+var localStorageLoginUsernameKey = "JPH2_USERNAME_KEY";
+var localStorageLoginTokenKey = "JPH2_TOKEN_KEY";
 var apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api";
 
 var status = document.getElementById("status");
@@ -51,7 +51,8 @@ function callAPI(method, route, data, callback){
 // BLOG
 ////////////////////////////////////////////////////////////////
 
-var content = document.getElementById("content");
+var content = document.getElementById("blog-content");
+
 if(content !== null && content !== "undefined"){
 	callAPI("GET", "/blog?username=bwackwat", {}, function(response){
 		if(typeof(response.error) === 'undefined'){
