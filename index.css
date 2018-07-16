@@ -48,6 +48,14 @@ img{
 	float: right;
 }
 
+#loggedInLinks {
+	display: none;
+}
+
+#loggedOutLinks {
+	display: none;
+}
+
 #icon {
 	display: table-cell;
 	vertical-align: middle;

@@ -19,32 +19,34 @@
 					<a class="bannerlink" href="/software.html">Software Portfolio</a>|
 					<a class="bannerlink" href="/hobbies.html">Hobbies</a>|
 					<a class="bannerlink" href="/blog/">Blog</a>|
-					<a class="bannerlink" href="/cms/">CMS</a>|
+					<a class="bannerlink" href="/cms/">Manage</a>|
 					<a class="bannerlink" href="/about.html">About</a>
 				</div>
 			</div></td></tr>
 		</table>
 		<div id="contentborder">
 			<div id="content">
-				<h2>Content Management Server</h2>
-<a href="/cms/index.html">Login</a> | 
-<a href="/cms/register.html">Register</a> | 
-<a href="/cms/posts.html">Edit Posts</a> | 
-<a href="/cms/newpost.html">New Post</a>
+				<h2>Content Management</h2>
+<div id="loggedInLinks">
+<a href="/cms/account.html">Account</a> | 
+<a href="/cms/threads.html">Threads</a> | 
+<a href="/cms/messages.html">Messages</a> | 
+<a href="/cms/newpost.html">New Post</a> | 
+<a id="logoutButton" href="#">Logout</a>
 <br>
-<input id="logoutButton" type="button" value="Logout"/><br>
-<hr>
-<div id="posts"></div>
-<div id="postEdit">
-	<div>Blog Title:</div>
-	<input type="text" id="blogTitleField"/>
-	<br>
-	<div>Blog Content:</div>
-	<textarea id="blogContentField" cols="80" rows="20"></textarea>
-	<br>
-	<input id="savePostButton" type="button" value="Save Post"/>
-	<br>
 </div>
+<div id="loggedOutLinks">
+<a href="/cms/login.html">Login</a> | 
+<a href="/cms/register.html">Register</a>
+</div>
+<hr>
+<label for="usernameField">Username: </label>
+<input type="text" id="usernameField"/><br><br>
+
+<label for="passwordField">Password: </label>
+<input type="password" id="passwordField"/><br><br>
+
+<input id="loginButton" type="button" value="Login"/><br>
 
 
 			</div>
