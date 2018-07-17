@@ -52,7 +52,7 @@ function callAPI(method, route, data, callback){
 	http.open(method, apiUrl + route, true);
 	http.setRequestHeader("Content-type", "application/json");
 	http.onreadystatechange = function(){
-		console.log("RECV: " + http.responseText);
+		//console.log("RECV: " + http.responseText);
 		if(http.readyState == 4){
 			if(http.status == 200){
 				callback(JSON.parse(http.responseText));
@@ -260,7 +260,7 @@ backToMessageButton !== null && backToMessageButton !== "undefined"){
 	});
 	
 	saveMessageButton.onclick = function() {
-		callAPI("PUT", "/message", {"token": localStorage.getItem(localStorageTokenKey), "id": messageId, "values": {"title": encodeURI(messageTitleField.value), "content": encodeURI(messageContentField.value)}}, function(response){
+		callAPI("PUT", "/message", {"token": localStorage.getItem(localStorageTokenKey), "id": messageId, "values": {"title": messageTitleField.value, "content": messageContentField.value}}, function(response){
 			if(typeof(response.error) === 'undefined'){
 				redirect_flash("/cms/message.html?mid=" + urlParams["mid"] + "&tid=" + urlParams["tid"], "Message saved!");
 			}else{
