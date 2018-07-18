@@ -1,5 +1,5 @@
 html {
-	font-family: "Vollkorn";
+	font-family: "Vollkorn", serif;
 }
 
 body, table, td, tr {
@@ -87,6 +87,7 @@ img{
 }
 
 #content {
+	text-rendering: auto;
 	padding: 0px;
 	margin: 10px;
 	text-align: justify;
