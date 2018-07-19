@@ -2,10 +2,12 @@
 	<head>
 		<title>John Paul Hayes II</title>
 		<meta charset="UTF-8">
-		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
-
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
+		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
 		<link rel="stylesheet" type="text/css" href="/index.css">
+		
 		<script src="/index.js"></script>
 	</head>
 	<body>
@@ -103,7 +105,7 @@
 		var threadName = document.getElementById("threadNameField");
 		var threadDescription = document.getElementById("threadDescriptionField");
 
-		callAPI("POST", "/get/user/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": urlParams["id"]}, function(response){
+		callAPI("POST", "/get/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": urlParams["id"]}, function(response){
 			if(typeof(response.error) === 'undefined'){
 				state.tid = response["id"];
 				threadName.value = response["name"];

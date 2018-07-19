@@ -1,0 +1,25 @@
+<!doctype html5>
+<html>
+	<head>
+		<title>Chat</title>
+		<link rel="icon" type="image/x-icon" href="chat/favicon.png"/>
+		<link rel="stylesheet" type="text/css" href="chat/index.css">
+		<script src="chat/index.js"></script>
+		<meta charset="UTF-8">
+	</head>
+	<body>
+		<table style="height:100%;width:100%;">
+		<tr><td>
+		&nbsp;&nbsp;User: &nbsp
+		<input id="handleField" autocomplete= type="text" size="10" placeholder="handle">
+		&nbsp;&nbsp;Status: <span id="status">Connecting...</span>
+		</td></tr>
+		<tr><td>
+		<button id="submitButton">Send</button>
+		<input id="messageField" type="text" size="100" placeholder="enter to send message">
+		</td></tr>
+		<tr><td style="height:100%;vertical-align:top;">
+		<div id="messages"></div>
+		</td></tr></table>
+	</body>
+</html>

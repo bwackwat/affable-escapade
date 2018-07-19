@@ -2,10 +2,12 @@
 	<head>
 		<title>John Paul Hayes II</title>
 		<meta charset="UTF-8">
-		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
-
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
+		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
 		<link rel="stylesheet" type="text/css" href="/index.css">
+		
 		<script src="/index.js"></script>
 	</head>
 	<body>
@@ -88,7 +90,7 @@
 <script>
 	sub_scripts.push(function(){
 		var status = document.getElementById("status");
-		callAPI("POST", "/get/user/threads", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+		callAPI("POST", "/get/threads", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 			if(typeof(response.error) === 'undefined'){
 				var newhtml = "<h4>Threads:</h4>";
 				if(response.length == 0){
