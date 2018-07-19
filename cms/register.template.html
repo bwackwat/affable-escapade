@@ -1,16 +1,44 @@
 <label for="usernameField">Username: </label>
-<input type="text" id="usernameField"/><br><br>
-
+<input type="text" id="usernameField"/>
+<br>
+<br>
 <label for="passwordField">Password: </label>
-<input type="password" id="passwordField"/><br><br>
-
+<input type="password" id="passwordField"/>
+<br>
+<br>
 <label for="emailField">Email: </label>
-<input type="email" id="emailField"><br><br>
-
+<input type="email" id="emailField">
+<br>
+<br>
 <label for="firstNameField">First Name: </label>
-<input type="text" id="firstNameField"/><br><br>
-
+<input type="text" id="firstNameField"/>
+<br>
+<br>
 <label for="lastNameField">Last Name: </label>
-<input type="text" id="lastNameField"/><br><br>
-
-<input id="registerButton" type="button" value="Register"/><br>
+<input type="text" id="lastNameField"/>
+<br>
+<br>
+<input id="registerButton" type="button" value="Register"/>
+<br>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		
+		document.getElementById("registerButton").onclick = function() {
+			callAPI("POST", "/user", {"values":
+			[document.getElementById("usernameField").value,
+			document.getElementById("passwordField").value,
+			"",
+			"",
+			document.getElementById("emailField").value,
+			document.getElementById("firstNameField").value,
+			document.getElementById("lastNameField").value]}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					redirect_flash("/cms/login.html", "You signed up successfully!");
+				}else{
+					status.innerHTML = response.error;
+				}
+			});
+		};
+	});
+</script>

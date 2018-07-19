@@ -2,3 +2,41 @@
 <br>
 <h3 id="messageTitleField"></h3>
 <div id="messageContentField"></div>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		if(!("tid" in urlParams) || !("mid" in urlParams)){
+			window.location.href = "/cms/threads.html";
+		}
+	
+		document.getElementById("backToThreadButton").onclick = function() {
+			window.location.href = "/cms/thread.html?id=" + urlParams["tid"];
+		}
+	
+		document.getElementById("editMessageButton").onclick = function() {
+			window.location.href = "/cms/edit_message.html?mid=" + urlParams["mid"] + "&tid=" + urlParams["tid"];
+		}
+	
+		callAPI("POST", "/get/thread/message", {"id": urlParams["mid"]}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				state.mid = response["id"];
+				document.getElementById("messageTitleField").innerHTML = response["title"];
+				document.getElementById("messageContentField").innerHTML = response["content"];
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	
+		document.getElementById("deleteMessageButton").onclick = function() {
+			if(window.confirm("Delete message " + messageTitleField.innerHTML + " ?")){
+				callAPI("DELETE", "/message", {"token": localStorage.getItem(localStorageTokenKey), "id": state.mid}, function(response){
+					if(typeof(response.error) === 'undefined'){
+						redirect_flash("/cms/thread.html?id=" + urlParams["tid"], "Message deleted!");
+					}else{
+						status.innerHTML = response.error;
+					}
+				});
+			}
+		};
+	});
+</script>

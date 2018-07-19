@@ -21,4 +21,25 @@
 		</div>
 		<div id="blog-content"></div>
 	</body>
+	<script>
+		sub_scripts.push(function(){
+			var content = document.getElementById("blog-content");
+			
+			callAPI("POST", "/get/thread/messages/by/title", {"name": "GROKKING EQUANIMITY"}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					var newhtml = "<div id='posts'>";
+					for(var i = 0, len = response.length; i < len; i++){
+						newhtml += "<div id='post'><div id='posttitle'>" + response[i].title;
+						newhtml += "</div><div id='postdate'>" + response[i].created;
+						newhtml += "</div><br><div id='posttext'>" + response[i].content;
+						newhtml += "</div></div><hr>";
+					}
+					newhtml += "</div>";
+					content.innerHTML = newhtml;
+				}else{
+					content.innerHTML = response.error;
+				}
+			});
+		});
+	</script>
 </html>

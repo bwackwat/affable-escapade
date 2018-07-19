@@ -38,10 +38,72 @@
 <a href="/cms/register.html">Register</a>
 </div>
 <hr>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+	
+		document.getElementById("logoutButton").onclick = function() {
+			localStorage.removeItem(localStorageUsernameKey);
+			localStorage.removeItem(localStorageTokenKey);
+			window.location.href = "/cms/index.html";
+		};
+		
+		var loggedInLinks = document.getElementById("loggedInLinks");
+		var loggedOutLinks = document.getElementById("loggedOutLinks");
+
+		if(localStorage.getItem(localStorageTokenKey) !== null &&
+		localStorage.getItem(localStorageTokenKey) !== "undefined"){
+			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					if(!flashed){
+						status.innerHTML = "Logged in as " + localStorage.getItem(localStorageUsernameKey);
+					}
+			
+					loggedInLinks.style.display = "inline";
+					loggedOutLinks.style.display = "none";
+				}else{
+					loggedInLinks.style.display = "none";
+					loggedOutLinks.style.display = "inline";
+			
+					localStorage.removeItem(localStorageUsernameKey);
+					localStorage.removeItem(localStorageTokenKey);
+			
+					redirect_flash("/cms/login.html", "Not logged in.");
+				}
+			});
+		}else{
+			if(!flashed){
+				status.innerHTML = "Not logged in.";
+			}
+	
+			loggedInLinks.style.display = "none";
+			loggedOutLinks.style.display = "inline";
+		}
+	});
+</script>
 <br>
 <a href="/cms/new_thread.html">New Thread</a>
 <br>
 <div id="threads"></div>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		callAPI("POST", "/get/user/threads", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				var newhtml = "<h4>Threads:</h4>";
+				if(response.length == 0){
+					newhtml += "No threads.";
+				}
+				for(var i = 0, len = response.length; i < len; i++){
+					newhtml += "<a href='/cms/thread.html?id=" + response[i].id + "'>" + (response.length - i) + ". " + response[i].name + "</a><br>";
+				}
+				document.getElementById("threads").innerHTML = newhtml;
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	});
+</script>
 
 
 			</div>

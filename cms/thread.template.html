@@ -5,3 +5,56 @@
 <br>
 <hr>
 <div id="threadMessages"></div>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		if(!("id" in urlParams)){
+			window.location.href = "/cms/threads.html";
+		}
+	
+		document.getElementById("editThreadButton").onclick = function() {
+			window.location.href = "/cms/edit_thread.html?id=" + urlParams["id"];
+		}
+	
+		document.getElementById("newMessageButton").onclick = function() {
+			window.location.href = "/cms/new_message.html?tid=" + urlParams["id"];
+		}
+	
+		callAPI("POST", "/get/user/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": urlParams["id"]}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				state.tid = response["id"];
+				document.getElementById("threadNameField").innerHTML = response["name"];
+				document.getElementById("threadDescriptionField").innerHTML = response["description"];
+			
+				callAPI("POST", "/get/thread/messages", {"id": urlParams["id"]}, function(response){
+					if(typeof(response.error) === 'undefined'){
+						var newhtml = "<h4>Messages:</h4>";
+						if(response.length == 0){
+							newhtml += "No messages.";
+						}
+						for(var i = 0, len = response.length; i < len; i++){
+							newhtml += "<a href='/cms/message.html?tid=" + urlParams["id"] + "&mid=" + response[i].id + "'>" + (response.length - i) + ". " + response[i].title + "</a><br>";
+						}
+						document.getElementById("threadMessages").innerHTML = newhtml;
+					}else{
+						status.innerHTML = response.error;
+					}
+				});
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+		
+		document.getElementById("deleteThreadButton").onclick = function() {
+			if(window.confirm("Delete thread " + document.getElementById("threadNameField").innerHTML + " ?")){
+				callAPI("DELETE", "/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": state.tid}, function(response){
+					if(typeof(response.error) === 'undefined'){
+						redirect_flash("/cms/threads.html", "Thread deleted!");
+					}else{
+						status.innerHTML = response.error;
+					}
+				});
+			}
+		};
+	});
+</script>

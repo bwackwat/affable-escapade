@@ -9,3 +9,22 @@
 <br>
 <br>
 <input id="createMessageButton" type="button" value="Create"/>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		if(!("tid" in urlParams)){
+			window.location.href = "/cms/threads.html";
+		}
+	
+		document.getElementById("createMessageButton").onclick = function() {
+			callAPI("POST", "/message", {"token": localStorage.getItem(localStorageTokenKey),
+			"values": [urlParams["tid"], document.getElementById("messageTitleField").value, document.getElementById("messageContentField").value]}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					redirect_flash("/cms/thread.html?id=" + urlParams["tid"], "Message created!");
+				}else{
+					status.innerHTML = response.error;
+				}
+			});
+		};
+	});
+</script>

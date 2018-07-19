@@ -1,7 +1,30 @@
 <label for="usernameField">Username: </label>
-<input type="text" id="usernameField"/><br><br>
-
+<input type="text" id="usernameField"/>
+<br>
+<br>
 <label for="passwordField">Password: </label>
-<input type="password" id="passwordField"/><br><br>
-
-<input id="loginButton" type="button" value="Login"/><br>
+<input type="password" id="passwordField"/>
+<br>
+<br>
+<input id="loginButton" type="button" value="Login"/>
+<br>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		var usernameField = document.getElementById("usernameField");
+		var passwordField = document.getElementById("passwordField");
+		
+		document.getElementById("loginButton").onclick = function() {
+			callAPI("POST", "/login", {"username": usernameField.value, "password": passwordField.value}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					localStorage.setItem(localStorageUsernameKey, usernameField.value);
+					localStorage.setItem(localStorageTokenKey, response.token);
+				
+					window.location.href = "/cms/account.html";
+				}else{
+					status.innerHTML = response.error;
+				}
+			});
+		};
+	});
+</script>

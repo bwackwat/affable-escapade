@@ -9,3 +9,18 @@
 <br>
 <br>
 <input id="createThreadButton" type="button" value="Create"/>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		document.getElementById("createThreadButton").onclick = function() {
+			callAPI("POST", "/thread", {"token": localStorage.getItem(localStorageTokenKey),
+			"values": [document.getElementById("threadNameField").value, document.getElementById("threadDescriptionField").value]}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					redirect_flash("/cms/threads.html", "Thread created!");
+				}else{
+					status.innerHTML = response.error;
+				}
+			});
+		};
+	});
+</script>

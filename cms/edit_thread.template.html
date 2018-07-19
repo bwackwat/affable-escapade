@@ -10,3 +10,34 @@
 <br>
 <input id="saveThreadButton" type="button" value="Save"/>
 </div>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		if(!("id" in urlParams)){
+			window.location.href = "/cms/threads.html";
+		}
+		
+		var threadName = document.getElementById("threadNameField");
+		var threadDescription = document.getElementById("threadDescriptionField");
+
+		callAPI("POST", "/get/user/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": urlParams["id"]}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				state.tid = response["id"];
+				threadName.value = response["name"];
+				threadDescription.value = response["description"];
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	
+		document.getElementById("saveThreadButton").onclick = function() {
+			callAPI("PUT", "/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": state.tid, "values": {"name": threadName.value, "description": threadDescription.value}}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					redirect_flash("/cms/threads.html", "Thread saved!");
+				}else{
+					status.innerHTML = response.error;
+				}
+			});
+		};
+	});
+</script>

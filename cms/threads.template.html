@@ -2,3 +2,22 @@
 <a href="/cms/new_thread.html">New Thread</a>
 <br>
 <div id="threads"></div>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		callAPI("POST", "/get/user/threads", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				var newhtml = "<h4>Threads:</h4>";
+				if(response.length == 0){
+					newhtml += "No threads.";
+				}
+				for(var i = 0, len = response.length; i < len; i++){
+					newhtml += "<a href='/cms/thread.html?id=" + response[i].id + "'>" + (response.length - i) + ". " + response[i].name + "</a><br>";
+				}
+				document.getElementById("threads").innerHTML = newhtml;
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	});
+</script>

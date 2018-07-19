@@ -38,6 +38,49 @@
 <a href="/cms/register.html">Register</a>
 </div>
 <hr>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+	
+		document.getElementById("logoutButton").onclick = function() {
+			localStorage.removeItem(localStorageUsernameKey);
+			localStorage.removeItem(localStorageTokenKey);
+			window.location.href = "/cms/index.html";
+		};
+		
+		var loggedInLinks = document.getElementById("loggedInLinks");
+		var loggedOutLinks = document.getElementById("loggedOutLinks");
+
+		if(localStorage.getItem(localStorageTokenKey) !== null &&
+		localStorage.getItem(localStorageTokenKey) !== "undefined"){
+			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					if(!flashed){
+						status.innerHTML = "Logged in as " + localStorage.getItem(localStorageUsernameKey);
+					}
+			
+					loggedInLinks.style.display = "inline";
+					loggedOutLinks.style.display = "none";
+				}else{
+					loggedInLinks.style.display = "none";
+					loggedOutLinks.style.display = "inline";
+			
+					localStorage.removeItem(localStorageUsernameKey);
+					localStorage.removeItem(localStorageTokenKey);
+			
+					redirect_flash("/cms/login.html", "Not logged in.");
+				}
+			});
+		}else{
+			if(!flashed){
+				status.innerHTML = "Not logged in.";
+			}
+	
+			loggedInLinks.style.display = "none";
+			loggedOutLinks.style.display = "inline";
+		}
+	});
+</script>
 <div id="threadEdit">
 <label for="threadNameField">Name: </label>
 <input type="text" id="threadNameField"/>
@@ -50,6 +93,37 @@
 <br>
 <input id="saveThreadButton" type="button" value="Save"/>
 </div>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		if(!("id" in urlParams)){
+			window.location.href = "/cms/threads.html";
+		}
+		
+		var threadName = document.getElementById("threadNameField");
+		var threadDescription = document.getElementById("threadDescriptionField");
+
+		callAPI("POST", "/get/user/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": urlParams["id"]}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				state.tid = response["id"];
+				threadName.value = response["name"];
+				threadDescription.value = response["description"];
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	
+		document.getElementById("saveThreadButton").onclick = function() {
+			callAPI("PUT", "/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": state.tid, "values": {"name": threadName.value, "description": threadDescription.value}}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					redirect_flash("/cms/threads.html", "Thread saved!");
+				}else{
+					status.innerHTML = response.error;
+				}
+			});
+		};
+	});
+</script>
 
 
 			</div>

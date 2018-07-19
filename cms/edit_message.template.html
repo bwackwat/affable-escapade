@@ -13,3 +13,38 @@
 <br>
 <input id="saveMessageButton" type="button" value="Save"/>
 </div>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		if(!("tid" in urlParams) || !("mid" in urlParams)){
+			window.location.href = "/cms/threads.html";
+		}
+	
+		document.getElementById("backToMessageButton").onclick = function() {
+			window.location.href = "/cms/message.html?mid=" + urlParams["mid"] + "&tid=" + urlParams["tid"];
+		}
+		
+		var messageTitleField = document.getElementById("messageTitleField");
+		var messageContentField = document.getElementById("messageContentField");
+
+		callAPI("POST", "/get/thread/message", {"id": urlParams["mid"]}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				state.mid = response["id"];
+				messageTitleField.value = response["title"];
+				messageContentField.value = response["content"];
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	
+		document.getElementById("saveMessageButton").onclick = function() {
+			callAPI("PUT", "/message", {"token": localStorage.getItem(localStorageTokenKey), "id": state.mid, "values": {"title": messageTitleField.value, "content": messageContentField.value}}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					redirect_flash("/cms/message.html?mid=" + urlParams["mid"] + "&tid=" + urlParams["tid"], "Message saved!");
+				}else{
+					status.innerHTML = response.error;
+				}
+			});
+		};
+	});
+</script>
