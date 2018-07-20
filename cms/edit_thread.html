@@ -30,13 +30,13 @@
 			<div id="content">
 				<h2>Content Management</h2>
 <div id="loggedInLinks">
-<a href="/cms/account.html">Account</a> | 
-<a href="/cms/threads.html">Threads</a> | 
+<a href="/cms/account.html">Account</a>&nbsp|&nbsp
+<a href="/cms/threads.html">Threads</a>&nbsp|&nbsp
 <a id="logoutButton" href="#">Logout</a>
 <br>
 </div>
 <div id="loggedOutLinks">
-<a href="/cms/login.html">Login</a> | 
+<a href="/cms/login.html">Login</a>&nbsp|&nbsp
 <a href="/cms/register.html">Register</a>
 </div>
 <hr>
@@ -105,11 +105,11 @@
 		var threadName = document.getElementById("threadNameField");
 		var threadDescription = document.getElementById("threadDescriptionField");
 
-		callAPI("POST", "/get/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": urlParams["id"]}, function(response){
+		callAPI("GET", "/thread?id=" + urlParams["id"], {}, function(response){
 			if(typeof(response.error) === 'undefined'){
-				state.tid = response["id"];
-				threadName.value = response["name"];
-				threadDescription.value = response["description"];
+				state.tid = response[0]["id"];
+				threadName.value = response[0]["name"];
+				threadDescription.value = response[0]["description"];
 			}else{
 				status.innerHTML = response.error;
 			}

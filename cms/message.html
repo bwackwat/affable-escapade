@@ -30,13 +30,13 @@
 			<div id="content">
 				<h2>Content Management</h2>
 <div id="loggedInLinks">
-<a href="/cms/account.html">Account</a> | 
-<a href="/cms/threads.html">Threads</a> | 
+<a href="/cms/account.html">Account</a>&nbsp|&nbsp
+<a href="/cms/threads.html">Threads</a>&nbsp|&nbsp
 <a id="logoutButton" href="#">Logout</a>
 <br>
 </div>
 <div id="loggedOutLinks">
-<a href="/cms/login.html">Login</a> | 
+<a href="/cms/login.html">Login</a>&nbsp|&nbsp
 <a href="/cms/register.html">Register</a>
 </div>
 <hr>
@@ -102,11 +102,11 @@
 			window.location.href = "/cms/edit_message.html?mid=" + urlParams["mid"] + "&tid=" + urlParams["tid"];
 		}
 	
-		callAPI("POST", "/get/thread/message", {"id": urlParams["mid"]}, function(response){
+		callAPI("GET", "/message?id=" + urlParams["mid"], {}, function(response){
 			if(typeof(response.error) === 'undefined'){
-				state.mid = response["id"];
-				document.getElementById("messageTitleField").innerHTML = response["title"];
-				document.getElementById("messageContentField").innerHTML = response["content"];
+				state.mid = response[0]["id"];
+				document.getElementById("messageTitleField").innerHTML = response[0]["title"];
+				document.getElementById("messageContentField").innerHTML = response[0]["content"];
 			}else{
 				status.innerHTML = response.error;
 			}

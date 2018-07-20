@@ -27,11 +27,11 @@
 		var messageTitleField = document.getElementById("messageTitleField");
 		var messageContentField = document.getElementById("messageContentField");
 
-		callAPI("POST", "/get/thread/message", {"id": urlParams["mid"]}, function(response){
+		callAPI("GET", "/message?id=" + urlParams["mid"], {}, function(response){
 			if(typeof(response.error) === 'undefined'){
-				state.mid = response["id"];
-				messageTitleField.value = response["title"];
-				messageContentField.value = response["content"];
+				state.mid = response[0]["id"];
+				messageTitleField.value = response[0]["title"];
+				messageContentField.value = response[0]["content"];
 			}else{
 				status.innerHTML = response.error;
 			}

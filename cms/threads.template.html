@@ -5,7 +5,7 @@
 <script>
 	sub_scripts.push(function(){
 		var status = document.getElementById("status");
-		callAPI("POST", "/get/threads", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+		callAPI("POST", "/my/threads", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 			if(typeof(response.error) === 'undefined'){
 				var newhtml = "<h4>Threads:</h4>";
 				if(response.length == 0){

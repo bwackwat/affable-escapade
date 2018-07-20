@@ -25,7 +25,7 @@
 		sub_scripts.push(function(){
 			var content = document.getElementById("blog-content");
 			
-			callAPI("POST", "/get/thread/messages/by/title", {"name": "GROKKING EQUANIMITY"}, function(response){
+			callAPI("GET", "/thread/messages/by/name?name=GROKKING+EQUANIMITY", {}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					var newhtml = "<div id='posts'>";
 					for(var i = 0, len = response.length; i < len; i++){

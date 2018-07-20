@@ -20,11 +20,11 @@
 		var threadName = document.getElementById("threadNameField");
 		var threadDescription = document.getElementById("threadDescriptionField");
 
-		callAPI("POST", "/get/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": urlParams["id"]}, function(response){
+		callAPI("GET", "/thread?id=" + urlParams["id"], {}, function(response){
 			if(typeof(response.error) === 'undefined'){
-				state.tid = response["id"];
-				threadName.value = response["name"];
-				threadDescription.value = response["description"];
+				state.tid = response[0]["id"];
+				threadName.value = response[0]["name"];
+				threadDescription.value = response[0]["description"];
 			}else{
 				status.innerHTML = response.error;
 			}

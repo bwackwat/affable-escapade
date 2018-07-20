@@ -17,11 +17,11 @@
 			window.location.href = "/cms/edit_message.html?mid=" + urlParams["mid"] + "&tid=" + urlParams["tid"];
 		}
 	
-		callAPI("POST", "/get/thread/message", {"id": urlParams["mid"]}, function(response){
+		callAPI("GET", "/message?id=" + urlParams["mid"], {}, function(response){
 			if(typeof(response.error) === 'undefined'){
-				state.mid = response["id"];
-				document.getElementById("messageTitleField").innerHTML = response["title"];
-				document.getElementById("messageContentField").innerHTML = response["content"];
+				state.mid = response[0]["id"];
+				document.getElementById("messageTitleField").innerHTML = response[0]["title"];
+				document.getElementById("messageContentField").innerHTML = response[0]["content"];
 			}else{
 				status.innerHTML = response.error;
 			}

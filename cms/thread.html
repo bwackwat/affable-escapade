@@ -30,13 +30,13 @@
 			<div id="content">
 				<h2>Content Management</h2>
 <div id="loggedInLinks">
-<a href="/cms/account.html">Account</a> | 
-<a href="/cms/threads.html">Threads</a> | 
+<a href="/cms/account.html">Account</a>&nbsp|&nbsp
+<a href="/cms/threads.html">Threads</a>&nbsp|&nbsp
 <a id="logoutButton" href="#">Logout</a>
 <br>
 </div>
 <div id="loggedOutLinks">
-<a href="/cms/login.html">Login</a> | 
+<a href="/cms/login.html">Login</a>&nbsp|&nbsp
 <a href="/cms/register.html">Register</a>
 </div>
 <hr>
@@ -105,13 +105,13 @@
 			window.location.href = "/cms/new_message.html?tid=" + urlParams["id"];
 		}
 	
-		callAPI("POST", "/get/user/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": urlParams["id"]}, function(response){
+		callAPI("GET", "/thread?id=" + urlParams["id"], {}, function(response){
 			if(typeof(response.error) === 'undefined'){
-				state.tid = response["id"];
-				document.getElementById("threadNameField").innerHTML = response["name"];
-				document.getElementById("threadDescriptionField").innerHTML = response["description"];
+				state.tid = response[0]["id"];
+				document.getElementById("threadNameField").innerHTML = response[0]["name"];
+				document.getElementById("threadDescriptionField").innerHTML = response[0]["description"];
 			
-				callAPI("POST", "/get/thread/messages", {"id": urlParams["id"]}, function(response){
+				callAPI("GET", "/thread/messages?id=" + urlParams["id"], {}, function(response){
 					if(typeof(response.error) === 'undefined'){
 						var newhtml = "<h4>Messages:</h4>";
 						if(response.length == 0){
