@@ -27,6 +27,16 @@ function callAPI(method, route, data, callback){
 	var sendData = JSON.stringify(data);
 	//console.log("CALL " + method + " " + route);
 	
+	for (var key in data) {
+		if (data.hasOwnProperty(key)){
+			if(data[key] === "undefined" ||
+			data[key] === null){
+				console.log("Parameter is null or undefined, skipping call: " + key);
+				return;
+			}
+		}
+	}
+	
 	var http = new XMLHttpRequest();
 	http.open(method, apiUrl + route, true);
 	http.setRequestHeader("Content-type", "application/json");

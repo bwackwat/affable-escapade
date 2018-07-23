@@ -53,6 +53,8 @@
 		var loggedInLinks = document.getElementById("loggedInLinks");
 		var loggedOutLinks = document.getElementById("loggedOutLinks");
 
+		console.log(localStorage.getItem(localStorageTokenKey));
+		console.log(localStorageTokenKey);
 		if(localStorage.getItem(localStorageTokenKey) !== null &&
 		localStorage.getItem(localStorageTokenKey) !== "undefined"){
 			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
@@ -92,6 +94,7 @@
 <br>
 <textarea id="messageContentField" cols="80" rows="20"></textarea>
 <br>
+<div id="draftStatus" style="font-size:12px"></div>
 <br>
 <input id="createMessageButton" type="button" value="Create"/>
 <script>
@@ -100,11 +103,31 @@
 		if(!("tid" in urlParams)){
 			window.location.href = "/cms/threads.html";
 		}
+		
+		var messageTitleField = document.getElementById("messageTitleField");
+		var messageContentField = document.getElementById("messageContentField");
+		
+		if(localStorage.getItem(urlParams["tid"] + ":messageTitleDraft") !== null &&
+		localStorage.getItem(urlParams["tid"] + ":messageTitleDraft") !== "undefined" &&
+		localStorage.getItem(urlParams["tid"] + ":messageContentDraft") !== null &&
+		localStorage.getItem(urlParams["tid"] + ":messageContentDraft") !== "undefined"){
+			messageTitleField.value = localStorage.getItem(urlParams["tid"] + ":messageTitleDraft");
+			messageContentField.value = localStorage.getItem(urlParams["tid"] + ":messageContentDraft");
+			status.innerHTML = "Draft loaded.";
+		}
+		
+		setInterval(function(){
+			localStorage.setItem(urlParams["tid"] + ":messageTitleDraft", messageTitleField.value);
+			localStorage.setItem(urlParams["tid"] + ":messageContentDraft", messageContentField.value);
+			document.getElementById("draftStatus").innerHTML = "(Draft saved at " + (new Date().toLocaleString()) + ")";
+		}, 5000);
 	
 		document.getElementById("createMessageButton").onclick = function() {
 			callAPI("POST", "/message", {"token": localStorage.getItem(localStorageTokenKey),
-			"values": [urlParams["tid"], document.getElementById("messageTitleField").value, document.getElementById("messageContentField").value]}, function(response){
+			"values": [urlParams["tid"], messageTitleField.value, messageContentField.value]}, function(response){
 				if(typeof(response.error) === 'undefined'){
+					localStorage.removeItem(urlParams["tid"] + ":messageTitleDraft");
+					localStorage.removeItem(urlParams["tid"] + ":messageContentDraft");
 					redirect_flash("/cms/thread.html?id=" + urlParams["tid"], "Message created!");
 				}else{
 					status.innerHTML = response.error;

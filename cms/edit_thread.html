@@ -53,6 +53,8 @@
 		var loggedInLinks = document.getElementById("loggedInLinks");
 		var loggedOutLinks = document.getElementById("loggedOutLinks");
 
+		console.log(localStorage.getItem(localStorageTokenKey));
+		console.log(localStorageTokenKey);
 		if(localStorage.getItem(localStorageTokenKey) !== null &&
 		localStorage.getItem(localStorageTokenKey) !== "undefined"){
 			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){

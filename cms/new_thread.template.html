@@ -7,15 +7,37 @@
 <br>
 <textarea id="threadDescriptionField" cols="80" rows="4"></textarea>
 <br>
+<div id="draftStatus" style="font-size:12px"></div>
 <br>
 <input id="createThreadButton" type="button" value="Create"/>
 <script>
 	sub_scripts.push(function(){
 		var status = document.getElementById("status");
+		
+		var threadNameField = document.getElementById("threadNameField");
+		var threadDescriptionField = document.getElementById("threadDescriptionField");
+		
+		if(localStorage.getItem("threadNameDraft") !== null &&
+		localStorage.getItem("threadNameDraft") !== "undefined" &&
+		localStorage.getItem("threadDescriptionDraft") !== null &&
+		localStorage.getItem("threadDescriptionDraft") !== "undefined"){
+			threadNameField.value = localStorage.getItem("threadNameDraft");
+			threadDescriptionField.value = localStorage.getItem("threadDescriptionDraft");
+			status.innerHTML = "Draft loaded.";
+		}
+		
+		setInterval(function(){
+			localStorage.setItem("threadNameDraft", threadNameField.value);
+			localStorage.setItem("threadDescriptionDraft", threadDescriptionField.value);
+			document.getElementById("draftStatus").innerHTML = "(Draft saved at " + (new Date().toLocaleString()) + ")";
+		}, 5000);
+		
 		document.getElementById("createThreadButton").onclick = function() {
 			callAPI("POST", "/thread", {"token": localStorage.getItem(localStorageTokenKey),
-			"values": [document.getElementById("threadNameField").value, document.getElementById("threadDescriptionField").value]}, function(response){
+			"values": [threadNameField.value, threadDescriptionField.value]}, function(response){
 				if(typeof(response.error) === 'undefined'){
+					localStorage.removeItem("threadNameDraft");
+					localStorage.removeItem("threadDescriptionDraft");
 					redirect_flash("/cms/threads.html", "Thread created!");
 				}else{
 					status.innerHTML = response.error;
