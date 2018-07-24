@@ -22,7 +22,7 @@
 					<a class="bannerlink" href="/hobbies.html">Hobbies</a>|
 					<a class="bannerlink" href="/blog/">Blog</a>|
 					<a class="bannerlink" href="/cms/">Manage</a>|
-					<a class="bannerlink" href="/about.html">About</a>
+					<a class="bannerlink" href="/extras.html">Extras</a>
 				</div>
 			</div></td></tr>
 		</table>
@@ -53,8 +53,6 @@
 		var loggedInLinks = document.getElementById("loggedInLinks");
 		var loggedOutLinks = document.getElementById("loggedOutLinks");
 
-		console.log(localStorage.getItem(localStorageTokenKey));
-		console.log(localStorageTokenKey);
 		if(localStorage.getItem(localStorageTokenKey) !== null &&
 		localStorage.getItem(localStorageTokenKey) !== "undefined"){
 			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
@@ -87,8 +85,29 @@
 </script>
 <h3>Account</h3>
 </div>
-<br>
 <p>Here's some information about your account.</p>
+<p id="access"></p>
+<script>
+	sub_scripts.push(function(){
+		callAPI("POST", "/my/access", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				var newhtml = "<h4>Access:</h4>";
+				if(response.length == 0){
+					newhtml += "No access.";
+				}else{
+					newhtml += "<table><tr><th><b>Name</b></th><th><b>Description</b></th></tr>";
+					for(var i = 0, len = response.length; i < len; i++){
+						newhtml += "<tr><td style='padding-right: 10px'>" + response[i].name + "</td><td style='padding-left: 10px'>" + response[i].description + "</td></tr>";
+					}
+					newhtml += "</table>";
+				}
+				document.getElementById("access").innerHTML = newhtml;
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	});
+</script>
 
 
 			</div>
