@@ -1,59 +1,3 @@
-<html>
-	<head>
-		<title>John Paul Hayes II</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
-		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
-		<link rel="stylesheet" type="text/css" href="/index.css">
-		
-		<script src="/index.js"></script>
-	</head>
-	<body>
-		<!-- Set to display:flex; to show this loading screen. -->
-		<div id="loadingScreen" style="z-index:1;display:none;align-items:center;justify-content:center;width:100%;height:100%;overflow:auto;background-color:white;">
-			<svg style="width:80;height:80;">
-				<rect x="0" y="0" height="16" width="16" style="fill:crimson;">
-					<animate id="box1a1" attributeName="x"
-						from="0"  to="60"
-						begin="0s; box1a2.end" dur="1s"
-						fill="freeze"/>
-					<animate id="box1a2" attributeName="y"
-						from="0"  to="60"
-						begin="box1a1.end" dur="750ms"
-						fill="remove"/>
-				</rect>
-				<rect x="60" y="60" height="16" width="16" style="fill:crimson;">
-					<animate id="box2a1" attributeName="x"
-						from="60"  to="0"
-						begin="0s; box2a2.end" dur="1s"
-						fill="freeze"/>
-					<animate id="box2a2" attributeName="y"
-						from="60"  to="0"
-						begin="box2a1.end;" dur="750ms"
-						fill="remove"/>
-				</rect>
-			</svg>
-		</div>
-		<table id="banner"><tr><td>
-			<div id="bannerleft">
-				<div id="icon"><a href="/index.html"><img src="/favicon.ico"/></a></div>
-				<div id="status">Welcome.</div>
-			</div></td><td style="display:table-cell;vertical-align:middle;">
-			<div id="bannerright">
-				<div id="links">
-					<a class="bannerlink" href="/software.html">Software Portfolio</a>|&nbsp
-					<a class="bannerlink" href="/hobbies.html">Hobbies</a>|&nbsp
-					<a class="bannerlink" href="/blog/">Blog</a>|&nbsp
-					<a class="bannerlink" href="/cms/">Manage</a>|&nbsp
-					<a class="bannerlink" href="/extras.html">Extras</a>
-				</div>
-			</div></td></tr>
-		</table>
-		<div id="contentborder">
-			<div id="content">
-				<h2>Chat</h2>
 <table style="height:100%;width:100%;">
 <tr><td id="handleOrUsername">
 User:&nbsp
@@ -219,9 +163,3 @@ User:&nbsp
 		submitButton.onclick = send;
 	});
 </script>
-
-
-			</div>
-		</div>
-	</body>
-</html>

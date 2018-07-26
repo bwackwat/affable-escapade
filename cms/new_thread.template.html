@@ -1,5 +1,8 @@
 <h2>New Thread</h2>
-<label for="threadNameField">Name: </label>
+<a id="backToThreadButton" href="#">Back</a>
+<br>
+<br>
+<label for="threadNameField">Name:&nbsp&nbsp</label>
 <input type="text" id="threadNameField"/>
 <br>
 <br>
@@ -13,6 +16,10 @@
 <script>
 	sub_scripts.push(function(){
 		var status = document.getElementById("status");
+		
+		document.getElementById("backToThreadButton").onclick = function() {
+			window.location.href = "/cms/threads.html";
+		}
 		
 		var threadNameField = document.getElementById("threadNameField");
 		var threadDescriptionField = document.getElementById("threadDescriptionField");

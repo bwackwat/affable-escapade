@@ -1,11 +1,11 @@
 <h2>Content Management</h2>
-<div id="loggedInLinks">
-<a href="/cms/account.html">Account</a>&nbsp|&nbsp
-<a href="/cms/threads.html">Threads</a>&nbsp|&nbsp
+<div style="display:none;" id="loggedInLinks">
+<a href="/cms/account.html">Account</a>&nbsp|
+<a href="/cms/threads.html">Threads</a>&nbsp|
 <a id="logoutButton" href="#">Logout</a>
 <br>
 </div>
-<div id="loggedOutLinks">
+<div style="display:none;" id="loggedOutLinks">
 <a href="/cms/login.html">Login</a>&nbsp|&nbsp
 <a href="/cms/register.html">Register</a>
 </div>
@@ -17,7 +17,7 @@
 		document.getElementById("logoutButton").onclick = function() {
 			localStorage.removeItem(localStorageUsernameKey);
 			localStorage.removeItem(localStorageTokenKey);
-			window.location.href = "/cms/index.html";
+			window.location.href = "/cms/login.html";
 		};
 		
 		var loggedInLinks = document.getElementById("loggedInLinks");

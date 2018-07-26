@@ -1,5 +1,8 @@
 <h2>New Message</h2>
-<label for="messageTitleField">Title: </label>
+<a id="backToThreadButton" href="#">Back</a>
+<br>
+<br>
+<label for="messageTitleField">Title:&nbsp&nbsp</label>
 <input type="text" id="messageTitleField"/>
 <br>
 <br>
@@ -15,6 +18,10 @@
 		var status = document.getElementById("status");
 		if(!("tid" in urlParams)){
 			window.location.href = "/cms/threads.html";
+		}
+		
+		document.getElementById("backToThreadButton").onclick = function() {
+			window.location.href = "/cms/thread.html?id=" + urlParams["tid"];
 		}
 		
 		var messageTitleField = document.getElementById("messageTitleField");

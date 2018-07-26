@@ -1,7 +1,7 @@
 <h3 id="threadNameField"></h3>
 <div id="threadDescriptionField"></div>
 <br>
-<a id="newMessageButton" href="#">New Message</a> | <a id="editThreadButton" href="#">Edit</a> | <a id="deleteThreadButton" href="#">Delete</a>
+<a id="backButton" href="#">Back</a> | <a id="newMessageButton" href="#">New Message</a> | <a id="editThreadButton" href="#">Edit</a> | <a id="deleteThreadButton" href="#">Delete</a>
 <br>
 <hr>
 <div id="threadMessages"></div>
@@ -9,6 +9,10 @@
 	sub_scripts.push(function(){
 		var status = document.getElementById("status");
 		if(!("id" in urlParams)){
+			window.location.href = "/cms/threads.html";
+		}
+	
+		document.getElementById("backButton").onclick = function() {
 			window.location.href = "/cms/threads.html";
 		}
 	

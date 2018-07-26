@@ -1,5 +1,5 @@
 <h3>Account</h3>
-</div>
+<a id="manageUsersLink" style="display:none;" href="/cms/users.html">Manage Users</a>
 <p>Here's some information about your account.</p>
 <p id="access"></p>
 <script>
@@ -13,6 +13,9 @@
 					newhtml += "<table><tr><th><b>Name</b></th><th><b>Description</b></th></tr>";
 					for(var i = 0, len = response.length; i < len; i++){
 						newhtml += "<tr><td style='padding-right: 10px'>" + response[i].name + "</td><td style='padding-left: 10px'>" + response[i].description + "</td></tr>";
+						if(response[i].id == 1){
+							document.getElementById("manageUsersLink").style.display = "block";
+						}
 					}
 					newhtml += "</table>";
 				}

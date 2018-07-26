@@ -1,5 +1,8 @@
 <div id="threadEdit">
-<label for="threadNameField">Name: </label>
+<a id="backToThreadButton" href="#">Back</a>
+<br>
+<br>
+<label for="threadNameField">Name:&nbsp&nbsp</label>
 <input type="text" id="threadNameField"/>
 <br>
 <br>
@@ -15,6 +18,10 @@
 		var status = document.getElementById("status");
 		if(!("id" in urlParams)){
 			window.location.href = "/cms/threads.html";
+		}
+	
+		document.getElementById("backToThreadButton").onclick = function() {
+			window.location.href = "/cms/thread.html?id=" + urlParams["id"];
 		}
 		
 		var threadName = document.getElementById("threadNameField");

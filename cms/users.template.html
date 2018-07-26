@@ -1,0 +1,28 @@
+<h3>Manage Users</h3>
+<div id="users"></div>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		callAPI("POST", "/get/users", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				var newhtml = "<h4>Users:</h4>";
+				if(response.length == 0){
+					newhtml += "No users?";
+				}else{
+					newhtml += "<table style='text-align:center;'><tr><th style='width:50px;'><b>id</b></th><th style='width:100px;'><b>Username</b></th><th style='width:100px;'><b>Email</b></th><th style='width:100px;'><b>First Name</b></th><th style='width:100px;'><b>Last Name</b></th></tr>";
+					for(var i = 0, len = response.length; i < len; i++){
+						newhtml += "<tr><td>" + response[i].id + "</td>";
+						newhtml += "<td>" + response[i].username + "</td>";
+						newhtml += "<td>" + response[i].email + "</td>";
+						newhtml += "<td>" + response[i].first_name + "</td>";
+						newhtml += "<td>" + response[i].last_name + "</td></tr>";
+					}
+					newhtml += "</table>";
+				}
+				document.getElementById("users").innerHTML = newhtml;
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	});
+</script>
