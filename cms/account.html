@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<title>John Paul Hayes II</title>
+		<title>libjaypea</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=0.9">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -38,16 +38,14 @@
 		</div>
 		<table id="banner"><tr><td>
 			<div id="bannerleft">
-				<div id="icon"><a href="/index.html"><img src="/favicon.ico"/></a></div>
+				<div id="icon"><img src="/favicon.ico"/></div>
 				<div id="status">Welcome.</div>
 			</div></td><td style="display:table-cell;vertical-align:middle;">
 			<div id="bannerright">
 				<div id="links">
-					<a class="bannerlink" href="/software.html">Software Portfolio</a>|&nbsp
-					<a class="bannerlink" href="/hobbies.html">Hobbies</a>|&nbsp
-					<a class="bannerlink" href="/blog/">Blog</a>|&nbsp
-					<a class="bannerlink" href="/cms/">Manage</a>|&nbsp
-					<a class="bannerlink" href="/extras.html">Extras</a>
+					<a class="bannerLink" href="/cms/">Manage</a>|&nbsp
+					<a class="bannerLink" href="/chat/">Chat</a>|&nbsp
+					<a class="bannerLink" href="/poi/">POI</a>
 				</div>
 			</div></td></tr>
 		</table>
@@ -109,7 +107,7 @@
 	});
 </script>
 <h3>Account</h3>
-<a id="manageUsersLink" style="display:none;" href="/cms/users.html">Manage Users</a>
+<a href="/cms/edit_account.html">Edit</a>
 <p>Here's some information about your account.</p>
 <p id="access"></p>
 <script>
@@ -122,9 +120,10 @@
 				}else{
 					newhtml += "<table><tr><th><b>Name</b></th><th><b>Description</b></th></tr>";
 					for(var i = 0, len = response.length; i < len; i++){
-						newhtml += "<tr><td style='padding-right: 10px'>" + response[i].name + "</td><td style='padding-left: 10px'>" + response[i].description + "</td></tr>";
 						if(response[i].id == 1){
-							document.getElementById("manageUsersLink").style.display = "block";
+							newhtml += "<tr><td style='padding-right: 10px'>" + response[i].name + "<br><a href='/cms/users.html'>(Manage Users)</a></td><td style='padding-left: 10px'>" + response[i].description + "</td></tr>";
+						}else{
+							newhtml += "<tr><td style='padding-right: 10px'>" + response[i].name + "</td><td style='padding-left: 10px'>" + response[i].description + "</td></tr>";
 						}
 					}
 					newhtml += "</table>";
@@ -141,4 +140,12 @@
 			</div>
 		</div>
 	</body>
+	<script>
+		sub_scripts.push(function(){
+			var icon = document.getElementById("icon");
+			icon.onclick = function(){
+				window.location = "/index.html";
+			};
+		});
+	</script>
 </html>

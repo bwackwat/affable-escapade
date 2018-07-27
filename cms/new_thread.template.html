@@ -41,7 +41,7 @@
 		
 		document.getElementById("createThreadButton").onclick = function() {
 			callAPI("POST", "/thread", {"token": localStorage.getItem(localStorageTokenKey),
-			"values": [threadNameField.value, threadDescriptionField.value]}, function(response){
+			"values": {"name": threadNameField.value, "description": threadDescriptionField.value}}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					localStorage.removeItem("threadNameDraft");
 					localStorage.removeItem("threadDescriptionDraft");

@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<title>John Paul Hayes II</title>
+		<title>libjaypea</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=0.9">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -38,16 +38,14 @@
 		</div>
 		<table id="banner"><tr><td>
 			<div id="bannerleft">
-				<div id="icon"><a href="/index.html"><img src="/favicon.ico"/></a></div>
+				<div id="icon"><img src="/favicon.ico"/></div>
 				<div id="status">Welcome.</div>
 			</div></td><td style="display:table-cell;vertical-align:middle;">
 			<div id="bannerright">
 				<div id="links">
-					<a class="bannerlink" href="/software.html">Software Portfolio</a>|&nbsp
-					<a class="bannerlink" href="/hobbies.html">Hobbies</a>|&nbsp
-					<a class="bannerlink" href="/blog/">Blog</a>|&nbsp
-					<a class="bannerlink" href="/cms/">Manage</a>|&nbsp
-					<a class="bannerlink" href="/extras.html">Extras</a>
+					<a class="bannerLink" href="/cms/">Manage</a>|&nbsp
+					<a class="bannerLink" href="/chat/">Chat</a>|&nbsp
+					<a class="bannerLink" href="/poi/">POI</a>
 				</div>
 			</div></td></tr>
 		</table>
@@ -76,6 +74,17 @@ User:&nbsp
 		var messages = document.getElementById("messages");
 		
 		var ding = new Audio('/chat/ding.mp3');
+		
+		if(localStorage.getItem(localStorageTokenKey) !== null){
+			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+				if(typeof(response.error) !== 'undefined'){
+					localStorage.removeItem(localStorageUsernameKey);
+					localStorage.removeItem(localStorageTokenKey);
+			
+					window.location.reload();
+				}
+			});
+		}
 
 		var session_token = null;
 		if(localStorage.getItem(localStorageTokenKey) !== null){
@@ -96,10 +105,15 @@ User:&nbsp
 		handleField.onclick = function(){
 			handleField.value = "";
 		};
+		
+		function get_colored_star(color){
+			return '<svg width="16px" height="16px" viewBox="0 0 51 48"><path fill="' + color + '" stroke="black" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/></svg>';
+		}
 
 		var ws;
 		var ws_is_done_for_session = false;
 		var msg = {};
+		var star = 0;
 
 		function connected(e){
 			//console.log(e);
@@ -117,21 +131,26 @@ User:&nbsp
 			if(typeof msg.messages !== 'undefined'){
 				var newhtml = "";
 				for(var i = 0, len = msg.messages.length; i < len; i++){
-					newhtml += "<p>" + msg.messages[i] + "</p>";
+					//console.log(msg.messages[i]);
+					if(typeof msg.messages[i].color !== "undefined"){
+						//console.log(get_colored_star(msg.messages[i].color));
+						newhtml += "<p>" + get_colored_star(msg.messages[i].color) + msg.messages[i].handle + ": " + msg.messages[i].message + "</p>";
+					}else{
+						newhtml += "<p>" + msg.messages[i].handle + ": " + msg.messages[i].message + "</p>";
+					}
 				}
 				messages.innerHTML = newhtml;
 			}else if(typeof msg.handle !== 'undefined' && typeof msg.message !== 'undefined'){
 				//msg.message = msg.message.replace(/ /g, '\u00a0');
 				//console.log(msg.message);
 				if(msg.handle != handleField.value){
-					console.log(msg.handle);
-					console.log(handleField.value);
 					ding.play();
 				}
-				if(typeof msg.prefix !== 'undefined'){
-					msg.handle = msg.prefix + msg.handle;
+				if(typeof msg.color !== 'undefined'){
+					messages.innerHTML = "<p>" + get_colored_star(msg.color) + msg.handle + ": " + msg.message + "</p>" + messages.innerHTML;
+				}else{
+					messages.innerHTML = "<p>" + msg.handle + ": " + msg.message + "</p>" + messages.innerHTML;
 				}
-				messages.innerHTML = "<p>" + msg.handle + ": " + msg.message + "</p>" + messages.innerHTML;
 			}else if(typeof msg.status !== 'undefined'){
 				if(msg.status.startsWith("Bad login token.")){
 				//	window.location.reload();
@@ -144,6 +163,7 @@ User:&nbsp
 			}else{
 				console.log("Received junk?");
 			}
+			
 		}
 
 		function closed(e){
@@ -224,4 +244,12 @@ User:&nbsp
 			</div>
 		</div>
 	</body>
+	<script>
+		sub_scripts.push(function(){
+			var icon = document.getElementById("icon");
+			icon.onclick = function(){
+				window.location = "/index.html";
+			};
+		});
+	</script>
 </html>

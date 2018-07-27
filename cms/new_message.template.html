@@ -44,7 +44,7 @@
 	
 		document.getElementById("createMessageButton").onclick = function() {
 			callAPI("POST", "/message", {"token": localStorage.getItem(localStorageTokenKey),
-			"values": [urlParams["tid"], messageTitleField.value, messageContentField.value]}, function(response){
+			"values": {"thread_id": urlParams["tid"], "title": messageTitleField.value, "content": messageContentField.value}}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					localStorage.removeItem(urlParams["tid"] + ":messageTitleDraft");
 					localStorage.removeItem(urlParams["tid"] + ":messageContentDraft");

@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<title>John Paul Hayes II</title>
+		<title>libjaypea</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=0.9">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -38,22 +38,28 @@
 		</div>
 		<table id="banner"><tr><td>
 			<div id="bannerleft">
-				<div id="icon"><a href="/index.html"><img src="/favicon.ico"/></a></div>
+				<div id="icon"><img src="/favicon.ico"/></div>
 				<div id="status">Welcome.</div>
 			</div></td><td style="display:table-cell;vertical-align:middle;">
 			<div id="bannerright">
 				<div id="links">
-					<a class="bannerlink" href="/software.html">Software Portfolio</a>|&nbsp
-					<a class="bannerlink" href="/hobbies.html">Hobbies</a>|&nbsp
-					<a class="bannerlink" href="/blog/">Blog</a>|&nbsp
-					<a class="bannerlink" href="/cms/">Manage</a>|&nbsp
-					<a class="bannerlink" href="/extras.html">Extras</a>
+					<a class="bannerLink" href="/cms/">Manage</a>|&nbsp
+					<a class="bannerLink" href="/chat/">Chat</a>|&nbsp
+					<a class="bannerLink" href="/poi/">POI</a>
 				</div>
 			</div></td></tr>
 		</table>
 		<div id="contentborder">
 			<div id="content">
-				<h2>Software Portfolio</h2>
+				<h2>John Paul Hayes II</h2>
+<div id="portfolioLinks">
+<a class="portfolioLink" href="/portfolio/software.html">Software Portfolio</a>|&nbsp
+<a class="portfolioLink" href="/portfolio/hobbies.html">Hobbies</a>|&nbsp
+<a class="portfolioLink" href="/blog/">Blog</a>|&nbsp
+<a class="portfolioLink" href="/portfolio/about.html">About</a>|&nbsp
+</div>
+<hr>
+<h2>Software Portfolio</h2>
 <p>My history as a software geek began with object-oriented fun with Java, and has progressed far since.</p>
 <p>I have worked with C, C++, C#, (.NET, ) Java, Scala, Python, JavaScript, Unix Shell, PowerShell, *web languages*, LC-3, and CL.</p>
 <p>Below is a timeline.</p>
@@ -124,7 +130,16 @@ Fondly I remember the C++ programming language and learning about it with a frie
 I quickly grew into enjoying Windows 95/98 video games such as Mech Warrior, Uprising, and Lemmings. I remember playing old Macintosh Apple games and other ancient games on Windows 3.0. Windows XP came out into excellent releases such as Starcraft, Warcraft III (TFT), Unreal Tournament 2004, Half-Life 2, and Doom 3. In the back of my mind the whole time I wondered how these worlds and scenes were rendering. I thought about the filesystem, the internet, and the operating systems underlying.
 </p>
 
+
 			</div>
 		</div>
 	</body>
+	<script>
+		sub_scripts.push(function(){
+			var icon = document.getElementById("icon");
+			icon.onclick = function(){
+				window.location = "/index.html";
+			};
+		});
+	</script>
 </html>

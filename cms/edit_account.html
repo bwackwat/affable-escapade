@@ -106,57 +106,79 @@
 		}
 	});
 </script>
-<h2>New Message</h2>
-<a id="backToThreadButton" href="#">Back</a>
+<h2>Edit Account</h2>
+<a href="/cms/account.html">Back</a>
+<br>
+<label for="usernameField">Username:&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="usernameField">
 <br>
 <br>
-<label for="messageTitleField">Title:&nbsp&nbsp</label>
-<input type="text" id="messageTitleField"/>
+<label for="passwordCheckbox">New Password</label>
+<input type="checkbox" id="passwordCheckbox">
+<div id="showPasswordField" style="display:none;">
+<label for="passwordField">Password:&nbsp&nbsp</label>
+<input type="password" autocomplete="off" id="passwordField">
+</div>
 <br>
 <br>
-<label for="messageContentField">Content:</label>
+<label for="emailField">Email:&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="emailField">
 <br>
-<textarea id="messageContentField" cols="80" rows="20"></textarea>
 <br>
-<div id="draftStatus" style="font-size:12px"></div>
+<label for="firstNameField">First Name:&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="firstNameField">
 <br>
-<input id="createMessageButton" type="button" value="Create"/>
+<br>
+<label for="lastNameField">Last Name:&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="lastNameField">
+<br>
+<br>
+<label for="colorField">Color (e.g. "gold" or "#ffd700"):&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="colorField">
+<br>
+<br>
+<input id="updateButton" type="button" value="Update">
+<br>
 <script>
 	sub_scripts.push(function(){
 		var status = document.getElementById("status");
-		if(!("tid" in urlParams)){
-			window.location.href = "/cms/threads.html";
-		}
 		
-		document.getElementById("backToThreadButton").onclick = function() {
-			window.location.href = "/cms/thread.html?id=" + urlParams["tid"];
-		}
+		document.getElementById("passwordCheckbox").onchange = function(){
+			if(document.getElementById("passwordCheckbox").checked){
+				document.getElementById("showPasswordField").style.display = "block";
+			}else{
+				document.getElementById("showPasswordField").style.display = "none";
+			}
+		};
 		
-		var messageTitleField = document.getElementById("messageTitleField");
-		var messageContentField = document.getElementById("messageContentField");
+		callAPI("POST", "/get/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				usernameField.value = response[0]["username"];
+				emailField.value = response[0]["email"];
+				firstNameField.value = response[0]["first_name"];
+				lastNameField.value = response[0]["last_name"];
+				colorField.value = response[0]["color"];
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
 		
-		if(localStorage.getItem(urlParams["tid"] + ":messageTitleDraft") !== null &&
-		localStorage.getItem(urlParams["tid"] + ":messageTitleDraft") !== "undefined" &&
-		localStorage.getItem(urlParams["tid"] + ":messageContentDraft") !== null &&
-		localStorage.getItem(urlParams["tid"] + ":messageContentDraft") !== "undefined"){
-			messageTitleField.value = localStorage.getItem(urlParams["tid"] + ":messageTitleDraft");
-			messageContentField.value = localStorage.getItem(urlParams["tid"] + ":messageContentDraft");
-			status.innerHTML = "Draft loaded.";
-		}
+		document.getElementById("updateButton").onclick = function() {
+			var new_values = {"username": document.getElementById("usernameField").value,
+			"email": document.getElementById("emailField").value,
+			"first_name": document.getElementById("firstNameField").value,
+			"last_name": document.getElementById("lastNameField").value,
+			"color": document.getElementById("colorField").value}
+			
+			if(document.getElementById("passwordCheckbox").checked){
+				new_values["password"] = document.getElementById("passwordField").value;
+			}
 		
-		setInterval(function(){
-			localStorage.setItem(urlParams["tid"] + ":messageTitleDraft", messageTitleField.value);
-			localStorage.setItem(urlParams["tid"] + ":messageContentDraft", messageContentField.value);
-			document.getElementById("draftStatus").innerHTML = "(Draft saved at " + (new Date().toLocaleString()) + ")";
-		}, 5000);
-	
-		document.getElementById("createMessageButton").onclick = function() {
-			callAPI("POST", "/message", {"token": localStorage.getItem(localStorageTokenKey),
-			"values": {"thread_id": urlParams["tid"], "title": messageTitleField.value, "content": messageContentField.value}}, function(response){
+			callAPI("PUT", "/user", {"token": localStorage.getItem(localStorageTokenKey), "values": new_values}, function(response){
 				if(typeof(response.error) === 'undefined'){
-					localStorage.removeItem(urlParams["tid"] + ":messageTitleDraft");
-					localStorage.removeItem(urlParams["tid"] + ":messageContentDraft");
-					redirect_flash("/cms/thread.html?id=" + urlParams["tid"], "Message created!");
+					localStorage.setItem(localStorageUsernameKey, document.getElementById("usernameField").value);
+					localStorage.setItem(localStorageTokenKey, response.token);
+					redirect_flash("/cms/account.html", "Account details, saved!");
 				}else{
 					status.innerHTML = response.error;
 				}

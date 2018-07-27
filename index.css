@@ -58,6 +58,10 @@ img{
 	padding-right: 10px;
 }
 
+#icon:hover {
+	cursor:pointer;
+}
+
 #status {
 	vertical-align: middle;
 	float: left;
@@ -66,15 +70,26 @@ img{
 	text-decoration: none;
 }
 
-.bannerlink {
-	margin-right: 10px;
-	color: white;
-}
-
 #links {
 	display: inline-block;
 	vertical-align: middle;
 	font-size: 18;
+}
+
+.bannerLink {
+	margin-right: 10px;
+	color: white;
+}
+
+#portfolioLinks {
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 18;
+	color: crimson;
+}
+
+.portfolioLink {
+	margin-right: 10px;
 }
 
 #contentborder {

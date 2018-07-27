@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<title>John Paul Hayes II</title>
+		<title>libjaypea</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=0.9">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -38,16 +38,14 @@
 		</div>
 		<table id="banner"><tr><td>
 			<div id="bannerleft">
-				<div id="icon"><a href="/index.html"><img src="/favicon.ico"/></a></div>
+				<div id="icon"><img src="/favicon.ico"/></div>
 				<div id="status">Welcome.</div>
 			</div></td><td style="display:table-cell;vertical-align:middle;">
 			<div id="bannerright">
 				<div id="links">
-					<a class="bannerlink" href="/software.html">Software Portfolio</a>|&nbsp
-					<a class="bannerlink" href="/hobbies.html">Hobbies</a>|&nbsp
-					<a class="bannerlink" href="/blog/">Blog</a>|&nbsp
-					<a class="bannerlink" href="/cms/">Manage</a>|&nbsp
-					<a class="bannerlink" href="/extras.html">Extras</a>
+					<a class="bannerLink" href="/cms/">Manage</a>|&nbsp
+					<a class="bannerLink" href="/chat/">Chat</a>|&nbsp
+					<a class="bannerLink" href="/poi/">POI</a>
 				</div>
 			</div></td></tr>
 		</table>
@@ -128,6 +126,10 @@
 <input type="text" autocomplete="off" id="lastNameField">
 <br>
 <br>
+<label for="colorField">Color (e.g. "gold" or "#ffd700"):&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="colorField">
+<br>
+<br>
 <input id="registerButton" type="button" value="Register">
 <br>
 <script>
@@ -136,13 +138,12 @@
 		
 		document.getElementById("registerButton").onclick = function() {
 			callAPI("POST", "/user", {"values":
-			[document.getElementById("usernameField").value,
-			document.getElementById("passwordField").value,
-			"",
-			"",
-			document.getElementById("emailField").value,
-			document.getElementById("firstNameField").value,
-			document.getElementById("lastNameField").value]}, function(response){
+			{"username": document.getElementById("usernameField").value,
+			"password": document.getElementById("passwordField").value,
+			"email": document.getElementById("emailField").value,
+			"first_name": document.getElementById("firstNameField").value,
+			"last_name": document.getElementById("lastNameField").value,
+			"color": document.getElementById("colorField").value}}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					redirect_flash("/cms/login.html", "You signed up successfully!");
 				}else{
@@ -157,4 +158,12 @@
 			</div>
 		</div>
 	</body>
+	<script>
+		sub_scripts.push(function(){
+			var icon = document.getElementById("icon");
+			icon.onclick = function(){
+				window.location = "/index.html";
+			};
+		});
+	</script>
 </html>

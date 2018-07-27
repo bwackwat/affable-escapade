@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<title>John Paul Hayes II</title>
+		<title>libjaypea</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=0.9">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -38,37 +38,45 @@
 		</div>
 		<table id="banner"><tr><td>
 			<div id="bannerleft">
-				<div id="icon"><a href="/index.html"><img src="/favicon.ico"/></a></div>
+				<div id="icon"><img src="/favicon.ico"/></div>
 				<div id="status">Welcome.</div>
 			</div></td><td style="display:table-cell;vertical-align:middle;">
 			<div id="bannerright">
 				<div id="links">
-					<a class="bannerlink" href="/software.html">Software Portfolio</a>|&nbsp
-					<a class="bannerlink" href="/hobbies.html">Hobbies</a>|&nbsp
-					<a class="bannerlink" href="/blog/">Blog</a>|&nbsp
-					<a class="bannerlink" href="/cms/">Manage</a>|&nbsp
-					<a class="bannerlink" href="/extras.html">Extras</a>
+					<a class="bannerLink" href="/cms/">Manage</a>|&nbsp
+					<a class="bannerLink" href="/chat/">Chat</a>|&nbsp
+					<a class="bannerLink" href="/poi/">POI</a>
 				</div>
 			</div></td></tr>
 		</table>
 		<div id="contentborder">
 			<div id="content">
-				<h2>Thanks for visiting!</h2>
-<p>This website is hosted on a small <a href="https://www.digitalocean.com/">DigitalOcean</a> VPS.</p>
-<p>All content is served through <a href="https://github.com/bwackwat/libjaypea">libjaypea</a> running on CentOS 7.</p>
-<p>The API is supported by PostgreSQL.</p>
+				<h2>John Paul Hayes II</h2>
+<div id="portfolioLinks">
+<a class="portfolioLink" href="/portfolio/software.html">Software Portfolio</a>|&nbsp
+<a class="portfolioLink" href="/portfolio/hobbies.html">Hobbies</a>|&nbsp
+<a class="portfolioLink" href="/blog/">Blog</a>|&nbsp
+<a class="portfolioLink" href="/portfolio/about.html">About</a>|&nbsp
+</div>
 <hr>
-<h2>Extra Fun Links</h2>
-<ul>
-<li><a href="/index">Complete Site Index</a></li>
-<li><a href="/chat">Chat</a></li>
-<li><a href="/asteroids">Asteroids!</a></li>
-<li><a href="/lisp"><b>L</b>isp <b>I</b>s <b>S</b>yntactically <b>P</b>ure</a></li>
-<li><a href="/poi">POI</a> (BROKEN)</li>
-<li><a href="/teamchat">Team Chat</a> (Simple test.)</li>
-</ul>
+<p>I am a software professional, an adventurer, and a thinker.</p>
+<p>On this site you can find a timeline of my software history, a climbing log, some of my favorite photos, and a blog.</p>
+<p>If you are curious, check out the about section. I hope you find some interesting things!</p>
+<br>
+<hr>
+<a href="/media/26.jpg"><img class="portfolioImg" width="320px" src="/media/26s.jpg" style="cursor: pointer;"></a>
+<a href="/media/IMG_0978.JPG"><img class="portfolioImg" width="320px" src="/media/IMG_0978s.JPG" style="cursor: pointer;"></a>
+
 
 			</div>
 		</div>
 	</body>
+	<script>
+		sub_scripts.push(function(){
+			var icon = document.getElementById("icon");
+			icon.onclick = function(){
+				window.location = "/index.html";
+			};
+		});
+	</script>
 </html>

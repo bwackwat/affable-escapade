@@ -18,6 +18,10 @@
 <input type="text" autocomplete="off" id="lastNameField">
 <br>
 <br>
+<label for="colorField">Color (e.g. "gold" or "#ffd700"):&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="colorField">
+<br>
+<br>
 <input id="registerButton" type="button" value="Register">
 <br>
 <script>
@@ -26,13 +30,12 @@
 		
 		document.getElementById("registerButton").onclick = function() {
 			callAPI("POST", "/user", {"values":
-			[document.getElementById("usernameField").value,
-			document.getElementById("passwordField").value,
-			"",
-			"",
-			document.getElementById("emailField").value,
-			document.getElementById("firstNameField").value,
-			document.getElementById("lastNameField").value]}, function(response){
+			{"username": document.getElementById("usernameField").value,
+			"password": document.getElementById("passwordField").value,
+			"email": document.getElementById("emailField").value,
+			"first_name": document.getElementById("firstNameField").value,
+			"last_name": document.getElementById("lastNameField").value,
+			"color": document.getElementById("colorField").value}}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					redirect_flash("/cms/login.html", "You signed up successfully!");
 				}else{

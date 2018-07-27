@@ -1,0 +1,80 @@
+<h2>Edit Account</h2>
+<a href="/cms/account.html">Back</a>
+<br>
+<label for="usernameField">Username:&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="usernameField">
+<br>
+<br>
+<label for="passwordCheckbox">New Password</label>
+<input type="checkbox" id="passwordCheckbox">
+<div id="showPasswordField" style="display:none;">
+<label for="passwordField">Password:&nbsp&nbsp</label>
+<input type="password" autocomplete="off" id="passwordField">
+</div>
+<br>
+<br>
+<label for="emailField">Email:&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="emailField">
+<br>
+<br>
+<label for="firstNameField">First Name:&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="firstNameField">
+<br>
+<br>
+<label for="lastNameField">Last Name:&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="lastNameField">
+<br>
+<br>
+<label for="colorField">Color (e.g. "gold" or "#ffd700"):&nbsp&nbsp</label>
+<input type="text" autocomplete="off" id="colorField">
+<br>
+<br>
+<input id="updateButton" type="button" value="Update">
+<br>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		
+		document.getElementById("passwordCheckbox").onchange = function(){
+			if(document.getElementById("passwordCheckbox").checked){
+				document.getElementById("showPasswordField").style.display = "block";
+			}else{
+				document.getElementById("showPasswordField").style.display = "none";
+			}
+		};
+		
+		callAPI("POST", "/get/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				usernameField.value = response[0]["username"];
+				emailField.value = response[0]["email"];
+				firstNameField.value = response[0]["first_name"];
+				lastNameField.value = response[0]["last_name"];
+				colorField.value = response[0]["color"];
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+		
+		document.getElementById("updateButton").onclick = function() {
+			var new_values = {"username": document.getElementById("usernameField").value,
+			"email": document.getElementById("emailField").value,
+			"first_name": document.getElementById("firstNameField").value,
+			"last_name": document.getElementById("lastNameField").value,
+			"color": document.getElementById("colorField").value}
+			
+			if(document.getElementById("passwordCheckbox").checked){
+				new_values["password"] = document.getElementById("passwordField").value;
+			}
+		
+			callAPI("PUT", "/user", {"token": localStorage.getItem(localStorageTokenKey), "values": new_values}, function(response){
+				if(typeof(response.error) === 'undefined'){
+					localStorage.setItem(localStorageUsernameKey, document.getElementById("usernameField").value);
+					localStorage.setItem(localStorageTokenKey, response.token);
+					redirect_flash("/cms/account.html", "Account details, saved!");
+				}else{
+					status.innerHTML = response.error;
+				}
+			});
+		};
+	});
+</script>
