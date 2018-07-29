@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<title>libjaypea</title>
+		<title>Content Management</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=0.9">
+		<meta name="viewport" content="width=device-width, initial-scale=0.8">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -43,15 +43,15 @@
 			</div></td><td style="display:table-cell;vertical-align:middle;">
 			<div id="bannerright">
 				<div id="links">
-					<a class="bannerLink" href="/cms/">Manage</a>|&nbsp
-					<a class="bannerLink" href="/chat/">Chat</a>|&nbsp
-					<a class="bannerLink" href="/poi/">POI</a>
+					<a class="bannerLink" href="/cms/">Manage</a>&nbsp&nbsp|&nbsp
+					<a class="bannerLink" href="/chat/">Chat</a>&nbsp&nbsp
 				</div>
 			</div></td></tr>
 		</table>
 		<div id="contentborder">
 			<div id="content">
-				<h2>Content Management</h2>
+				
+<h2>Content Management</h2>
 <div style="display:none;" id="loggedInLinks">
 <a href="/cms/account.html">Account</a>&nbsp|
 <a href="/cms/threads.html">Threads</a>&nbsp|
@@ -97,8 +97,8 @@
 				}
 			});
 		}else{
-			if(!flashed){
-				status.innerHTML = "Not logged in.";
+			if(!flashed && window.location.pathname.split("/").pop() != "register.html"){
+				redirect_flash("/cms/login.html", "Not logged in.");
 			}
 	
 			loggedInLinks.style.display = "none";
@@ -106,6 +106,7 @@
 		}
 	});
 </script>
+
 <h3>Manage Users</h3>
 <div id="users"></div>
 <script>

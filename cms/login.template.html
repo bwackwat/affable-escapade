@@ -1,3 +1,4 @@
+<form autocomplete="true">
 <label for="usernameField">Username:&nbsp&nbsp</label>
 <input type="text" autocomplete="on" id="usernameField"/>
 <br>
@@ -7,14 +8,14 @@
 <br>
 <br>
 <input id="loginButton" type="button" value="Login"/>
-<br>
+</form>
 <script>
 	sub_scripts.push(function(){
 		var status = document.getElementById("status");
 		var usernameField = document.getElementById("usernameField");
 		var passwordField = document.getElementById("passwordField");
 		
-		document.getElementById("loginButton").onclick = function() {
+		function login() {
 			callAPI("POST", "/login", {"username": usernameField.value, "password": passwordField.value}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					localStorage.setItem(localStorageUsernameKey, usernameField.value);
@@ -26,5 +27,13 @@
 				}
 			});
 		};
+		
+		document.getElementById("loginButton").onclick = login;
+		
+		window.onkeypress = function(e){
+			if(e.code === "Enter"){
+				login();
+			}
+		}
 	});
 </script>

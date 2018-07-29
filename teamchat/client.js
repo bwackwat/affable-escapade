@@ -16,5 +16,5 @@ if (navigator.getUserMedia) {
 		video.play();
 	}, errBack);
 } else {
-	alert("Come back to this page with a working webcam!");
+	errBack();
 }

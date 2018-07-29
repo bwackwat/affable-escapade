@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<title>libjaypea</title>
+		<title>Content Management</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=0.9">
+		<meta name="viewport" content="width=device-width, initial-scale=0.8">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -43,15 +43,15 @@
 			</div></td><td style="display:table-cell;vertical-align:middle;">
 			<div id="bannerright">
 				<div id="links">
-					<a class="bannerLink" href="/cms/">Manage</a>|&nbsp
-					<a class="bannerLink" href="/chat/">Chat</a>|&nbsp
-					<a class="bannerLink" href="/poi/">POI</a>
+					<a class="bannerLink" href="/cms/">Manage</a>&nbsp&nbsp|&nbsp
+					<a class="bannerLink" href="/chat/">Chat</a>&nbsp&nbsp
 				</div>
 			</div></td></tr>
 		</table>
 		<div id="contentborder">
 			<div id="content">
-				<h2>Content Management</h2>
+				
+<h2>Content Management</h2>
 <div style="display:none;" id="loggedInLinks">
 <a href="/cms/account.html">Account</a>&nbsp|
 <a href="/cms/threads.html">Threads</a>&nbsp|
@@ -97,8 +97,8 @@
 				}
 			});
 		}else{
-			if(!flashed){
-				status.innerHTML = "Not logged in.";
+			if(!flashed && window.location.pathname.split("/").pop() != "register.html"){
+				redirect_flash("/cms/login.html", "Not logged in.");
 			}
 	
 			loggedInLinks.style.display = "none";
@@ -107,23 +107,44 @@
 	});
 </script>
 <h3>Account</h3>
-<a href="/cms/edit_account.html">Edit</a>
 <p>Here's some information about your account.</p>
+<a href="/cms/edit_account.html">Edit</a>
+<br>
+<br>
+<table>
+<tr><td><b>Username</b></td><td id="username"></td></tr>
+<tr><td><b>Email</b></td><td id="email"></td></tr>
+<tr><td><b>First Name</b></td><td id="first_name"></td></tr>
+<tr><td><b>Last Name</b></td><td id="last_name"></td></tr>
+<tr><td><b>Color</b></td><td id="color"></td></tr>
+</table><hr>
 <p id="access"></p>
 <script>
 	sub_scripts.push(function(){
+		callAPI("POST", "/get/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				document.getElementById("username").innerHTML = response[0]["username"];
+				document.getElementById("email").innerHTML = response[0]["email"];
+				document.getElementById("first_name").innerHTML = response[0]["first_name"];
+				document.getElementById("last_name").innerHTML = response[0]["last_name"];
+				document.getElementById("color").innerHTML = response[0]["color"];
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+		
 		callAPI("POST", "/my/access", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 			if(typeof(response.error) === 'undefined'){
 				var newhtml = "<h4>Access:</h4>";
 				if(response.length == 0){
 					newhtml += "No access.";
 				}else{
-					newhtml += "<table><tr><th><b>Name</b></th><th><b>Description</b></th></tr>";
+					newhtml += "<table style='text-align:center;width:100%;'><tr><th style='width:50%;'><b>Name</b></th><th style='width:50%;text-align:center;'><b>Description</b></th></tr>";
 					for(var i = 0, len = response.length; i < len; i++){
 						if(response[i].id == 1){
-							newhtml += "<tr><td style='padding-right: 10px'>" + response[i].name + "<br><a href='/cms/users.html'>(Manage Users)</a></td><td style='padding-left: 10px'>" + response[i].description + "</td></tr>";
+							newhtml += "<tr><td>" + response[i].name + "<br><a href='/cms/users.html'>(Manage Users)</a></td><td>" + response[i].description + "</td></tr>";
 						}else{
-							newhtml += "<tr><td style='padding-right: 10px'>" + response[i].name + "</td><td style='padding-left: 10px'>" + response[i].description + "</td></tr>";
+							newhtml += "<tr><td>" + response[i].name + "</td><td>" + response[i].description + "</td></tr>";
 						}
 					}
 					newhtml += "</table>";

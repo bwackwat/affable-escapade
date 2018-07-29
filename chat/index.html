@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<title>libjaypea</title>
+		<title>Chat</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=0.9">
+		<meta name="viewport" content="width=device-width, initial-scale=0.8">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -43,15 +43,15 @@
 			</div></td><td style="display:table-cell;vertical-align:middle;">
 			<div id="bannerright">
 				<div id="links">
-					<a class="bannerLink" href="/cms/">Manage</a>|&nbsp
-					<a class="bannerLink" href="/chat/">Chat</a>|&nbsp
-					<a class="bannerLink" href="/poi/">POI</a>
+					<a class="bannerLink" href="/cms/">Manage</a>&nbsp&nbsp|&nbsp
+					<a class="bannerLink" href="/chat/">Chat</a>&nbsp&nbsp
 				</div>
 			</div></td></tr>
 		</table>
 		<div id="contentborder">
 			<div id="content">
-				<h2>Chat</h2>
+				
+<h2>Chat</h2>
 <table style="height:100%;width:100%;">
 <tr><td id="handleOrUsername">
 User:&nbsp
@@ -59,10 +59,13 @@ User:&nbsp
 </td></tr>
 <tr><td>
 <br>
+<!--
 <input id="submitButton" type="button" value="Send">
-<input id="messageField" type="text" size="100" placeholder="enter to send message">
+-->
+<input id="messageField" type="text" style="width:100%;" placeholder="enter to send message">
 </td></tr>
 <tr><td style="height:100%;vertical-align:top;">
+<hr>
 <div id="messages"></div>
 </td></tr></table>
 <script>
@@ -236,7 +239,7 @@ User:&nbsp
 			}
 		}
 
-		submitButton.onclick = send;
+		//submitButton.onclick = send;
 	});
 </script>
 

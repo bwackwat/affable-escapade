@@ -1,21 +1,42 @@
 <h3>Account</h3>
-<a href="/cms/edit_account.html">Edit</a>
 <p>Here's some information about your account.</p>
+<a href="/cms/edit_account.html">Edit</a>
+<br>
+<br>
+<table>
+<tr><td><b>Username</b></td><td id="username"></td></tr>
+<tr><td><b>Email</b></td><td id="email"></td></tr>
+<tr><td><b>First Name</b></td><td id="first_name"></td></tr>
+<tr><td><b>Last Name</b></td><td id="last_name"></td></tr>
+<tr><td><b>Color</b></td><td id="color"></td></tr>
+</table><hr>
 <p id="access"></p>
 <script>
 	sub_scripts.push(function(){
+		callAPI("POST", "/get/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				document.getElementById("username").innerHTML = response[0]["username"];
+				document.getElementById("email").innerHTML = response[0]["email"];
+				document.getElementById("first_name").innerHTML = response[0]["first_name"];
+				document.getElementById("last_name").innerHTML = response[0]["last_name"];
+				document.getElementById("color").innerHTML = response[0]["color"];
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+		
 		callAPI("POST", "/my/access", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 			if(typeof(response.error) === 'undefined'){
 				var newhtml = "<h4>Access:</h4>";
 				if(response.length == 0){
 					newhtml += "No access.";
 				}else{
-					newhtml += "<table><tr><th><b>Name</b></th><th><b>Description</b></th></tr>";
+					newhtml += "<table style='text-align:center;width:100%;'><tr><th style='width:50%;'><b>Name</b></th><th style='width:50%;text-align:center;'><b>Description</b></th></tr>";
 					for(var i = 0, len = response.length; i < len; i++){
 						if(response[i].id == 1){
-							newhtml += "<tr><td style='padding-right: 10px'>" + response[i].name + "<br><a href='/cms/users.html'>(Manage Users)</a></td><td style='padding-left: 10px'>" + response[i].description + "</td></tr>";
+							newhtml += "<tr><td>" + response[i].name + "<br><a href='/cms/users.html'>(Manage Users)</a></td><td>" + response[i].description + "</td></tr>";
 						}else{
-							newhtml += "<tr><td style='padding-right: 10px'>" + response[i].name + "</td><td style='padding-left: 10px'>" + response[i].description + "</td></tr>";
+							newhtml += "<tr><td>" + response[i].name + "</td><td>" + response[i].description + "</td></tr>";
 						}
 					}
 					newhtml += "</table>";

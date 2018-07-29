@@ -1,3 +1,4 @@
+{TITLE:Content Management}
 <h2>Content Management</h2>
 <div style="display:none;" id="loggedInLinks">
 <a href="/cms/account.html">Account</a>&nbsp|
@@ -44,8 +45,8 @@
 				}
 			});
 		}else{
-			if(!flashed){
-				status.innerHTML = "Not logged in.";
+			if(!flashed && window.location.pathname.split("/").pop() != "register.html"){
+				redirect_flash("/cms/login.html", "Not logged in.");
 			}
 	
 			loggedInLinks.style.display = "none";
