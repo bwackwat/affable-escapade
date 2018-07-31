@@ -1,5 +1,7 @@
+
 var big_f = {
-	position: [100, 150],
+	x: 100,
+	y: 150,
 	shape: [
 		// left column
 		0, 0,
@@ -28,7 +30,9 @@ var big_f = {
 };
 
 var little_square = {
-	position: [10, 10],
+	name: "Test Square",
+	x: 200,
+	y: 20,
 	shape: [
 		0, 0,
 		30, 0,
@@ -40,8 +44,24 @@ var little_square = {
 };
 
 window.onload = function(){
-	gworld = initialize_webgl(document.getElementById("gameCanvas"));
+	var gameCanvas = document.getElementById("gameCanvas");
+	var textCanvas = document.getElementById("textCanvas");
+
+	var glworld = initialize_webgl(
+		gameCanvas,
+		textCanvas,
+		true
+	);
 	
-	gworld.objects.push(big_f);
-	gworld.objects.push(little_square);
+	glworld.create_object(big_f);
+	glworld.create_object(little_square);
+	
+	textCanvas.addEventListener('click', function(e){
+		//little_square.position[0] = e.clientX;
+		//little_square.position[1] = e.clientY;
+		
+		little_square.timed_animation("x", e.clientX, 750);
+		little_square.timed_animation("y", e.clientY, 750);
+		
+	}, false);
 }

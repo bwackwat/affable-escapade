@@ -59,8 +59,9 @@ var m3 = {
 	},
 };
 
-initialize_webgl = function(canvas){
-	var gl = canvas.getContext("webgl");
+initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
+	var gl = glcanvas.getContext("webgl");
+	var text = textcanvas.getContext("2d");
 	
 	if (!gl) {
 		alert("Your browser doesn't support WebGL!");
@@ -71,6 +72,9 @@ initialize_webgl = function(canvas){
 		if (gl.canvas.width !== gl.canvas.clientWidth ||  gl.canvas.height !== gl.canvas.clientHeight) {
 			gl.canvas.width  = gl.canvas.clientWidth;
 			gl.canvas.height = gl.canvas.clientHeight;
+			
+			text.canvas.width  = gl.canvas.clientWidth;
+			text.canvas.height = gl.canvas.clientHeight;
 		}
 
 		gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -130,6 +134,34 @@ initialize_webgl = function(canvas){
 	glworld = {};
 	glworld.objects = [];
 	
+	glworld.create_object = function(object){
+	
+		object.timed_animations = {};
+		object.timed_animation = function(key, value, time){
+			object.timed_animations[key] = {
+				step: ((value - object[key]) / (time / (1000 / 60))),
+				end_value: value
+			};
+		};
+	
+		object.speed_animations = {};
+		object.speed_animation = function(key, value, speed){
+			if(value < object[key] && speed > 0){
+				speed *= -1;
+			}
+			object.speed_animations[key] = {
+				speed: speed,
+				end_value: value
+			};
+		};
+		
+		glworld.objects.push(object);
+	};
+	
+	var fps_time = 0;
+	var fps_delta = 0;
+	var fps = 0;
+	
 	// Draw the scene.
 	function render(time) {
 
@@ -159,12 +191,18 @@ initialize_webgl = function(canvas){
 
 		// set the resolution
 		gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
-
-		for(key in glworld.objects){
-			//console.log(glworld.objects[key]);
 		
-			if(glworld.objects[key].position === undefined){
-				glworld.objects[key].position = [0, 0];
+		text.clearRect(0, 0, text.canvas.width, text.canvas.height);
+		
+		for(key in glworld.objects){
+			if(glworld.objects[key].animations === undefined){
+				glworld.objects[key].animations = [];
+			}
+			if(glworld.objects[key].x === undefined){
+				glworld.objects[key].x = 0;
+			}
+			if(glworld.objects[key].y === undefined){
+				glworld.objects[key].y = 0;
 			}
 			if(glworld.objects[key].rotation === undefined){
 				glworld.objects[key].rotation = 0;
@@ -175,15 +213,42 @@ initialize_webgl = function(canvas){
 			if(glworld.objects[key].color === undefined){
 				glworld.objects[key].color = [Math.random(), Math.random(), Math.random(), 1];
 			}
+			if(glworld.objects[key].name !== undefined){
+				text.fillText(glworld.objects[key].name, glworld.objects[key].x, glworld.objects[key].y- 10);
+			}
+			
+			for(a in glworld.objects[key].timed_animations){
+				var an = glworld.objects[key].timed_animations[a];
+				
+				// If the animation is completed, e.g. the value has been reached.
+				if(Math.abs(an.end_value - glworld.objects[key][a]) <= Math.abs(an.step)){ 
+					glworld.objects[key][a] = an.end_value;
+					delete glworld.objects[key].timed_animations[a];
+					continue;
+				}
+				
+				glworld.objects[key][a] += an.step;
+			}
+			for(a in glworld.objects[key].speed_animations){
+				var an = glworld.objects[key].speed_animations[a];
+				
+				// If the animation is completed, e.g. the value has been reached.
+				if(Math.abs(an.end_value - glworld.objects[key][a]) <= Math.abs(an.speed)){ 
+					glworld.objects[key][a] = an.end_value;
+					delete glworld.objects[key].timed_animations[a];
+					continue;
+				}
+				
+				glworld.objects[key][a] += an.speed;
+			}
 			
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(glworld.objects[key].shape), gl.STATIC_DRAW);
 			
-			//console.log(glworld.objects[key].color);
 			// set the color
 			gl.uniform4fv(colorLocation, glworld.objects[key].color);
 
 			// Compute the matrices
-			var translationMatrix = m3.translation(glworld.objects[key].position[0], glworld.objects[key].position[1]);
+			var translationMatrix = m3.translation(glworld.objects[key].x, glworld.objects[key].y);
 			var rotationMatrix = m3.rotation(glworld.objects[key].rotation);
 			var scaleMatrix = m3.scaling(glworld.objects[key].scale[0], glworld.objects[key].scale[1]);
 
@@ -198,11 +263,18 @@ initialize_webgl = function(canvas){
 			var primitiveType = gl.TRIANGLES;
 			var offset = 0;
 			
-			//console.log(glworld.objects[key].shape.length);
 			// 6 triangles in the 'F', 3 points per triangle
 			var count = glworld.objects[key].shape.length / 2;
 			gl.drawArrays(primitiveType, offset, count);
 			
+		}
+		
+		if(show_fps){
+			time *= 0.001;
+			fps_delta = time - fps_time;
+			fps_time = time;
+			fps = 1 / fps_delta;
+			text.fillText("FPS: " + fps, 10, 10);
 		}
 		
 		window.requestAnimationFrame(render);
