@@ -1,13 +1,10 @@
-<table style="height:100%;width:100%;">
+<table style="height:auto;width:100%;">
 <tr><td id="handleOrUsername">
 User:&nbsp
 <input id="handleField" autocomplete="on" type="text" size="10" placeholder="handle">
 </td></tr>
 <tr><td>
 <br>
-<!--
-<input id="submitButton" type="button" value="Send">
--->
 <input id="messageField" type="text" style="width:100%;" placeholder="enter to send message">
 </td></tr>
 <tr><td style="height:100%;vertical-align:top;">
@@ -56,7 +53,7 @@ User:&nbsp
 		};
 		
 		function get_colored_star(color){
-			return '<svg width="16px" height="16px" viewBox="0 0 51 48"><path fill="' + color + '" stroke="black" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/></svg>';
+			return '<svg width="16px" height="16px" viewBox="0 0 51 48"><path fill="' + color + '" stroke="black" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/></svg>&nbsp';
 		}
 
 		var ws;
@@ -184,7 +181,5 @@ User:&nbsp
 				//console.log(e.code);
 			}
 		}
-
-		//submitButton.onclick = send;
 	});
 </script>
