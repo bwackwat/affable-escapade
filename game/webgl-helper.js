@@ -132,31 +132,46 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 	
 	// Initialzie the actual framework.
 	glworld = {};
-	glworld.objects = [];
+	glworld.objects = {};
+	glworld.texts = {};
+	glworld.state = "playing";
 	
-	glworld.create_object = function(object){
+	glworld.create_object = function(name, shape, x, y){
+	
+		object = {};
+		object.shape = shape;
+		object.x = x;
+		object.y = y;
 	
 		object.timed_animations = {};
 		object.timed_animation = function(key, value, time){
-			object.timed_animations[key] = {
-				step: ((value - object[key]) / (time / (1000 / 60))),
+			console.log("starting animation for " + name + " on " + key);
+			glworld.objects[name].timed_animations[key] = {
+				step: ((value - glworld.objects[name][key]) / (time / (1000 / 60))),
 				end_value: value
 			};
 		};
 	
 		object.speed_animations = {};
 		object.speed_animation = function(key, value, speed){
-			if(value < object[key] && speed > 0){
+			if(value < glworld.objects[name][key] && speed > 0){
 				speed *= -1;
 			}
-			object.speed_animations[key] = {
+			glworld.objects[name].speed_animations[key] = {
 				speed: speed,
 				end_value: value
 			};
 		};
 		
-		glworld.objects.push(object);
+		glworld.objects[name] = object;
 	};
+	
+	glworld.text = function(name, text, x, y){
+		glworld.texts[name] = {};
+		glworld.texts[name].text = text;
+		glworld.texts[name].x = x;
+		glworld.texts[name].y = y;
+	}
 	
 	var fps_time = 0;
 	var fps_delta = 0;
@@ -195,9 +210,6 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 		text.clearRect(0, 0, text.canvas.width, text.canvas.height);
 		
 		for(key in glworld.objects){
-			if(glworld.objects[key].animations === undefined){
-				glworld.objects[key].animations = [];
-			}
 			if(glworld.objects[key].x === undefined){
 				glworld.objects[key].x = 0;
 			}
@@ -213,8 +225,8 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 			if(glworld.objects[key].color === undefined){
 				glworld.objects[key].color = [Math.random(), Math.random(), Math.random(), 1];
 			}
-			if(glworld.objects[key].name !== undefined){
-				text.fillText(glworld.objects[key].name, glworld.objects[key].x, glworld.objects[key].y- 10);
+			if(true){
+				text.fillText(key, glworld.objects[key].x, glworld.objects[key].y - 10);
 			}
 			
 			for(a in glworld.objects[key].timed_animations){
@@ -226,6 +238,7 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 					delete glworld.objects[key].timed_animations[a];
 					continue;
 				}
+				console.log("animating..." + key + " on " + a);
 				
 				glworld.objects[key][a] += an.step;
 			}
@@ -267,6 +280,10 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 			var count = glworld.objects[key].shape.length / 2;
 			gl.drawArrays(primitiveType, offset, count);
 			
+		}
+		
+		for(key in glworld.texts){
+			text.fillText(glworld.texts[key].text, glworld.texts[key].x, glworld.texts[key].y);
 		}
 		
 		if(show_fps){

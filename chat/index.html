@@ -8,6 +8,9 @@
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
 		<link rel="stylesheet" type="text/css" href="/index.css">
 		
+		<script src="/adjectives.js"></script>
+		<script src="/nouns.js"></script>
+		<script src="/websocket.js"></script>
 		<script src="/index.js"></script>
 	</head>
 	<body>
@@ -69,9 +72,6 @@ User:&nbsp
 </td></tr>
 <tr><td>
 <br>
-<!--
-<input id="submitButton" type="button" value="Send">
--->
 <input id="messageField" type="text" style="width:100%;" placeholder="enter to send message">
 </td></tr>
 <tr><td style="height:100%;vertical-align:top;">
@@ -88,59 +88,20 @@ User:&nbsp
 		
 		var ding = new Audio('/chat/ding.mp3');
 		
-		if(localStorage.getItem(localStorageTokenKey) !== null){
-			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
-				if(typeof(response.error) !== 'undefined'){
-					localStorage.removeItem(localStorageUsernameKey);
-					localStorage.removeItem(localStorageTokenKey);
-			
-					window.location.reload();
-				}
-			});
-		}
-
-		var session_token = null;
-		if(localStorage.getItem(localStorageTokenKey) !== null){
-			session_token = localStorage.getItem(localStorageTokenKey);
-		}
-		
-		if(localStorage.getItem(localStorageUsernameKey) !== null){
-			document.getElementById("handleOrUsername").innerHTML = "Using login handle: " + localStorage.getItem(localStorageUsernameKey);
-			handleField.value = localStorage.getItem(localStorageUsernameKey);
-			messageField.focus();
-		}else if(localStorage.getItem("JPH2_CHAT_HANDLE") !== null){
-			handleField.value = localStorage.getItem("JPH2_CHAT_HANDLE");
-			messageField.focus();
-		}else{
-			handleField.focus();
-		}
-		
-		handleField.onclick = function(){
-			handleField.value = "";
-		};
-		
 		function get_colored_star(color){
 			return '<svg width="16px" height="16px" viewBox="0 0 51 48"><path fill="' + color + '" stroke="black" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/></svg>&nbsp';
 		}
-
-		var ws;
-		var ws_is_done_for_session = false;
+		
+		var client = websocket_client();
 		var msg = {};
-		var star = 0;
 
 		function connected(e){
 			//console.log(e);
 			status.innerHTML = "Connected.";
-			ws.send("\"get_messages\"");
+			client.ws.send("\"get_messages\"");
 		}
 
-		function receive(e){
-			if(e.data == "pong"){
-				//console.log("good ping " + ws.readyState);
-				return;
-			}
-			//console.log("RECV:" + e.data);
-			msg = JSON.parse(e.data);
+		function receive(msg){
 			if(typeof msg.messages !== 'undefined'){
 				var newhtml = "";
 				for(var i = 0, len = msg.messages.length; i < len; i++){
@@ -167,7 +128,7 @@ User:&nbsp
 			}else if(typeof msg.status !== 'undefined'){
 				if(msg.status.startsWith("Bad login token.")){
 				//	window.location.reload();
-					ws_is_done_for_session = true;
+					client.is_done = true;
 				}else if(msg.status.startsWith("That's an existing username.")){
 					handleField.value = "";
 					handleField.focus();
@@ -181,75 +142,48 @@ User:&nbsp
 
 		function closed(e){
 			//console.log(e);
-			status.innerHTML = "Disconnected.";
+			status.innerHTML = client.status;
 		}
 
 		function errored(e){
-			//console.log(e);
+			console.log(e);
 			status.innerHTML = "Error.";
 		}
 
-		function setupWebsocket(){
-			ws = new WebSocket("wss://" + window.location.hostname + ":8000/");
-			ws.onopen = connected;
-			ws.onmessage = receive;
-			ws.onclose = closed;
-			ws.onerror = errored;
-		}
-
-		setupWebsocket();
-
-		function ping(){
-			if(ws_is_done_for_session){
-				return;
-			}
-
-			//console.log("ping " + ws.readyState);
-	
-			// 0 - Connecting
-			// 1 - Open
-			// 2 - Closing
-			// 3 - Closed
-			if(ws.readyState === ws.CLOSED){
-				setupWebsocket();
-				status.innerHTML = "Connecting...";
-			}else if(ws.readyState === ws.OPEN){
-				status.innerHTML = "Connected.";
-				ws.send("ping");
-			}else{
-				status.innerHTML = "Working...";
-			}
-		}
-		var pinger = setInterval(ping, 1000);
-
-		function send(e){
-			status.innerHTML = "";
-			clearInterval(pinger);
-			pinger = setInterval(ping, 1000);
+		function send(){
+			status.innerHTML = client.status;
 			msg = {};
-			if(session_token !== null){
-				msg.token = session_token;
-			}else{
+			if(client.session_token === null){
 				msg.handle = handleField.value;
 			}
 			msg.message = messageField.value;
 			messageField.value = "";
 			messageField.focus();
 
-			//console.log("SEND:" + JSON.stringify(msg));
-			ws.send(JSON.stringify(msg));
+			client.send(msg);
 			localStorage.setItem("JPH2_CHAT_HANDLE", handleField.value);
 		}
+		
+		client.setupWebsocket(connected, receive, closed, errored);
 
 		window.onkeypress = function(e){
 			if(e.code === "Enter"){
-				send(e);
+				send();
 			}else{
 				//console.log(e.code);
 			}
 		}
-
-		//submitButton.onclick = send;
+		
+		if(localStorage.getItem(localStorageUsernameKey) !== null){
+			document.getElementById("handleOrUsername").innerHTML = "Using login handle: " + localStorage.getItem(localStorageUsernameKey);
+			handleField.value = localStorage.getItem(localStorageUsernameKey);
+			messageField.focus();
+		}else if(localStorage.getItem("JPH2_CHAT_HANDLE") !== null){
+			handleField.value = localStorage.getItem("JPH2_CHAT_HANDLE");
+			messageField.focus();
+		}else{
+			handleField.focus();
+		}
 	});
 </script>
 
