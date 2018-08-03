@@ -59,6 +59,20 @@ var m3 = {
 	},
 };
 
+function convertToRGB(color) {
+	var elemDiv = document.createElement('div');
+	elemDiv.style.cssText = "background-color:" + color;
+	document.body.appendChild(elemDiv);
+	var computedStyle = window.getComputedStyle(elemDiv);
+	var computedColor = computedStyle.backgroundColor;
+	elemDiv.remove();
+	computedColor = computedColor.replace(/[^\d,.]/g, '').split(',');
+	computedColor[0] = parseFloat(computedColor[0]) / 255;
+	computedColor[1] = parseFloat(computedColor[1]) / 255;
+	computedColor[2] = parseFloat(computedColor[2]) / 255;
+	return computedColor;
+};
+
 initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 	var gl = glcanvas.getContext("webgl");
 	var text = textcanvas.getContext("2d");
@@ -135,17 +149,45 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 	glworld.objects = {};
 	glworld.texts = {};
 	glworld.state = "playing";
+	glworld.afterRender = null;
+	glworld.text = text;
 	
-	glworld.create_object = function(name, shape, x, y){
+	console.log(text.font);
+	
+	glworld.create_object = function(name, shape, x, y, color = null, scaleX = 1.0, scaleY = 1.0, rotation = 0.0, offsetX = 0.0, offsetY = 0.0){
 	
 		object = {};
+		
+		object.text = name;
+		object.textX = 0;
+		object.textY = 0;
+		
+		for(var i = 0; i < shape.length; i++){
+			if(i % 2 === 0){
+				shape[i] += offsetX;
+			}else{
+				shape[i] += offsetY;
+			}
+		}
 		object.shape = shape;
+		
 		object.x = x;
 		object.y = y;
+		
+		object.color = color;
+		if(color === null){
+			object.color = [Math.random(), Math.random(), Math.random(), 1];
+		}
+		
+		object.scaleX = scaleX;
+		object.scaleY = scaleY;
+		object.velX = 0.0;
+		object.velY = 0.0;
+		object.rotation = rotation;
 	
 		object.timed_animations = {};
 		object.timed_animation = function(key, value, time){
-			console.log("starting animation for " + name + " on " + key);
+			//console.log("starting animation for " + name + " on " + key);
 			glworld.objects[name].timed_animations[key] = {
 				step: ((value - glworld.objects[name][key]) / (time / (1000 / 60))),
 				end_value: value
@@ -210,23 +252,24 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 		text.clearRect(0, 0, text.canvas.width, text.canvas.height);
 		
 		for(key in glworld.objects){
-			if(glworld.objects[key].x === undefined){
-				glworld.objects[key].x = 0;
-			}
-			if(glworld.objects[key].y === undefined){
-				glworld.objects[key].y = 0;
-			}
-			if(glworld.objects[key].rotation === undefined){
-				glworld.objects[key].rotation = 0;
-			}
-			if(glworld.objects[key].scale === undefined){
-				glworld.objects[key].scale = [1, 1];
-			}
-			if(glworld.objects[key].color === undefined){
-				glworld.objects[key].color = [Math.random(), Math.random(), Math.random(), 1];
-			}
-			if(true){
-				text.fillText(key, glworld.objects[key].x, glworld.objects[key].y - 10);
+			if(glworld.objects[key].text != null){
+				if(glworld.objects[key].font != undefined){
+					text.font = glworld.objects[key].font;
+				}
+				if(glworld.objects[key].fillStyle != undefined){
+					text.fillStyle = glworld.objects[key].fillStyle;
+				}
+				
+				text.fillText(glworld.objects[key].text,
+					glworld.objects[key].x + glworld.objects[key].textX,
+					glworld.objects[key].y - 10 + glworld.objects[key].textY);
+				
+				if(glworld.objects[key].font != undefined){
+					text.font = '10px sans-serif';
+				}
+				if(glworld.objects[key].fillStyle != undefined){
+					text.fillStyle = 'black';
+				}
 			}
 			
 			for(a in glworld.objects[key].timed_animations){
@@ -238,7 +281,7 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 					delete glworld.objects[key].timed_animations[a];
 					continue;
 				}
-				console.log("animating..." + key + " on " + a);
+				//console.log("animating..." + key + " on " + a);
 				
 				glworld.objects[key][a] += an.step;
 			}
@@ -263,7 +306,7 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 			// Compute the matrices
 			var translationMatrix = m3.translation(glworld.objects[key].x, glworld.objects[key].y);
 			var rotationMatrix = m3.rotation(glworld.objects[key].rotation);
-			var scaleMatrix = m3.scaling(glworld.objects[key].scale[0], glworld.objects[key].scale[1]);
+			var scaleMatrix = m3.scaling(glworld.objects[key].scaleX, glworld.objects[key].scaleY);
 
 			// Multiply the matrices.
 			var matrix = m3.multiply(translationMatrix, rotationMatrix);
@@ -291,7 +334,11 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 			fps_delta = time - fps_time;
 			fps_time = time;
 			fps = 1 / fps_delta;
-			text.fillText("FPS: " + fps, 10, 10);
+			text.fillText("FPS: " + Math.round(fps), 10, 10);
+		}
+		
+		if(glworld.afterRender !== null){
+			glworld.afterRender();
 		}
 		
 		window.requestAnimationFrame(render);

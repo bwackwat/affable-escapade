@@ -10,6 +10,7 @@ var websocket_client = function(){
 	client.is_done = false;
 	client.status = "Connecting...";
 	client.handle = get_anonymous_name();
+	client.color = null;
 	client.ws;
 	
 	if(localStorage.getItem(localStorageTokenKey) !== null){
@@ -20,7 +21,15 @@ var websocket_client = function(){
 				
 				window.location.reload();
 			}else{
-				client.handle = localStorage.getItem(localStorageUsernameKey);
+				
+				callAPI("POST", "/get/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+					if(typeof(response.error) === 'undefined'){
+						client.handle = response[0]["username"];
+						client.color = response[0]["color"];
+					}else{
+						window.location.reload();
+					}
+				});
 			}
 		});
 	}
@@ -41,11 +50,11 @@ var websocket_client = function(){
 	
 	client.receive = function(e){
 		if(e.data == "pong"){
-			console.log("good ping " + client.ws.readyState);
+			//console.log("good ping " + client.ws.readyState);
 			return;
 		}
 		
-		console.log("RECV:" + e.data);
+		//console.log("RECV:" + e.data);
 	
 		msg = JSON.parse(e.data);
 		
