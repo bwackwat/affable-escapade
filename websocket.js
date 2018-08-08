@@ -1,16 +1,15 @@
-var websocket_server_url = "wss://" + window.location.hostname + ":8000/";
 
-function get_anonymous_name(){
-	return adjectives[Math.floor(Math.random() * adjectives.length)] + " " + 
-		nouns[Math.floor(Math.random() * nouns.length)];
-};
+var websocket_server_url = "wss://" + window.location.hostname + ":8000/";
 
 var websocket_client = function(){
 	var client = {};
 	client.is_done = false;
 	client.status = "Connecting...";
+	client.failed = true;
 	client.handle = get_anonymous_name();
 	client.color = null;
+	client.last_ping = 0;
+	client.ping_ms = 0;
 	client.ws;
 	
 	if(localStorage.getItem(localStorageTokenKey) !== null){
@@ -40,23 +39,32 @@ var websocket_client = function(){
 	}
 	
 	client.resetWebsocket = function(){
-		client.ws = new WebSocket(websocket_server_url);
+		try{
+			client.ws = new WebSocket(websocket_server_url);
+		}catch(e){
+			//console.log(e);
+			client.status = "Coudln't connect";
+			console.log(client.status);
+			return;
+		}
 		client.ws.onopen = client.connected;
 		client.ws.onmessage = client.receive;
 		client.ws.onclose = client.closed;
 		client.ws.onerror = client.errored;
 		client.pinger = setInterval(client.ping, 1000);
+		client.failed = false;
 	}
 	
 	client.receive = function(e){
 		if(e.data == "pong"){
+			client.ping_ms = Date.now() - client.last_ping;
 			//console.log("good ping " + client.ws.readyState);
 			return;
 		}
 		
 		//console.log("RECV:" + e.data);
 	
-		msg = JSON.parse(e.data);
+		var msg = JSON.parse(e.data);
 		
 		return client.next_receive(msg);
 	}
@@ -81,11 +89,14 @@ var websocket_client = function(){
 		// 2 - Closing
 		// 3 - Closed
 		if(client.ws.readyState === client.ws.CLOSED){
+			client.failed = true;
 			client.resetWebsocket();
 			client.status = "Connecting...";
 		}else if(client.ws.readyState === client.ws.OPEN){
 			client.status = "Connected.";
 			client.ws.send("ping");
+			//console.log("ping");
+			client.last_ping = Date.now();
 		}else if(client.ws.readyState === client.ws.CLOSING){
 			client.status = "Disconnected.";
 		}else{
@@ -97,11 +108,16 @@ var websocket_client = function(){
 		client.status = "Sending...";
 		clearInterval(client.pinger);
 		client.pinger = setInterval(client.ping, 1000);
-		if(client.session_token !== null){
-			msg.token = client.session_token;
+		
+		if(!client.failed){
+			try{
+				client.ws.send(JSON.stringify(msg));
+			}catch(e){
+				client.ws.close(1000);
+				console.log("Couldn't send.");
+				client.failed = true;
+			}
 		}
-		console.log("SEND: " + msg);
-		client.ws.send(JSON.stringify(msg));
 	}
 	
 	return client;

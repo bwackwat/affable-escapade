@@ -1,6 +1,6 @@
 
 var m3 = {
-	translation: function(tx, ty) {
+	translation: function(tx, ty){
 		return [
 			1, 0, 0,
 			0, 1, 0,
@@ -8,7 +8,7 @@ var m3 = {
 		];
 	},
 
-	rotation: function(angleInRadians) {
+	rotation: function(angleInRadians){
 		var c = Math.cos(angleInRadians);
 		var s = Math.sin(angleInRadians);
 		return [
@@ -18,7 +18,7 @@ var m3 = {
 		];
 	},
 
-	scaling: function(sx, sy) {
+	scaling: function(sx, sy){
 		return [
 			sx, 0, 0,
 			0, sy, 0,
@@ -26,7 +26,7 @@ var m3 = {
 		];
 	},
 
-	multiply: function(a, b) {
+	multiply: function(a, b){
 		var a00 = a[0 * 3 + 0];
 		var a01 = a[0 * 3 + 1];
 		var a02 = a[0 * 3 + 2];
@@ -59,7 +59,7 @@ var m3 = {
 	},
 };
 
-function convertToRGB(color) {
+function convertToRGB(color){
 	var elemDiv = document.createElement('div');
 	elemDiv.style.cssText = "background-color:" + color;
 	document.body.appendChild(elemDiv);
@@ -82,7 +82,7 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 		return;
 	}
 	
-	resize_canvas = function(event) {	
+	resize_canvas = function(event){
 		if (gl.canvas.width !== gl.canvas.clientWidth ||  gl.canvas.height !== gl.canvas.clientHeight) {
 			gl.canvas.width  = gl.canvas.clientWidth;
 			gl.canvas.height = gl.canvas.clientHeight;
@@ -152,16 +152,7 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 	glworld.afterRender = null;
 	glworld.text = text;
 	
-	console.log(text.font);
-	
-	glworld.create_object = function(name, shape, x, y, color = null, scaleX = 1.0, scaleY = 1.0, rotation = 0.0, offsetX = 0.0, offsetY = 0.0){
-	
-		object = {};
-		
-		object.text = name;
-		object.textX = 0;
-		object.textY = 0;
-		
+	glworld.offset_shape = function(shape, offsetX, offsetY){
 		for(var i = 0; i < shape.length; i++){
 			if(i % 2 === 0){
 				shape[i] += offsetX;
@@ -169,6 +160,22 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 				shape[i] += offsetY;
 			}
 		}
+	};
+	
+	glworld.create_object = function(name, shape, x, y, color = null, scaleX = 1.0, scaleY = 1.0, rotation = 0.0){
+		var object = new Object();
+		
+		object.text = name;
+		
+		// Will not be drawn.
+		object.invisible = false;
+		
+		// Who owns this;
+		object.owner = null;
+		
+		object.textX = 0.0;
+		object.textY = 0.0;
+		
 		object.shape = shape;
 		
 		object.x = x;
@@ -252,22 +259,26 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 		text.clearRect(0, 0, text.canvas.width, text.canvas.height);
 		
 		for(key in glworld.objects){
-			if(glworld.objects[key].text != null){
-				if(glworld.objects[key].font != undefined){
+			if(glworld.objects[key].invisible){
+				continue;
+			}
+		
+			if(glworld.objects[key].text !== null){
+				if(glworld.objects[key].font !== undefined){
 					text.font = glworld.objects[key].font;
 				}
-				if(glworld.objects[key].fillStyle != undefined){
+				if(glworld.objects[key].fillStyle !== undefined){
 					text.fillStyle = glworld.objects[key].fillStyle;
 				}
 				
-				text.fillText(glworld.objects[key].text,
-					glworld.objects[key].x + glworld.objects[key].textX,
-					glworld.objects[key].y - 10 + glworld.objects[key].textY);
+				console.log(glworld.objects[key].text + " " + glworld.objects[key].font + " " + glworld.objects[key].fillStyle);
 				
-				if(glworld.objects[key].font != undefined){
+				text.fillText(glworld.objects[key].text, glworld.objects[key].x - glworld.objects[key].textX, glworld.objects[key].y - glworld.objects[key].textY);
+				
+				if(glworld.objects[key].font !== undefined){
 					text.font = '10px sans-serif';
 				}
-				if(glworld.objects[key].fillStyle != undefined){
+				if(glworld.objects[key].fillStyle !== undefined){
 					text.fillStyle = 'black';
 				}
 			}
