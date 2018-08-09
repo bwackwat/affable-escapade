@@ -1,5 +1,5 @@
 
-var websocket_server_url = "ws://" + window.location.hostname + ":8000/";
+var websocket_server_url = "wss://" + window.location.hostname + ":8000/";
 
 var websocket_client = function(){
 	var client = {};
