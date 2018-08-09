@@ -1,5 +1,5 @@
 
-var websocket_server_url = "wss://" + window.location.hostname + ":8000/";
+var websocket_server_url = "ws://" + window.location.hostname + ":8000/";
 
 var websocket_client = function(){
 	var client = {};
@@ -43,7 +43,7 @@ var websocket_client = function(){
 			client.ws = new WebSocket(websocket_server_url);
 		}catch(e){
 			//console.log(e);
-			client.status = "Coudln't connect";
+			client.status = "Couldn't connect";
 			console.log(client.status);
 			return;
 		}
@@ -58,7 +58,7 @@ var websocket_client = function(){
 	client.receive = function(e){
 		if(e.data == "pong"){
 			client.ping_ms = Date.now() - client.last_ping;
-			//console.log("good ping " + client.ws.readyState);
+			//console.log("pong " + client.ws.readyState);
 			return;
 		}
 		
@@ -94,9 +94,9 @@ var websocket_client = function(){
 			client.status = "Connecting...";
 		}else if(client.ws.readyState === client.ws.OPEN){
 			client.status = "Connected.";
+			client.last_ping = Date.now();
 			client.ws.send("ping");
 			//console.log("ping");
-			client.last_ping = Date.now();
 		}else if(client.ws.readyState === client.ws.CLOSING){
 			client.status = "Disconnected.";
 		}else{
@@ -106,10 +106,12 @@ var websocket_client = function(){
 	
 	client.send = function(msg){
 		client.status = "Sending...";
-		clearInterval(client.pinger);
-		client.pinger = setInterval(client.ping, 1000);
 		
-		if(!client.failed){
+		// The lines below will stop pings until nothing is being sent.
+		// clearInterval(client.pinger);
+		// client.pinger = setInterval(client.ping, 1000);
+		
+		if(!client.failed && client.ws.readyState === client.ws.OPEN){
 			try{
 				client.ws.send(JSON.stringify(msg));
 			}catch(e){

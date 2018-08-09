@@ -1,61 +1,21 @@
 
 var f = [
-	// left column
-	0, 0,
-	30, 0,
-	0, 150,
-	0, 150,
-	30, 0,
-	30, 150,
+	0, 0, 30, 0, 0, 150, 0, 150, 30, 0, 30, 150,// left column
+	30, 0, 100, 0, 30, 30,30, 30, 100, 0,100, 30,// top rung
+	30, 60, 67, 60, 30, 90, 30, 90, 67, 60, 67, 90];// middle rung
 
-	// top rung
-	30, 0,
-	100, 0,
-	30, 30,
-	30, 30,
-	100, 0,
-	100, 30,
+var square = [0, 0, 30, 0, 0, 30, 0, 30, 30, 0, 30, 30];// 30px wide
 
-	// middle rung
-	30, 60,
-	67, 60,
-	30, 90,
-	30, 90,
-	67, 60,
-	67, 90,
-];
+var tank = [0, 0, 50, 0, 0, 30, 0, 30, 50, 0,50, 30,// body
+	10, -5, 20, -5, 10, 35, 10, 35, 20, 35, 20, -5,// back wheels
+	30, -5, 40, -5, 30, 35, 30, 35, 40, 35, 40, -5];// front wheels
 
-var square = [
-	0, 0,
-	30, 0,
-	0, 30,
-	0, 30,
-	30, 0,
-	30, 30,
-];
-
-var tank = [
-	0, 0,
-	50, 0,
-	0, 30,
-	0, 30,
-	50, 0,
-	50, 30,
-	
-	10, -5,
-	20, -5,
-	10, 35,
-	10, 35,
-	20, 35,
-	20, -5,
-	
-	30, -5,
-	40, -5,
-	30, 35,
-	30, 35,
-	40, 35,
-	40, -5,
-];
+// These are synchronized with the server's constants.
+var maxSpeed = 10.0;
+var acceleration = 0.05;
+var backAcceleration = 0.03;
+var maxTurnSpeed = 0.05;
+var turnAcceleration = 0.0005;
 
 sub_scripts.push(function(){
 	var debugging = false;
@@ -77,42 +37,49 @@ sub_scripts.push(function(){
 	//glworld.create_object("f", f, 150, 200);
 	//glworld.create_object("square", square, 200, 20);
 	
+	glworld.text("status", "Welcome.", 10, 20);
+	glworld.text("latency", "", 10, 30);
+	
 	if(debugging){
-		glworld.text("status", "Welcome.", 10, 20);
-		glworld.text("latency", "", 10, 30);
+		glworld.text("state", "", 100, 10);
 		glworld.text("d1", "", 10, 40);
 		glworld.text("d2", "", 10, 50);
 		glworld.text("d3", "", 10, 60);
-		glworld.text("d4", "", 10, 60);
-		glworld.text("d5", "", 10, 60);
+		glworld.text("d4", "", 10, 70);
+		glworld.text("d5", "", 10, 80);
 	}
 	
-	////////////////////////////////
+	///////////////////////////////////////
 	//        START NETWORKING
-	////////////////////////////////
+	///////////////////////////////////////
 	
 	var client = websocket_client();
 
 	function connected(e){
-		//console.log(e);
-		if(debugging){
-			glworld.texts["status"].text = "Connected.";
-		}
-		//client.ws.send("\"get_users\"");
+		glworld.texts["status"].text = "Connected.";
 	}
 	
 	var spawned = {};
 
+	var tag = 0;
+
 	function receive(msg){
-		if(typeof msg.status !== 'undefined'){
-			if(debugging){
-				glworld.texts["status"].text = msg.status;
+		if(debugging){
+			if(tag < 2){
+				tag++;
+				return;
+			}else{
+				tag = 0;
 			}
+		}
+	
+		if(typeof msg.status !== 'undefined'){
+			glworld.texts["status"].text = msg.status;
 		}else if(typeof msg.disconnect !== 'undefined'){
 			delete glworld.objects[msg.disconnect];
 		}else if(typeof msg.players !== 'undefined'){
 			if(debugging){
-				console.log(JSON.stringify(msg));
+				glworld.texts["state"].text = "State: " + JSON.stringify(msg);
 			}
 			for(playerH in msg.players){
 				for(tankH in glworld.objects){
@@ -122,9 +89,12 @@ sub_scripts.push(function(){
 					}
 				}
 				if(playerH in glworld.objects){
-					glworld.objects[playerH].x = msg.players[playerH].x;
-					glworld.objects[playerH].y = msg.players[playerH].y;
-					glworld.objects[playerH].rotation = msg.players[playerH].r;
+					glworld.objects[playerH].i = msg.players[playerH].i;
+					glworld.objects[playerH].x = parseFloat(msg.players[playerH].x);
+					glworld.objects[playerH].y = parseFloat(msg.players[playerH].y);
+					glworld.objects[playerH].s = parseFloat(msg.players[playerH].s);
+					glworld.objects[playerH].ts = parseFloat(msg.players[playerH].ts);
+					glworld.objects[playerH].rotation = parseFloat(msg.players[playerH].r);
 				}else{
 					glworld.create_object(playerH, tank, msg.players[playerH].x, msg.players[playerH].y);
 					
@@ -135,6 +105,10 @@ sub_scripts.push(function(){
 				//		glworld.objects[playerH + " GHOST"].rotation = msg.players[playerH].r;
 				//		glworld.objects[playerH + " GHOST"].color = msg.players[playerH].c;
 				//	}
+					glworld.objects[playerH].i = "nn";
+					glworld.objects[playerH].s = 0;
+					glworld.objects[playerH].ts = 0;
+					glworld.objects[playerH].rotation = parseFloat(msg.players[playerH].r);
 
 					glworld.objects[playerH].textX = 45.0;
 					glworld.objects[playerH].textY = 45.0;
@@ -151,16 +125,12 @@ sub_scripts.push(function(){
 
 	function closed(e){
 		console.log("CLOSED!");
-		if(debugging){
-			glworld.texts["status"].text = client.status;
-		}
+		glworld.texts["status"].text = client.status;
 	}
 
 	function errored(e){
 		//console.log(e);
-		if(debugging){
-			glworld.texts["status"].text = "Error.";
-		}
+		glworld.texts["status"].text = "Error.";
 	}
 
 	client.setupWebsocket(connected, receive, closed, errored);
@@ -169,20 +139,16 @@ sub_scripts.push(function(){
 	//      START ACTIONS
 	/////////////////////////////
 	
-	var msg = {};
-	
+	// Local controls.
+	var keys = {};
 	var mouseDown = false;
 	var mouseX = 0;
 	var mouseY = 0;
+	
+	// Local ghost tank.
 	var spawned = false;
-	
-	var maxSpeed = 15.0;
 	var speed = 0.0;
-	var acceleration = 0.04;
-	
-	var maxTurnSpeed = 0.1;
 	var turnSpeed = 0.0;
-	var turnAcceleration = 0.001;
 	
 	textCanvas.addEventListener('click', function(e){
 		if(client.failed){
@@ -196,9 +162,9 @@ sub_scripts.push(function(){
 			
 			glworld.create_object(client.handle + " GHOST", tank, e.clientX, e.clientY, client.color);
 			
-			if(!debugging){
+			//if(!debugging){
 				glworld.objects[client.handle + " GHOST"].invisible = true;
-			}
+			//}
 			
 			glworld.objects[client.handle + " GHOST"].textX = 45.0;
 			glworld.objects[client.handle + " GHOST"].textY = 45.0;
@@ -206,23 +172,14 @@ sub_scripts.push(function(){
 			spawned = true;
 		}
 		
-		msg = {};
+		var msg = {};
 		msg.handle = client.handle;
-		//msg.color = glworld.objects[client.handle + " GHOST"].color;
 		msg.x = e.clientX.toString();
 		msg.y = e.clientY.toString();
-		console.log(JSON.stringify(msg));
 		client.send(msg);
 		
-		glworld.objects[client.handle + " GHOST"].color[3] = 0.5
-		
-		//glworld.objects["square"].timed_animation("x", e.clientX - 10, 750);
-		//glworld.objects["square"].timed_animation("y", e.clientY - 10, 750);
-		
-		//client.ws.send("\"get_users\"");
+		glworld.objects[client.handle + " GHOST"].color[3] = 0.5;
 	}, false);
-	
-	var buttons = [];
 	
 	textCanvas.addEventListener('mouseup', function(e){
 		mouseDown = false;
@@ -246,14 +203,13 @@ sub_scripts.push(function(){
 		}
 	}, false);
 	
-	var keys = {};
-	
+	// Send a client event. Only regarding movement changes currently.
 	function update_input(){
 		if(client.failed){
 			return;
 		}
 		
-		msg = {};
+		var msg = {};
 		msg.handle = client.handle;
 		msg.i = "";
 		
@@ -272,9 +228,9 @@ sub_scripts.push(function(){
 		}else{
 			msg.i += 'n';
 		}
-		//console.log(msg.input);
+		
 		if(debugging){
-			glworld.texts["d3"].text = turnSpeed;
+			glworld.texts["d3"].text = JSON.stringify(msg);
 		}
 		
 		client.send(msg);
@@ -292,10 +248,59 @@ sub_scripts.push(function(){
 		update_input();
 	};
 	
-	// Client simulation.
+	// Client game simulation loop.
 	setInterval(function(){
+		if(!debugging){
+			for(tankH in glworld.objects){
+				if(glworld.objects[tankH].owned === undefined){
+					continue;
+				}
+				if("i" in glworld.objects[tankH]){
+					// THESE CALCULATIONS MATCH THE SERVER CALCULATIONS.
+					if(glworld.objects[tankH].i.charAt(0) === 'f'){
+						if(glworld.objects[tankH].s < maxSpeed){
+							glworld.objects[tankH].s += acceleration;
+						}
+					}else if(glworld.objects[tankH].i.charAt(0) === 'b'){
+						if(glworld.objects[tankH].s > -maxSpeed){
+							glworld.objects[tankH].s -= backAcceleration;
+						}
+					}else{
+						if(Math.abs(glworld.objects[tankH].s) <= acceleration){
+							glworld.objects[tankH].s = 0;
+						}else if(glworld.objects[tankH].s > 0){
+							glworld.objects[tankH].s -= acceleration;
+						}else if(glworld.objects[tankH].s < 0){
+							glworld.objects[tankH].s += acceleration;
+						}
+					}
+					
+					if(glworld.objects[tankH].i.charAt(1) === 'l'){
+						if(glworld.objects[tankH].ts < maxTurnSpeed){
+							glworld.objects[tankH].ts += turnAcceleration;
+						}
+						glworld.objects[tankH].rotation += glworld.objects[tankH].ts;
+					}else if(glworld.objects[tankH].i.charAt(1) === 'r'){
+						if(glworld.objects[tankH].ts < maxTurnSpeed){
+							glworld.objects[tankH].ts += turnAcceleration;
+						}
+						glworld.objects[tankH].rotation -= glworld.objects[tankH].ts;
+					}else{
+						if(glworld.objects[tankH].ts <= turnAcceleration){
+							glworld.objects[tankH].ts = 0;
+						}else if(glworld.objects[tankH].ts > 0){
+							glworld.objects[tankH].ts -= acceleration;
+						}
+					}
+				}
+				
+				glworld.objects[tankH].x += glworld.objects[tankH].s * Math.cos(glworld.objects[tankH].rotation);
+				glworld.objects[tankH].y += glworld.objects[tankH].s * -1 * Math.sin(glworld.objects[tankH].rotation);
+			}
+		}
+		
+		// ALL THIS CODE IS FOR THE LOCAL GHOST
 		if(spawned){
-			
 			if(keys[38] && !keys[40]){
 				if(speed < maxSpeed){
 					speed += acceleration;
@@ -341,8 +346,9 @@ sub_scripts.push(function(){
 		}
 	}, 16);
 	
+	//TODO: Every frame? Can this just be in the client game simulator loop?
 	glworld.afterRender = function(){
-		if(spawned && mouseDown){
+		if(spawned && mouseDown && client.handle in glworld.objects){
 			var xdiff = mouseX - glworld.objects[client.handle].x;
 			var ydiff = mouseY - glworld.objects[client.handle].y;
 			
@@ -364,20 +370,21 @@ sub_scripts.push(function(){
 				}
 				keys[40] = false;
 				keys[38] = true;
+				//console.log("FORWARD");
 			}else{
 				if(keys[40] != true){
 					needUpdate = true;
 				}
 				keys[40] = true;
 				keys[38] = false;
+				//console.log("BACKWARD");
 			}
 			
-			//console.log(turnSpeed);
-			//console.log(Math.abs(Math.PI - angle));
 			if(debugging){
 				glworld.texts["d1"].text = Math.PI - angle;
 				glworld.texts["d2"].text = turnSpeed;
 			}
+			
 			if(Math.abs(Math.PI - angle) > turnSpeed * 2){
 				if(angle > Math.PI){
 					if(keys[39] != true){
@@ -395,13 +402,13 @@ sub_scripts.push(function(){
 					//console.log("RIGHT")
 				}
 			}else{
-				//console.log("CENTER")
 				if(keys[39] != false || 
 				keys[37] != false){
 					needUpdate = true;
 				}
 				keys[39] = false;
 				keys[37] = false;
+				//console.log("CENTER")
 			}
 			
 			if(needUpdate){
@@ -409,11 +416,8 @@ sub_scripts.push(function(){
 			}
 		}
 		
-		if(debugging){
-			glworld.texts["latency"].text = "Latency: " + client.ping_ms + "ms";
-		}
+		glworld.texts["latency"].text = "Latency: " + client.ping_ms + "ms";
 	};
-	
 });
 
 

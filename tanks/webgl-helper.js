@@ -271,8 +271,6 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 					text.fillStyle = glworld.objects[key].fillStyle;
 				}
 				
-				console.log(glworld.objects[key].text + " " + glworld.objects[key].font + " " + glworld.objects[key].fillStyle);
-				
 				text.fillText(glworld.objects[key].text, glworld.objects[key].x - glworld.objects[key].textX, glworld.objects[key].y - glworld.objects[key].textY);
 				
 				if(glworld.objects[key].font !== undefined){
