@@ -86,7 +86,7 @@ window.onload = function(){
 	
 	textCanvas.addEventListener('mouseup', function(e){
 		if(e.clientX < 120 && e.clientX > 20 && e.clientY > 20 && e.clientY < 70){
-			var shape = "var shape = [";
+			var shape = "[";
 			var index = next_triangle - next_triangle % 3;
 			if(index > 0){
 				while(index > 0){
@@ -103,9 +103,25 @@ window.onload = function(){
 		
 		if(e.clientX < 120 && e.clientX > 20 && e.clientY > 80 && e.clientY < 130){
 			if(next_triangle % 3 === 0 && next_triangle !== 0){
-				delete glworld.objects["done" + next_triangle];
-				delete glworld.objects["sample" + next_triangle];
-				next_triangle -= 3;
+				if(glworld.objects["done" + next_triangle].shape.length <= 6){
+					delete glworld.objects["done" + next_triangle];
+					delete glworld.objects["sample" + next_triangle];
+					next_triangle -= 3;
+				}else{
+					glworld.objects["done" + next_triangle].shape.shift();
+					glworld.objects["done" + next_triangle].shape.shift();
+					glworld.objects["done" + next_triangle].shape.shift();
+					glworld.objects["done" + next_triangle].shape.shift();
+					glworld.objects["done" + next_triangle].shape.shift();
+					glworld.objects["done" + next_triangle].shape.shift();
+					
+					glworld.objects["sample" + next_triangle].shape.shift();
+					glworld.objects["sample" + next_triangle].shape.shift();
+					glworld.objects["sample" + next_triangle].shape.shift();
+					glworld.objects["sample" + next_triangle].shape.shift();
+					glworld.objects["sample" + next_triangle].shape.shift();
+					glworld.objects["sample" + next_triangle].shape.shift();
+				}
 			}
 		}
 		
@@ -121,8 +137,8 @@ window.onload = function(){
 				glworld.create_object("done" + next_triangle, [], 150, 20, [0, 0, 1, 0.5]);
 				var i = 0;
 				for(v in shapeJSON){
-					if(i % 2 == 0){
-						glworld.objects["done" + next_triangle].shape.push(shapeJSON[v] * gridSize + gridSize * 12);
+					if(i % 2 == 0){// - (shapeJSON[v] % gridSize)
+						glworld.objects["done" + next_triangle].shape.push(shapeJSON[v] * gridSize + gridSize * 11.5);
 					}else{
 						glworld.objects["done" + next_triangle].shape.push(shapeJSON[v] * gridSize + gridSize * 18);
 					}
@@ -181,8 +197,6 @@ window.onload = function(){
 	}, false);
 	
 	textCanvas.addEventListener('mousemove', function(e){
-		console.log(e.clientX + ", " + e.clientY);
-	
 		textCanvas.style.cursor = "default";
 		if(e.clientX < 120 && e.clientX > 20 && e.clientY > 20 && e.clientY < 70){
 			glworld.objects["saveButtonBezel"].color = [1, 0, 0, 1];

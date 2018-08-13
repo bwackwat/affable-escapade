@@ -10,9 +10,12 @@ var tank = [0, 0, 50, 0, 0, 30, 0, 30, 50, 0,50, 30,// body
 	10, -5, 20, -5, 10, 35, 10, 35, 20, 35, 20, -5,// back wheels
 	30, -5, 40, -5, 30, 35, 30, 35, 40, 35, 40, -5];// front wheels
 
-var smashtank = [50, 20, 59, 25, 50, 30, 50, 10, 59, 15, 50, 20, 50, 0, 59, 5, 50, 10, 30, 35, 40, -5, 30, -5, 40, -5, 30, 35, 40, 35, 10, 35, 20, -5, 20, 35, 10, -5, 20, -5, 10, 35, 50, 30, 0, 0, 0, 30, 0, 0, 50, 0, 50, 30];
+var smasherTank = [50, 20, 60, 25, 50, 30, 50, 10, 60, 15, 50, 20, 50, 0, 60, 5, 50, 10, 30, 35, 40, -5, 30, -5, 40, -5, 30, 35, 40, 35, 10, 35, 20, -5, 20, 35, 10, -5, 20, -5, 10, 35, 50, 30, 0, 0, 0, 30, 0, 0, 50, 0, 50, 30];
+var sniperTank = [70, 18, 70, 12, 50, 12, 50, 12, 50, 18, 70, 18, 30, 35, 40, -5, 30, -5, 40, -5, 30, 35, 40, 35, 10, 35, 20, -5, 20, 35, 10, -5, 20, -5, 10, 35, 50, 30, 0, 0, 0, 30, 0, 0, 50, 0, 50, 30];
+var flakkerTank = [60, 25, 60, 5, 50, 15, 50, 15, 50, 20, 60, 25, 50, 10, 60, 5, 50, 15, 30, 35, 40, -5, 30, -5, 40, -5, 30, 35, 40, 35, 10, 35, 20, -5, 20, 35, 10, -5, 20, -5, 10, 35, 50, 30, 0, 0, 0, 30, 0, 0, 50, 0, 50, 30];
 
-
+var leftTankChunk = [25, 0, 35, 12, 25, 15, 20, 0, 20, -5, 10, 0, 10, 0, 10, -5, 20, -5, 25, 0, 0, 0, 15, 12, 15, 12, 25, 15, 25, 0, 0, 0, 0, 20, 15, 12];
+var rightTankChunk = [35, 12, 35, 18, 50, 0, 35, 18, 25, 15, 35, 12, 50, 0, 50, 10, 35, 18, 40, -5, 40, 0, 30, 0, 30, 0, 30, -5, 40, -5, 25, 0, 35, 12, 50, 0];
 
 // These are synchronized with the server's constants.
 var maxSpeed = 10.0;
@@ -45,7 +48,8 @@ sub_scripts.push(function(){
 	glworld.text("latency", "", 10, 30);
 	
 	if(debugging){
-		glworld.text("state", "", 100, 10);
+		glworld.text("state", "", 150, 10);
+		glworld.text("client_state", "", gameCanvas.width / 2 + 50, 10);
 		glworld.text("d1", "", 10, 40);
 		glworld.text("d2", "", 10, 50);
 		glworld.text("d3", "", 10, 60);
@@ -61,34 +65,54 @@ sub_scripts.push(function(){
 
 	function connected(e){
 		glworld.texts["status"].text = "Connected.";
+		
+		// Annouce my player.
+		var msg = {};
+		msg.announce = client.handle;
+		msg.color = client.color;
+		client.send(msg);
 	}
-	
-	var spawned = {};
 
-	var tag = 0;
+	//var tag = 0;
 
 	function receive(msg){
-		if(debugging){
-			if(tag < 2){
-				tag++;
-				return;
-			}else{
-				tag = 0;
-			}
-		}
+	
+		// THIS IS NOT A SOLUTION.
+		// TCP IS RELIABLE, YET THIS STOPS HALF GAME EVENTS FROM COMING THROUGH!
+	
+		//if(debugging){
+		//	if(tag < 2){
+		//		tag++;
+		//		return;
+		//	}else{
+		//		tag = 0;
+		//	}
+		//}
 	
 		if(typeof msg.status !== 'undefined'){
 			glworld.texts["status"].text = msg.status;
+		}else if(typeof msg.connect !== 'undefined'){
+			
 		}else if(typeof msg.disconnect !== 'undefined'){
-			delete glworld.objects[msg.disconnect];
+			delete glworld.objects[msg.disconnect + "tank"];
+		}else if(typeof msg.explode !== 'undefined'){
+			glworld.create_object(playerH + "l1", leftTankChunk,
+				glworld.objects[msg.explode].x, glworld.objects[msg.explode].y,
+				glworld.objects[msg.explode].color, 1.0, 1.0,
+				glworld.objects[msg.explode].rotation);
+			glworld.objects[playerH + "l1"].owned = true;
+			glworld.objects[playerH + "l1"].text = null;
+			
+			delete glworld.objects[msg.explode];
 		}else if(typeof msg.players !== 'undefined'){
 			if(debugging){
-				glworld.texts["state"].text = "State: " + JSON.stringify(msg);
+				glworld.texts["state"].text = "Server State: " + JSON.stringify(msg);
+				glworld.texts["client_state"].text = "Client State: " + JSON.stringify(glworld.objects);
 			}
 			for(playerH in msg.players){
 				for(tankH in glworld.objects){
 					if(glworld.objects[tankH].owned && !(tankH in msg.players)){
-						delete glworld.objects[tankH];
+					//	delete glworld.objects[tankH];
 						continue;
 					}
 				}
@@ -102,13 +126,6 @@ sub_scripts.push(function(){
 				}else{
 					glworld.create_object(playerH, tank, msg.players[playerH].x, msg.players[playerH].y);
 					
-				//	Old code to reset ghost on "reconnect" not "refresh" here.
-				//	if(debugging && playerH == client.handle){
-				//		glworld.objects[playerH + " GHOST"].x = msg.players[playerH].x;
-				//		glworld.objects[playerH + " GHOST"].y = msg.players[playerH].y;
-				//		glworld.objects[playerH + " GHOST"].rotation = msg.players[playerH].r;
-				//		glworld.objects[playerH + " GHOST"].color = msg.players[playerH].c;
-				//	}
 					glworld.objects[playerH].i = "nn";
 					glworld.objects[playerH].s = 0;
 					glworld.objects[playerH].ts = 0;
@@ -116,7 +133,7 @@ sub_scripts.push(function(){
 
 					glworld.objects[playerH].textX = 45.0;
 					glworld.objects[playerH].textY = 45.0;
-					glworld.objects[playerH].text = playerH + " tank";
+					glworld.objects[playerH].text = playerH;
 					glworld.objects[playerH].owned = true;
 				}
 			}
@@ -149,40 +166,16 @@ sub_scripts.push(function(){
 	var mouseX = 0;
 	var mouseY = 0;
 	
-	// Local ghost tank.
-	var spawned = false;
-	var speed = 0.0;
-	var turnSpeed = 0.0;
-	
 	textCanvas.addEventListener('click', function(e){
 		if(client.failed){
 			console.log("Cannot spawn.");
 			return;
-		}else if(!spawned){
-			if(client.color !== null){
-				var new_color = convertToRGB(client.color);
-				client.color = [new_color[0], new_color[1], new_color[2], 1.0];
-			}
-			
-			glworld.create_object(client.handle + " GHOST", tank, e.clientX, e.clientY, client.color);
-			
-			//if(!debugging){
-				glworld.objects[client.handle + " GHOST"].invisible = true;
-			//}
-			
-			glworld.objects[client.handle + " GHOST"].textX = 45.0;
-			glworld.objects[client.handle + " GHOST"].textY = 45.0;
-			
-			spawned = true;
 		}
-		
 		var msg = {};
 		msg.handle = client.handle;
 		msg.x = e.clientX.toString();
 		msg.y = e.clientY.toString();
 		client.send(msg);
-		
-		glworld.objects[client.handle + " GHOST"].color[3] = 0.5;
 	}, false);
 	
 	textCanvas.addEventListener('mouseup', function(e){
@@ -195,9 +188,9 @@ sub_scripts.push(function(){
 	}, false);
 	
 	textCanvas.addEventListener('mousedown', function(e){
+		mouseDown = true;
 		mouseX = e.clientX;
 		mouseY = e.clientY;
-		mouseDown = true;
 	}, false);
 	
 	textCanvas.addEventListener('mousemove', function(e){
@@ -254,111 +247,18 @@ sub_scripts.push(function(){
 	
 	// Client game simulation loop.
 	setInterval(function(){
-		if(!debugging){
-			for(tankH in glworld.objects){
-				if(glworld.objects[tankH].owned === undefined){
-					continue;
-				}
-				if("i" in glworld.objects[tankH]){
-					// THESE CALCULATIONS MATCH THE SERVER CALCULATIONS.
-					if(glworld.objects[tankH].i.charAt(0) === 'f'){
-						if(glworld.objects[tankH].s < maxSpeed){
-							glworld.objects[tankH].s += acceleration;
-						}
-					}else if(glworld.objects[tankH].i.charAt(0) === 'b'){
-						if(glworld.objects[tankH].s > -maxSpeed){
-							glworld.objects[tankH].s -= backAcceleration;
-						}
-					}else{
-						if(Math.abs(glworld.objects[tankH].s) <= acceleration){
-							glworld.objects[tankH].s = 0;
-						}else if(glworld.objects[tankH].s > 0){
-							glworld.objects[tankH].s -= acceleration;
-						}else if(glworld.objects[tankH].s < 0){
-							glworld.objects[tankH].s += acceleration;
-						}
-					}
-					
-					if(glworld.objects[tankH].i.charAt(1) === 'l'){
-						if(glworld.objects[tankH].ts < maxTurnSpeed){
-							glworld.objects[tankH].ts += turnAcceleration;
-						}
-						glworld.objects[tankH].rotation += glworld.objects[tankH].ts;
-					}else if(glworld.objects[tankH].i.charAt(1) === 'r'){
-						if(glworld.objects[tankH].ts < maxTurnSpeed){
-							glworld.objects[tankH].ts += turnAcceleration;
-						}
-						glworld.objects[tankH].rotation -= glworld.objects[tankH].ts;
-					}else{
-						if(glworld.objects[tankH].ts <= turnAcceleration){
-							glworld.objects[tankH].ts = 0;
-						}else if(glworld.objects[tankH].ts > 0){
-							glworld.objects[tankH].ts -= acceleration;
-						}
-					}
-				}
-				
-				glworld.objects[tankH].x += glworld.objects[tankH].s * Math.cos(glworld.objects[tankH].rotation);
-				glworld.objects[tankH].y += glworld.objects[tankH].s * -1 * Math.sin(glworld.objects[tankH].rotation);
-			}
-		}
+		glworld.texts["status"].text = client.status;
+		glworld.texts["latency"].text = "Latency: " + client.ping_ms + "ms";
 		
-		// ALL THIS CODE IS FOR THE LOCAL GHOST
-		if(spawned){
-			if(keys[38] && !keys[40]){
-				if(speed < maxSpeed){
-					speed += acceleration;
-				}
-			}else if(keys[40] && !keys[38]){
-				if(speed > -maxSpeed){
-					speed -= acceleration;
-				}
-			}else if(!mouseDown){
-				if(Math.abs(speed) <= acceleration){
-					speed = 0;
-				}else if(speed > 0){
-					speed -= acceleration;
-				}else if(speed < 0){
-					speed += acceleration;
-				}
-			}
+		// This conditional is for mouse-controlled movement.
+		if(mouseDown && client.handle + "tank" in glworld.objects){
+			var xdiff = mouseX - glworld.objects[client.handle + "tank"].x;
+			var ydiff = mouseY - glworld.objects[client.handle + "tank"].y;
 			
-			if(keys[39] && !keys[37]){
-				//console.log("LEFT")
-				if(turnSpeed < maxTurnSpeed){
-					turnSpeed += turnAcceleration;
-				}
-				glworld.objects[client.handle + " GHOST"].rotation -= turnSpeed;
-			}else if(keys[37] && !keys[39]){
-				//console.log("RIGHT")
-				if(turnSpeed < maxTurnSpeed){
-					turnSpeed += turnAcceleration;
-				}
-				glworld.objects[client.handle + " GHOST"].rotation += turnSpeed;
-			}else if(!mouseDown){
-				if(turnSpeed <= turnAcceleration){
-					turnSpeed = 0;
-				}else if(turnSpeed > 0){
-					turnSpeed -= turnAcceleration;
-				}
-			}
-		
-			glworld.objects[client.handle + " GHOST"].x += speed *
-				Math.cos(glworld.objects[client.handle + " GHOST"].rotation);
-			glworld.objects[client.handle + " GHOST"].y += speed * -1 *
-				Math.sin(glworld.objects[client.handle + " GHOST"].rotation);
-		}
-	}, 16);
-	
-	//TODO: Every frame? Can this just be in the client game simulator loop?
-	glworld.afterRender = function(){
-		if(spawned && mouseDown && client.handle in glworld.objects){
-			var xdiff = mouseX - glworld.objects[client.handle].x;
-			var ydiff = mouseY - glworld.objects[client.handle].y;
+			glworld.objects[client.handle + "tank"].rotation = glworld.objects[client.handle + "tank"].rotation % (Math.PI * 2);
+			var turnSpeed = glworld.objects[client.handle + "tank"].ts;
 			
-			glworld.objects[client.handle].rotation = glworld.objects[client.handle].rotation % (Math.PI * 2);
-			
-			var angle = glworld.objects[client.handle].rotation - Math.atan2(ydiff, -xdiff);
+			var angle = glworld.objects[client.handle + "tank"].rotation - Math.atan2(ydiff, -xdiff);
 			
 			angle = (angle + Math.PI * 2) % (Math.PI * 2);
 			
@@ -420,7 +320,58 @@ sub_scripts.push(function(){
 			}
 		}
 		
-		glworld.texts["latency"].text = "Latency: " + client.ping_ms + "ms";
+		if(!debugging){
+			for(tankH in glworld.objects){
+				if(glworld.objects[tankH].owned === undefined){
+					continue;
+				}
+				if("i" in glworld.objects[tankH]){
+					// THESE CALCULATIONS MATCH THE SERVER CALCULATIONS.
+					if(glworld.objects[tankH].i.charAt(0) === 'f'){
+						if(glworld.objects[tankH].s < maxSpeed){
+							glworld.objects[tankH].s += acceleration;
+						}
+					}else if(glworld.objects[tankH].i.charAt(0) === 'b'){
+						if(glworld.objects[tankH].s > -maxSpeed){
+							glworld.objects[tankH].s -= backAcceleration;
+						}
+					}else{
+						if(Math.abs(glworld.objects[tankH].s) <= acceleration){
+							glworld.objects[tankH].s = 0;
+						}else if(glworld.objects[tankH].s > 0){
+							glworld.objects[tankH].s -= acceleration;
+						}else if(glworld.objects[tankH].s < 0){
+							glworld.objects[tankH].s += acceleration;
+						}
+					}
+					
+					if(glworld.objects[tankH].i.charAt(1) === 'l'){
+						if(glworld.objects[tankH].ts < maxTurnSpeed){
+							glworld.objects[tankH].ts += turnAcceleration;
+						}
+						glworld.objects[tankH].rotation += glworld.objects[tankH].ts;
+					}else if(glworld.objects[tankH].i.charAt(1) === 'r'){
+						if(glworld.objects[tankH].ts < maxTurnSpeed){
+							glworld.objects[tankH].ts += turnAcceleration;
+						}
+						glworld.objects[tankH].rotation -= glworld.objects[tankH].ts;
+					}else{
+						if(glworld.objects[tankH].ts <= turnAcceleration){
+							glworld.objects[tankH].ts = 0;
+						}else if(glworld.objects[tankH].ts > 0){
+							glworld.objects[tankH].ts -= acceleration;
+						}
+					}
+				}
+				
+				glworld.objects[tankH].x += glworld.objects[tankH].s * Math.cos(glworld.objects[tankH].rotation);
+				glworld.objects[tankH].y += glworld.objects[tankH].s * -1 * Math.sin(glworld.objects[tankH].rotation);
+			}
+		}
+	}, 16);
+	
+	//TODO: Every frame? Can this just be in the client game simulator loop?
+	glworld.afterRender = function(){
 	};
 });
 

@@ -70,7 +70,8 @@ User:&nbsp
 </td></tr>
 <tr><td>
 <br>
-<input id="messageField" type="text" style="width:100%;" placeholder="enter to send message">
+<input id="submitButton" type="button" value="Send">
+<input id="messageField" type="text" style="width:80%;" placeholder="enter to send message">
 </td></tr>
 <tr><td style="height:100%;vertical-align:top;">
 <hr>
@@ -169,8 +170,10 @@ User:&nbsp
 			pinger = setInterval(updateChat(), 1000);
 		}
 		
+		document.getElementById("submitButton").onclick = send;
+		
 		window.onkeypress = function(e){
-			if(e.code === "Enter"){
+			if(e.code === "Enter" || e.key === "Enter"){
 				send();
 			}else{
 				//console.log(e.code);

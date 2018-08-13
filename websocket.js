@@ -7,7 +7,7 @@ var websocket_client = function(){
 	client.status = "Connecting...";
 	client.failed = true;
 	client.handle = get_anonymous_name();
-	client.color = null;
+	client.color = [Math.random(), Math.random(), Math.random(), 1];
 	client.last_ping = 0;
 	client.ping_ms = 0;
 	client.ws;
@@ -43,7 +43,7 @@ var websocket_client = function(){
 			client.ws = new WebSocket(websocket_server_url);
 		}catch(e){
 			//console.log(e);
-			client.status = "Couldn't connect";
+			client.status = "Couldn't connect.";
 			console.log(client.status);
 			return;
 		}
@@ -100,12 +100,11 @@ var websocket_client = function(){
 		}else if(client.ws.readyState === client.ws.CLOSING){
 			client.status = "Disconnected.";
 		}else{
-			client.status = "Working...";
+			client.status = "Disconnected...";
 		}
 	}
 	
 	client.send = function(msg){
-		client.status = "Sending...";
 		
 		// The lines below will stop pings until nothing is being sent.
 		// clearInterval(client.pinger);
@@ -113,6 +112,7 @@ var websocket_client = function(){
 		
 		if(!client.failed && client.ws.readyState === client.ws.OPEN){
 			try{
+				//client.status = "Sending...";
 				client.ws.send(JSON.stringify(msg));
 			}catch(e){
 				client.ws.close(1000);
