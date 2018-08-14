@@ -29,6 +29,7 @@
 		var status = document.getElementById("status");
 		
 		document.getElementById("registerButton").onclick = function() {
+			status.innerHTML = "Registering...";
 			callAPI("POST", "/user", {"values":
 			{"username": document.getElementById("usernameField").value,
 			"password": document.getElementById("passwordField").value,

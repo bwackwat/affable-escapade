@@ -38,6 +38,7 @@
 		});
 	
 		document.getElementById("saveMessageButton").onclick = function() {
+			status.innerHTML = "Saving...";
 			callAPI("PUT", "/message", {"token": localStorage.getItem(localStorageTokenKey), "id": state.mid, "values": {"title": messageTitleField.value, "content": messageContentField.value}}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					redirect_flash("/cms/message.html?mid=" + urlParams["mid"] + "&tid=" + urlParams["tid"], "Message saved!");

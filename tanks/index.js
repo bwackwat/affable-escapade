@@ -6,16 +6,14 @@ var f = [
 
 var square = [0, 0, 30, 0, 0, 30, 0, 30, 30, 0, 30, 30];// 30px wide
 
-var tank = [0, 0, 50, 0, 0, 30, 0, 30, 50, 0,50, 30,// body
-	10, -5, 20, -5, 10, 35, 10, 35, 20, 35, 20, -5,// back wheels
-	30, -5, 40, -5, 30, 35, 30, 35, 40, 35, 40, -5];// front wheels
+var tank = [-25, -15, 25, -15, -25, 15, -25, 15, 25, -15, 25, 15, -15, -20, -5, -20, -15, 20, -15, 20, -5, 20, -5, -20, 5, -20, 15, -20, 5, 20, 5, 20, 15, 20, 15, -20];
 
-var smasherTank = [50, 20, 60, 25, 50, 30, 50, 10, 60, 15, 50, 20, 50, 0, 60, 5, 50, 10, 30, 35, 40, -5, 30, -5, 40, -5, 30, 35, 40, 35, 10, 35, 20, -5, 20, 35, 10, -5, 20, -5, 10, 35, 50, 30, 0, 0, 0, 30, 0, 0, 50, 0, 50, 30];
-var sniperTank = [70, 18, 70, 12, 50, 12, 50, 12, 50, 18, 70, 18, 30, 35, 40, -5, 30, -5, 40, -5, 30, 35, 40, 35, 10, 35, 20, -5, 20, 35, 10, -5, 20, -5, 10, 35, 50, 30, 0, 0, 0, 30, 0, 0, 50, 0, 50, 30];
-var flakkerTank = [60, 25, 60, 5, 50, 15, 50, 15, 50, 20, 60, 25, 50, 10, 60, 5, 50, 15, 30, 35, 40, -5, 30, -5, 40, -5, 30, 35, 40, 35, 10, 35, 20, -5, 20, 35, 10, -5, 20, -5, 10, 35, 50, 30, 0, 0, 0, 30, 0, 0, 50, 0, 50, 30];
+var smasherTank = [25, 5, 35, 10, 25, 15, 25, -5, 35, 0, 25, 5, 25, -15, 35, -10, 25, -5, 5, 20, 15, -20, 5, -20, 15, -20, 5, 20, 15, 20, -15, 20, -5, -20, -5, 20, -15, -20, -5, -20, -15, 20, 25, 15, -25, -15, -25, 15, -25, -15, 25, -15, 25, 15];
+var sniperTank = [45, 3, 45, -3, 25, -3, 25, -3, 25, 3, 45, 3, 5, 20, 15, -20, 5, -20, 15, -20, 5, 20, 15, 20, -15, 20, -5, -20, -5, 20, -15, -20, -5, -20, -15, 20, 25, 15, -25, -15, -25, 15, -25, -15, 25, -15, 25, 15];
+var flakkerTank = [35, 10, 35, -10, 25, 0, 25, 0, 25, 5, 35, 10, 25, -5, 35, -10, 25, 0, 5, 20, 15, -20, 5, -20, 15, -20, 5, 20, 15, 20, -15, 20, -5, -20, -5, 20, -15, -20, -5, -20, -15, 20, 25, 15, -25, -15, -25, 15, -25, -15, 25, -15, 25, 15];
 
-var leftTankChunk = [25, 0, 35, 12, 25, 15, 20, 0, 20, -5, 10, 0, 10, 0, 10, -5, 20, -5, 25, 0, 0, 0, 15, 12, 15, 12, 25, 15, 25, 0, 0, 0, 0, 20, 15, 12];
-var rightTankChunk = [35, 12, 35, 18, 50, 0, 35, 18, 25, 15, 35, 12, 50, 0, 50, 10, 35, 18, 40, -5, 40, 0, 30, 0, 30, 0, 30, -5, 40, -5, 25, 0, 35, 12, 50, 0];
+var leftTankChunk = [0, -15, 10, -3, 0, 0, -5, -15, -5, -20, -15, -15, -15, -15, -15, -20, -5, -20, 0, -15, -25, -15, -10, -3, -10, -3, 0, 0, 0, -15, -25, -15, -25, 5, -10, -3];
+var rightTankChunk = [10, -3, 10, 3, 25, -15, 10, 3, 0, 0, 10, -3, 25, -15, 25, -5, 10, 3, 15, -20, 15, -15, 5, -15, 5, -15, 5, -20, 15, -20, 0, -15, 10, -3, 25, -15];
 
 // These are synchronized with the server's constants.
 var maxSpeed = 10.0;
@@ -29,6 +27,8 @@ sub_scripts.push(function(){
 	if("debug" in urlParams){
 		debugging = true;
 	}
+	
+	var explode = new Audio('/tanks/explode.mp3');
 
 	var gameCanvas = document.getElementById("gameCanvas");
 	var textCanvas = document.getElementById("textCanvas");
@@ -38,8 +38,6 @@ sub_scripts.push(function(){
 		textCanvas,
 		true
 	);
-	
-	glworld.offset_shape(tank, -25, -15);
 	
 	//glworld.create_object("f", f, 150, 200);
 	//glworld.create_object("square", square, 200, 20);
@@ -96,14 +94,98 @@ sub_scripts.push(function(){
 		}else if(typeof msg.disconnect !== 'undefined'){
 			delete glworld.objects[msg.disconnect + "tank"];
 		}else if(typeof msg.explode !== 'undefined'){
-			glworld.create_object(playerH + "l1", leftTankChunk,
-				glworld.objects[msg.explode].x, glworld.objects[msg.explode].y,
+		
+			console.log(msg.explode + " exploded!");
+		
+			// Clear old explosion.
+			
+			if(msg.explode + "l1" in glworld.objects){
+				delete glworld.objects[msg.explode + "l1"];
+			}
+			if(msg.explode + "r1" in glworld.objects){
+				delete glworld.objects[msg.explode + "r1"];
+			}
+			if(msg.explode + "l2" in glworld.objects){
+				delete glworld.objects[msg.explode + "l2"];
+			}
+			if(msg.explode + "r2" in glworld.objects){
+				delete glworld.objects[msg.explode + "r2"];
+			}
+		
+		
+			// Create an explosion.
+		
+			glworld.create_object(msg.explode + "l1", leftTankChunk,
+				glworld.objects[msg.explode].x,
+				glworld.objects[msg.explode].y,
 				glworld.objects[msg.explode].color, 1.0, 1.0,
 				glworld.objects[msg.explode].rotation);
-			glworld.objects[playerH + "l1"].owned = true;
-			glworld.objects[playerH + "l1"].text = null;
+			glworld.objects[msg.explode + "l1"].owned = true;
+			glworld.objects[msg.explode + "l1"].text = null;
+			
+			glworld.objects[msg.explode + "l1"].timed_animation("x",
+				glworld.objects[msg.explode].x
+				- 75 * Math.cos(glworld.objects[msg.explode].rotation - Math.PI / 4), 1000);
+			glworld.objects[msg.explode + "l1"].timed_animation("y",
+				glworld.objects[msg.explode].y
+				- 75 * -1 * Math.sin(glworld.objects[msg.explode].rotation - Math.PI / 4), 1000);
+			glworld.objects[msg.explode + "l1"].timed_animation("rotation",
+				glworld.objects[msg.explode].rotation + Math.PI * 2, 1000);
+			
+			glworld.create_object(msg.explode + "r1", rightTankChunk,
+				glworld.objects[msg.explode].x,
+				glworld.objects[msg.explode].y,
+				glworld.objects[msg.explode].color, 1.0, 1.0,
+				glworld.objects[msg.explode].rotation);
+			glworld.objects[msg.explode + "r1"].owned = true;
+			glworld.objects[msg.explode + "r1"].text = null;
+			
+			glworld.objects[msg.explode + "r1"].timed_animation("x",
+				glworld.objects[msg.explode].x
+				+ 75 * Math.cos(glworld.objects[msg.explode].rotation - Math.PI / 4), 1000);
+			glworld.objects[msg.explode + "r1"].timed_animation("y",
+				glworld.objects[msg.explode].y
+				- 75 * -1 * Math.sin(glworld.objects[msg.explode].rotation - Math.PI / 4), 1000);
+			glworld.objects[msg.explode + "r1"].timed_animation("rotation",
+				glworld.objects[msg.explode].rotation + Math.PI * 2, 1000);
+			
+			glworld.create_object(msg.explode + "l2", leftTankChunk,
+				glworld.objects[msg.explode].x,
+				glworld.objects[msg.explode].y,
+				glworld.objects[msg.explode].color, 1.0, 1.0,
+				glworld.objects[msg.explode].rotation + Math.PI);
+			glworld.objects[msg.explode + "l2"].owned = true;
+			glworld.objects[msg.explode + "l2"].text = null;
+			
+			glworld.objects[msg.explode + "l2"].timed_animation("x",
+				glworld.objects[msg.explode].x
+				+ 75 * Math.cos(glworld.objects[msg.explode].rotation - Math.PI / 4), 1000);
+			glworld.objects[msg.explode + "l2"].timed_animation("y",
+				glworld.objects[msg.explode].y
+				+ 75 * -1 * Math.sin(glworld.objects[msg.explode].rotation - Math.PI / 4), 1000);
+			glworld.objects[msg.explode + "l2"].timed_animation("rotation",
+				glworld.objects[msg.explode].rotation + Math.PI * 2, 1000);
+			
+			glworld.create_object(msg.explode + "r2", rightTankChunk,
+				glworld.objects[msg.explode].x,
+				glworld.objects[msg.explode].y,
+				glworld.objects[msg.explode].color, 1.0, 1.0,
+				glworld.objects[msg.explode].rotation + Math.PI);
+			glworld.objects[msg.explode + "r2"].owned = true;
+			glworld.objects[msg.explode + "r2"].text = null;
+			
+			glworld.objects[msg.explode + "r2"].timed_animation("x",
+				glworld.objects[msg.explode].x
+				- 75 * Math.cos(glworld.objects[msg.explode].rotation - Math.PI / 4), 1000);
+			glworld.objects[msg.explode + "r2"].timed_animation("y",
+				glworld.objects[msg.explode].y
+				+ 75 * -1 * Math.sin(glworld.objects[msg.explode].rotation - Math.PI / 4), 1000);
+			glworld.objects[msg.explode + "r2"].timed_animation("rotation",
+				glworld.objects[msg.explode].rotation + Math.PI * 2, 1000);
 			
 			delete glworld.objects[msg.explode];
+			
+			explode.play();
 		}else if(typeof msg.players !== 'undefined'){
 			if(debugging){
 				glworld.texts["state"].text = "Server State: " + JSON.stringify(msg);
@@ -322,9 +404,11 @@ sub_scripts.push(function(){
 		
 		if(!debugging){
 			for(tankH in glworld.objects){
+				// Compensate only for owned items.
 				if(glworld.objects[tankH].owned === undefined){
 					continue;
 				}
+				// Compensat only for objects with input.
 				if("i" in glworld.objects[tankH]){
 					// THESE CALCULATIONS MATCH THE SERVER CALCULATIONS.
 					if(glworld.objects[tankH].i.charAt(0) === 'f'){
@@ -362,10 +446,9 @@ sub_scripts.push(function(){
 							glworld.objects[tankH].ts -= acceleration;
 						}
 					}
+					glworld.objects[tankH].x += glworld.objects[tankH].s * Math.cos(glworld.objects[tankH].rotation);
+					glworld.objects[tankH].y += glworld.objects[tankH].s * -1 * Math.sin(glworld.objects[tankH].rotation);
 				}
-				
-				glworld.objects[tankH].x += glworld.objects[tankH].s * Math.cos(glworld.objects[tankH].rotation);
-				glworld.objects[tankH].y += glworld.objects[tankH].s * -1 * Math.sin(glworld.objects[tankH].rotation);
 			}
 		}
 	}, 16);

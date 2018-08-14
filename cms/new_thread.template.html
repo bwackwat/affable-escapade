@@ -40,6 +40,7 @@
 		}, 5000);
 		
 		document.getElementById("createThreadButton").onclick = function() {
+			status.innerHTML = "Creating...";
 			callAPI("POST", "/thread", {"token": localStorage.getItem(localStorageTokenKey),
 			"values": {"name": threadNameField.value, "description": threadDescriptionField.value}}, function(response){
 				if(typeof(response.error) === 'undefined'){

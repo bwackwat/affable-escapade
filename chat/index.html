@@ -93,7 +93,7 @@ User:&nbsp
 		
 		handleField.value = get_anonymous_name();
 		
-		function updateChat(){
+		function updateChat(myUpdate = false){
 			callAPI("GET", "/chat", {}, function(response){
 				if(typeof response.messages !== 'undefined'){
 					var newhtml = "";
@@ -105,6 +105,11 @@ User:&nbsp
 						}else{
 							newhtml += "<p>" + response.messages[i].handle + ": " + response.messages[i].message + "</p>";
 						}
+					}
+					console.log(messages.innerHTML);
+					console.log(newhtml);
+					if(messages.innerHTML !== newhtml && !myUpdate){
+						ding.play();
 					}
 					messages.innerHTML = newhtml;
 				}else{
@@ -165,9 +170,9 @@ User:&nbsp
 					}
 				});
 			}
-			updateChat();
+			updateChat(true);
 			clearInterval(pinger);
-			pinger = setInterval(updateChat(), 1000);
+			pinger = setInterval(updateChat, 1000);
 		}
 		
 		document.getElementById("submitButton").onclick = send;

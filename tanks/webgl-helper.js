@@ -172,16 +172,6 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 	glworld.afterRender = null;
 	glworld.text = text;
 	
-	glworld.offset_shape = function(shape, offsetX, offsetY){
-		for(var i = 0; i < shape.length; i++){
-			if(i % 2 === 0){
-				shape[i] += offsetX;
-			}else{
-				shape[i] += offsetY;
-			}
-		}
-	};
-	
 	glworld.create_object = function(name, shape, x, y, color = null, scaleX = 1.0, scaleY = 1.0, rotation = 0.0){
 		var object = new Object();
 		
@@ -213,6 +203,7 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 		object.rotation = rotation;
 	
 		object.timed_animations = {};
+		// Time in ms.
 		object.timed_animation = function(key, value, time){
 			//console.log("starting animation for " + name + " on " + key);
 			glworld.objects[name].timed_animations[key] = {

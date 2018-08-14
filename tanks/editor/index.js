@@ -77,8 +77,24 @@ window.onload = function(){
 	glworld.objects["loadButton"].text = "Load";
 	glworld.objects["loadButton"].font = "italic 28pt Calibri";
 	glworld.objects["loadButton"].fillStyle = "white";
-	glworld.objects["loadButton"].textX = -5;
+	glworld.objects["loadButton"].textX = -8;
 	glworld.objects["loadButton"].textY = -32;
+	
+	
+	glworld.create_object("shiftButtonBezel",
+		[0, 0, 100, 0, 100, 50, 100, 50, 0, 50, 0, 0],
+		20, 200,
+		[0.5, 0.5, 0.5, 1]);
+	glworld.objects["shiftButtonBezel"].text = null;
+	glworld.create_object("shiftButton",
+		[0, 0, 90, 0, 90, 40, 90, 40, 0, 40, 0, 0],
+		25, 205,
+		[0, 0, 0, 1]);
+	glworld.objects["shiftButton"].text = "Shift";
+	glworld.objects["shiftButton"].font = "italic 28pt Calibri";
+	glworld.objects["shiftButton"].fillStyle = "white";
+	glworld.objects["shiftButton"].textX = -10;
+	glworld.objects["shiftButton"].textY = -32;
 	
 	
 	var next_triangle = 0;
@@ -96,7 +112,7 @@ window.onload = function(){
 					index -= 3;
 				}
 				shape = shape.substring(0, shape.length - 2);
-				shape += "];";
+				shape += "]";
 				alert(shape);
 			}
 		}
@@ -155,6 +171,36 @@ window.onload = function(){
 		}
 		
 		
+		if(e.clientX < 120 && e.clientX > 20 && e.clientY > 200 && e.clientY < 250){
+			var newShift = window.prompt("Please enter X and Y to shift space separated:", "");
+			var xay = newShift.split(' ');
+			var offsetX = parseInt(xay[0]);
+			var offsetY = parseInt(xay[1]);
+			console.log(offsetX + ", " + offsetY);
+			
+			var index = next_triangle - next_triangle % 3;
+			if(index > 0){
+				while(index > 0){
+					for(var i = 0; i < glworld.objects["sample" + index].shape.length; i++){
+						if(i % 2 === 0){
+							glworld.objects["sample" + index].shape[i] += offsetX;
+						}else{
+							glworld.objects["sample" + index].shape[i] += offsetY;
+						}
+					}
+					for(var i = 0; i < glworld.objects["done" + index].shape.length; i++){
+						if(i % 2 === 0){
+							glworld.objects["done" + index].shape[i] += offsetX * gridSize;
+						}else{
+							glworld.objects["done" + index].shape[i] += offsetY * gridSize;
+						}
+					}
+					index -= 3;
+				}
+			}
+		}
+		
+		
 		if(e.clientX > 160 && e.clientY > 160){
 			glworld.create_object("next" + next_triangle, square, Math.round(e.clientX / gridSize) * gridSize - gridSize, Math.round(e.clientY / gridSize) * gridSize - gridSize, [0, 1, 0, 0.5]);
 			glworld.objects["next" + next_triangle].text = (Math.round(e.clientX / gridSize) - gridSize) + ", " + (Math.round(e.clientY / gridSize) - gridSize);
@@ -185,7 +231,7 @@ window.onload = function(){
 					Math.round(triangle[3] / gridSize) - gridSize,
 					Math.round(triangle[4] / gridSize) - gridSize,
 					Math.round(triangle[5] / gridSize) - gridSize]
-				, 150, 20, [0, 0, 1, 0.5]);
+				, 200, 50, [0, 0, 1, 0.5]);
 				glworld.objects["sample" + next_triangle].text = null;
 			
 				triangle = [];
@@ -207,11 +253,15 @@ window.onload = function(){
 		}else if(e.clientX < 120 && e.clientX > 20 && e.clientY > 140 && e.clientY < 190){
 			glworld.objects["loadButtonBezel"].color = [1, 0, 0, 1];
 			textCanvas.style.cursor = "pointer";
+		}else if(e.clientX < 120 && e.clientX > 20 && e.clientY > 200 && e.clientY < 250){
+			glworld.objects["shiftButtonBezel"].color = [1, 0, 0, 1];
+			textCanvas.style.cursor = "pointer";
 		}else{
 			textCanvas.style.cursor = "default";
 			glworld.objects["loadButtonBezel"].color = [0.5, 0.5, 0.5, 1];
 			glworld.objects["undoButtonBezel"].color = [0.5, 0.5, 0.5, 1];
 			glworld.objects["saveButtonBezel"].color = [0.5, 0.5, 0.5, 1];
+			glworld.objects["shiftButtonBezel"].color = [0.5, 0.5, 0.5, 1];
 		}
 		
 		

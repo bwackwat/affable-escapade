@@ -157,6 +157,7 @@
 		});
 	
 		document.getElementById("saveThreadButton").onclick = function() {
+			status.innerHTML = "Saving...";
 			callAPI("PUT", "/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": state.tid, "values": {"name": threadName.value, "description": threadDescription.value}}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					redirect_flash("/cms/threads.html", "Thread saved!");

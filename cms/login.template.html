@@ -16,6 +16,7 @@
 		var passwordField = document.getElementById("passwordField");
 		
 		function login() {
+			status.innerHTML = "Logging...";
 			callAPI("POST", "/login", {"username": usernameField.value, "password": passwordField.value}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					localStorage.setItem(localStorageUsernameKey, usernameField.value);

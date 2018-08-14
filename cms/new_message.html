@@ -162,6 +162,7 @@
 		}, 5000);
 	
 		document.getElementById("createMessageButton").onclick = function() {
+			status.innerHTML = "Creating...";
 			callAPI("POST", "/message", {"token": localStorage.getItem(localStorageTokenKey),
 			"values": {"thread_id": urlParams["tid"], "title": messageTitleField.value, "content": messageContentField.value}}, function(response){
 				if(typeof(response.error) === 'undefined'){

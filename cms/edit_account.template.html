@@ -66,6 +66,7 @@
 				new_values["password"] = document.getElementById("passwordField").value;
 			}
 		
+			status.innerHTML = "Saving...";
 			callAPI("PUT", "/user", {"token": localStorage.getItem(localStorageTokenKey), "values": new_values}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					localStorage.setItem(localStorageUsernameKey, document.getElementById("usernameField").value);
