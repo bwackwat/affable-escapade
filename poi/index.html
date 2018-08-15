@@ -1,22 +1,68 @@
-<!DOCTYPE HTML>
 <html>
 	<head>
 		<title>Points of Interest</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.8">
+		
 		<link rel="shortcut icon" type="image/x-icon" href="/poi/favicon.ico"/>
-
+		
 		<link rel="stylesheet" type="text/css" href="/poi/index.css">
 		
-		<link rel="stylesheet" href="https://openlayers.org/en/v3.20.1/css/ol.css" type="text/css">
-		<script src="https://openlayers.org/en/v3.20.1/build/ol.js"></script>
-
-		<script src="/index.js"></script>	
+		<script src="/poi/OpenLayers.js"></script>
+		<script src="index.js"></script>
 		<script src="/poi/index.js"></script>
 	</head>
 
 	<body>
+		
+		<div id="loginModal" style="z-index:10000;display:none;position:absolute;height:100%;width:100%;overflow:hidden;pointer-events:none;">
+			<div style="display:table-cell;vertical-align:middle;pointer-events:none;">
+				<div class="innerModal">
+					<h3>Login to save your points of interest!</h3>
+					<h4 class="result" id="loginResult"></h4>
+					<form autocomplete="true">
+						<input id="username" type="text" placeholder="username"><br>
+						<input id="password" type="password" placeholder="password"><br>
+						<input id="loginButton" type="button" value="Login"/>
+						<input id="cancelLoginButton" type="button" value="Maybe Later"/>
+					</form>
+					<h4>Or maybe you need to...</h4>
+					<input id="goToSignup" type="button" value="Signup"/>
+				</div>
+			</div>
+		</div>
+		
+		<div id="newPoiModal" style="z-index:10000;display:none;position:absolute;height:100%;width:100%;overflow:hidden;pointer-events:none;">
+			<div style="display:table-cell;vertical-align:middle;pointer-events:none;">
+				<div class="innerModal">
+					<h3>Create a Point of Interest!</h3>
+					<h4>Position: <div id="poiLongitude"></div>, <div id="poiLatitude"></div></h4>
+					<input type="text" placeholder="location label" id="poiLabel"><br>
+					<input type="text" placeholder="location description" id="poiDescription"><br>
+					<input id="savePoi" type="button" value="Save"/>
+					<input id="cancelPoi" type="button" value="Cancel/Close"/>
+				</div>
+			</div>
+		</div>
+		
+		<div id="poiModal" style="z-index:10000;display:none;position:absolute;height:100%;width:100%;overflow:hidden;pointer-events:none;">
+			<div style="display:table-cell;vertical-align:middle;pointer-events:none;">
+				<div class="innerModal">
+					<h3>Point of Interest:</h3>
+					<h4>Position: <div id="editPoiLongitude"></div>, <div id="editPoiLatitude"></div></h4>
+					<input type="text" placeholder="location label" id="editPoiLabel"><br>
+					<input type="text" placeholder="location description" id="editPoiDescription"><br>
+					<input id="editPoi" type="button" value="Save"/>
+					<input id="deleteEditPoi" type="button" value="Delete"/><br>
+					<input id="cancelEditPoi" type="button" value="Cancel/Close"/>
+				</div>
+			</div>
+		</div>
+		
 		<div id="banner">
 			<h4 style="margin: 4px;"><div id="status" style="float: right">Welcome!</div></h4>
 		</div>
-		<div id="poiMap" class="map" tabindex="0"></div>
+
+		<div id="theMap"></div>
 	</body>
 </html>

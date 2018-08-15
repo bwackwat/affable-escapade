@@ -94,9 +94,7 @@ sub_scripts.push(function(){
 		}else if(typeof msg.disconnect !== 'undefined'){
 			delete glworld.objects[msg.disconnect + "tank"];
 		}else if(typeof msg.explode !== 'undefined'){
-		
-			console.log(msg.explode + " exploded!");
-		
+			
 			// Clear old explosion.
 			
 			if(msg.explode + "l1" in glworld.objects){
@@ -111,7 +109,6 @@ sub_scripts.push(function(){
 			if(msg.explode + "r2" in glworld.objects){
 				delete glworld.objects[msg.explode + "r2"];
 			}
-		
 		
 			// Create an explosion.
 		
@@ -255,6 +252,7 @@ sub_scripts.push(function(){
 		}
 		var msg = {};
 		msg.handle = client.handle;
+		msg.color = client.color;
 		msg.x = e.clientX.toString();
 		msg.y = e.clientY.toString();
 		client.send(msg);
@@ -310,6 +308,10 @@ sub_scripts.push(function(){
 		
 		if(debugging){
 			glworld.texts["d3"].text = JSON.stringify(msg);
+		}
+		
+		if(client.handle + "tank" in glworld.objects){
+			glworld.objects[client.handle + "tank"].i = msg.i;
 		}
 		
 		client.send(msg);
@@ -402,15 +404,16 @@ sub_scripts.push(function(){
 			}
 		}
 		
+		// Client makes "predictions" about tank movement since last received game state.
 		if(!debugging){
 			for(tankH in glworld.objects){
 				// Compensate only for owned items.
 				if(glworld.objects[tankH].owned === undefined){
 					continue;
 				}
-				// Compensat only for objects with input.
 				if("i" in glworld.objects[tankH]){
 					// THESE CALCULATIONS MATCH THE SERVER CALCULATIONS.
+					// TODO: They shouldn't match because the client knows better?
 					if(glworld.objects[tankH].i.charAt(0) === 'f'){
 						if(glworld.objects[tankH].s < maxSpeed){
 							glworld.objects[tankH].s += acceleration;
@@ -452,10 +455,6 @@ sub_scripts.push(function(){
 			}
 		}
 	}, 16);
-	
-	//TODO: Every frame? Can this just be in the client game simulator loop?
-	glworld.afterRender = function(){
-	};
 });
 
 

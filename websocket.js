@@ -21,7 +21,7 @@ var websocket_client = function(){
 				window.location.reload();
 			}else{
 				
-				callAPI("POST", "/get/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+				callAPI("POST", "/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 					if(typeof(response.error) === 'undefined'){
 						client.handle = response[0]["username"];
 						client.color = response[0]["color"];
@@ -107,8 +107,8 @@ var websocket_client = function(){
 	client.send = function(msg){
 		
 		// The lines below will stop pings until nothing is being sent.
-		// clearInterval(client.pinger);
-		// client.pinger = setInterval(client.ping, 1000);
+		//clearInterval(client.pinger);
+		//client.pinger = setInterval(client.ping, 1000);
 		
 		if(!client.failed && client.ws.readyState === client.ws.OPEN){
 			try{

@@ -353,16 +353,16 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 			}
 		}
 		
+		if(glworld.afterRender !== null){
+			glworld.afterRender();
+		}
+		
 		if(show_fps){
 			time *= 0.001;
 			fps_delta = time - fps_time;
 			fps_time = time;
 			fps = 1 / fps_delta;
 			text.fillText("FPS: " + Math.round(fps), 10, 10);
-		}
-		
-		if(glworld.afterRender !== null){
-			glworld.afterRender();
 		}
 		
 		window.requestAnimationFrame(render);

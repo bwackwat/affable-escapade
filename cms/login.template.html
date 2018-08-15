@@ -1,13 +1,13 @@
 <form autocomplete="true">
-<label for="usernameField">Username:&nbsp&nbsp</label>
-<input type="text" autocomplete="on" id="usernameField"/>
-<br>
-<br>
-<label for="passwordField">Password:&nbsp&nbsp</label>
-<input type="password" autocomplete="on" id="passwordField"/>
-<br>
-<br>
-<input id="loginButton" type="button" value="Login"/>
+	<label for="usernameField">Username:&nbsp&nbsp</label>
+	<input type="text" autocomplete="on" id="usernameField"/>
+	<br>
+	<br>
+	<label for="passwordField">Password:&nbsp&nbsp</label>
+	<input type="password" autocomplete="on" id="passwordField"/>
+	<br>
+	<br>
+	<input id="loginButton" type="button" value="Login"/>
 </form>
 <script>
 	sub_scripts.push(function(){
@@ -17,11 +17,11 @@
 		
 		function login() {
 			status.innerHTML = "Logging...";
+
 			callAPI("POST", "/login", {"username": usernameField.value, "password": passwordField.value}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					localStorage.setItem(localStorageUsernameKey, usernameField.value);
 					localStorage.setItem(localStorageTokenKey, response.token);
-				
 					window.location.href = "/cms/account.html";
 				}else{
 					status.innerHTML = response.error;
@@ -32,8 +32,12 @@
 		document.getElementById("loginButton").onclick = login;
 		
 		window.onkeypress = function(e){
-			if(e.code === "Enter"){
-				login();
+			if(e.code === "Enter" || e.key === "Enter"){
+				if(login()){
+					window.location.href = "/cms/account.html";
+				}
+			}else{
+				//console.log(e.code);
 			}
 		}
 	});

@@ -43,7 +43,7 @@
 			}
 		};
 		
-		callAPI("POST", "/get/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+		callAPI("POST", "/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 			if(typeof(response.error) === 'undefined'){
 				usernameField.value = response[0]["username"];
 				emailField.value = response[0]["email"];

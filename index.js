@@ -46,8 +46,8 @@ function callAPI(method, route, data, callback){
 			if(http.status == 200){
 				callback(JSON.parse(http.responseText));
 			}else{
+				console.log(http.status);
 				callback({"error":"Bad response from server..."});
-				window.location.reload();
 			}
 		}else if(http.readyState == 3){
 			//Bogus OPTIONS response...
@@ -80,7 +80,7 @@ function redirect_flash(url, flash){
 }
 
 window.onload = function() {
-	var status = document.getElementById("status");
+	status = document.getElementById("status");
 
 	flashed = false;
 
@@ -92,8 +92,8 @@ window.onload = function() {
 		flashed = true;
 	}
 
-	for(var i = 0, len = sub_scripts.length; i < len; i++){
-		sub_scripts[i]();
+	for(var i = sub_scripts.length - 1; i >= 0; i--){
+		sub_scripts[i](status);
 	}
 }
 

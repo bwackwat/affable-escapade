@@ -10,10 +10,11 @@ button {
 	margin: 5px;
 }
 
-#poiMap {
-	border: 1px black solid;
+#theMap {
+	border: 2px darkblue solid;
 	height: 96vh;
-	width: 100vw;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
 }
 
 #poiLongitude, #poiLatitude {
@@ -22,7 +23,9 @@ button {
 
 #banner {
 	background-color: lightblue;
-	border: 1px black solid;
+	border-left: 2px darkblue solid;
+	border-top: 2px darkblue solid;
+	border-right: 2px darkblue solid;
 	height: 3vh;
 }
 
@@ -30,14 +33,68 @@ button {
 	color: red;
 }
 
-.modal {
-	background-color: lightblue;
-	position: fixed;
-	float: right;
-	top: 4vh;
-	left: 1vw;
-	margin: 0px;
-	padding: 10px;
-	z-index: 10000;
-	border: 1px black solid;
+.innerModal {
+	pointer-events:all;
+	padding-left:20px;
+	padding-bottom:20px;
+	padding-right:20px;
+	background-color:lightblue;
+	margin-left:50px;
+	margin-top:50px;
+	text-align:center;
+	border:2px solid darkblue;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
 }
+
+input[type=text], input[type=password] {
+	padding:5px;
+	border:2px solid grey;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+input[type=text]:hover, input[type=password]:hover {
+	border-color: darkblue;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+	border-color: black;
+}
+
+input[type=button] {
+	padding:5px 15px;
+	border:2px solid grey;
+	cursor:pointer;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+input[type=button]:hover {
+	border-color: darkblue;
+}
+
+input[type=button]:focus {
+	border-color: black;
+}
+
+textarea {
+	padding:5px 15px;
+	border:2px solid grey;
+	cursor:pointer;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+textarea:hover {
+	border-color: darkblue;
+}
+
+textarea:focus {
+	border-color: black;
+}
+
+*:focus {
+	outline:none;
+}
+

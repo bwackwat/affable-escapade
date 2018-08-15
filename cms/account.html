@@ -16,7 +16,6 @@
 		
 		Set to display:table; to show this loading screen.
 		
-		-->
 		<div style="z-index:1;background-color:white;display:none;position:absolute;height:100%;width:100%;overflow:hidden;">
 			<div style="display:table-cell;vertical-align:middle;">
 				<div style="margin-left:auto;margin-right:auto;width:100%;text-align:center;">
@@ -46,19 +45,22 @@
 			</div>
 		</div>
 		
+		-->
 		
-		<table id="banner"><tr><td>
-			<div id="bannerleft">
+		<table id="banner">
+			<tr><td><div id="bannerleft">
 				<div id="icon"><img src="/favicon.ico"/></div>
 				<div id="status">Welcome.</div>
-			</div></td><td style="display:table-cell;vertical-align:middle;">
-			<div id="bannerright">
+			</div></td>
+			
+			<td style="display:table-cell;vertical-align:middle;"><div id="bannerright">
 				<div id="links">
 					<a class="bannerLink" href="/cms/">Manage</a>&nbsp&nbsp|&nbsp
 					<a class="bannerLink" href="/chat/">Chat</a>&nbsp&nbsp
 				</div>
 			</div></td></tr>
 		</table>
+		
 		<div id="contentborder">
 			<div id="content">
 				
@@ -132,13 +134,15 @@
 <p id="access"></p>
 <script>
 	sub_scripts.push(function(){
-		callAPI("POST", "/get/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+		callAPI("POST", "/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 			if(typeof(response.error) === 'undefined'){
+				console.log('a');
 				document.getElementById("username").innerHTML = response[0]["username"];
 				document.getElementById("email").innerHTML = response[0]["email"];
 				document.getElementById("first_name").innerHTML = response[0]["first_name"];
 				document.getElementById("last_name").innerHTML = response[0]["last_name"];
 				document.getElementById("color").innerHTML = response[0]["color"];
+				console.log('b');
 			}else{
 				status.innerHTML = response.error;
 			}

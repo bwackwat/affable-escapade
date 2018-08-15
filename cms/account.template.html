@@ -13,13 +13,15 @@
 <p id="access"></p>
 <script>
 	sub_scripts.push(function(){
-		callAPI("POST", "/get/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+		callAPI("POST", "/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 			if(typeof(response.error) === 'undefined'){
+				console.log('a');
 				document.getElementById("username").innerHTML = response[0]["username"];
 				document.getElementById("email").innerHTML = response[0]["email"];
 				document.getElementById("first_name").innerHTML = response[0]["first_name"];
 				document.getElementById("last_name").innerHTML = response[0]["last_name"];
 				document.getElementById("color").innerHTML = response[0]["color"];
+				console.log('b');
 			}else{
 				status.innerHTML = response.error;
 			}

@@ -64,7 +64,7 @@ User:&nbsp
 					window.location.reload();
 				}else{
 				
-					callAPI("POST", "/get/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+					callAPI("POST", "/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 						if(typeof(response.error) === 'undefined'){
 							document.getElementById("handleOrUsername").innerHTML = "Using login handle: " + response[0]["username"];
 						}else{
@@ -81,8 +81,6 @@ User:&nbsp
 				"message": messageField.value}, function(response){
 					messageField.value = "";
 					messageField.focus();
-					
-					console.log(response);
 				
 					if(typeof(response.error) !== 'undefined'){
 						status.innerHTML = response.error;
@@ -95,8 +93,6 @@ User:&nbsp
 				"message": messageField.value}, function(response){
 					messageField.value = "";
 					messageField.focus();
-					
-					console.log(response);
 				
 					if(typeof(response.error) !== 'undefined'){
 						status.innerHTML = response.error;
