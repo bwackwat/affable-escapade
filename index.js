@@ -31,8 +31,7 @@ function callAPI(method, route, data, callback){
 		if (data.hasOwnProperty(key)){
 			if(data[key] === "undefined" ||
 			data[key] === null){
-				console.log("Parameter is null or undefined, skipping call: " + key);
-				return;
+				console.log("Parameter is null or undefined: " + key + ". Does it matter?");
 			}
 		}
 	}

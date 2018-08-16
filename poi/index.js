@@ -46,46 +46,46 @@ var size = new OpenLayers.Size(21, 25);
 var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
 var icon = new OpenLayers.Icon("https://maps.google.com/intl/en_us/mapfiles/ms/micons/orange-dot.png", size, offset);
 
-var json_markers = [];
-var selected_poi_id = null;
 var markers = new OpenLayers.Layer.Markers("Markers");
 map.addLayer(markers);
 var currentmarker = null;
 
-map.events.register("click touchend", map, function(e){
-	menu.style.display = "none";
+var json_markers = [];
+var selected_poi_id = null;
 
+function map_click(e){
+	menu.style.display = "none";
+	newPoi.style.display = "none";
+	poi.style.display = "none";
+	
 	if(currentmarker != null){
 		markers.removeMarker(currentmarker);
+	}
+	
+	var position = map.getLonLatFromPixel(e.xy);
+	
+	for(i in json_markers){
+		var position_check = new OpenLayers.LonLat(json_markers[i].location.coordinates[0], json_markers[i].location.coordinates[1]);
+		position_check.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+		var pixel = map.getPixelFromLonLat(position_check);
+		
+		if(Math.abs(e.clientX - pixel.x) <= 20 && Math.abs(e.clientY - pixel.y - 15) <= 20){
+			selected_poi_id = json_markers[i].id;
+			editLink.href = "/poi?id=" + json_markers[i].id;
+			editPoiLabel.value = json_markers[i].label;
+			editPoiDescription.value = json_markers[i].description
+			editPoiLongitude.innerHTML = json_markers[i].location.coordinates[0].toFixed(5);
+			editPoiLatitude.innerHTML = json_markers[i].location.coordinates[1].toFixed(5);
+			
+			poi.style.display = "block";
+			return;
+		}
 	}
 	
 	if(localStorage.getItem(localStorageTokenKey) === null){
 		login.style.display = "block";
 		username.focus();
 	}else{
-		newPoi.style.display = "none";
-		poi.style.display = "none";
-		
-		var position = map.getLonLatFromPixel(e.xy);
-		
-		for(i in json_markers){
-			var position_check = new OpenLayers.LonLat(json_markers[i].location.coordinates[0], json_markers[i].location.coordinates[1]);
-			position_check.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-			var pixel = map.getPixelFromLonLat(position_check);
-			
-			if(Math.abs(e.clientX - pixel.x) <= 20 && Math.abs(e.clientY - pixel.y - 15) <= 20){
-				selected_poi_id = json_markers[i].id;
-				editLink.href = "/poi?id=" + json_markers[i].id;
-				editPoiLabel.value = json_markers[i].label;
-				editPoiDescription.value = json_markers[i].description
-				editPoiLongitude.innerHTML = json_markers[i].location.coordinates[0].toFixed(5);
-				editPoiLatitude.innerHTML = json_markers[i].location.coordinates[1].toFixed(5);
-				
-				poi.style.display = "block";
-				return;
-			}
-		}
-
 		currentmarker = new OpenLayers.Marker(position, icon.clone());
 		markers.addMarker(currentmarker);
 		
@@ -97,7 +97,10 @@ map.events.register("click touchend", map, function(e){
 
 		newPoi.style.display = "block";
 	}
-});
+}
+
+map.events.register("click", map, map_click);
+map.events.register("touchend", map, map_click);
 
 map.zoomToMaxExtent();
 
@@ -241,14 +244,14 @@ document.getElementById("findUserPoi").onclick = function(){
 	callAPI("GET", "/poi/by/username?username=" + find_username, {}, function(response){
 		if(typeof(response.error) === 'undefined'){
 		
-		
-			markers.clearMarkers();
 			for(var i = 0, len = response.length; i < len; i++){
 				response[i].location = JSON.parse(response[i].location);
 				markers.addMarker(getMarkerFromLocation(response[i].location));
+				json_markers.push(response[i]);
 			}
-			json_markers = response;
 			
+			status.innerHTML = "Loaded POI from user " + find_username + "!";
+			menu.style.display = "none";
 			
 		}else{
 			status.innerHTML = response.error;
@@ -282,6 +285,7 @@ if("id" in urlParams){
 				markers.addMarker(new OpenLayers.Marker(lonlat, icon.clone()));
 				
 				map.setCenter(lonlat, 10);
+				json_markers.push(response[i]);
 			}
 		}else{
 			status.innerHTML = response.error;
