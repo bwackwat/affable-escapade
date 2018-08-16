@@ -9,59 +9,63 @@
 		<link rel="stylesheet" type="text/css" href="/poi/index.css">
 		
 		<script src="/poi/OpenLayers.js"></script>
-		<script src="index.js"></script>
+		<script src="/index.js"></script>
 		<script src="/poi/index.js"></script>
 	</head>
 
 	<body>
-		
-		<div id="loginModal" style="z-index:10000;display:none;position:absolute;height:100%;width:100%;overflow:hidden;pointer-events:none;">
-			<div style="display:table-cell;vertical-align:middle;pointer-events:none;">
-				<div class="innerModal">
-					<h3>Login to save your points of interest!</h3>
-					<h4 class="result" id="loginResult"></h4>
-					<form autocomplete="true">
-						<input id="username" type="text" placeholder="username"><br>
-						<input id="password" type="password" placeholder="password"><br>
-						<input id="loginButton" type="button" value="Login"/>
-						<input id="cancelLoginButton" type="button" value="Maybe Later"/>
-					</form>
-					<h4>Or maybe you need to...</h4>
-					<input id="goToSignup" type="button" value="Signup"/>
+		<table id="banner">
+			<tr><td><div id="bannerleft">
+				<div id="icon"><img src="/poi/favicon.ico"/></div>
+				<div id="status">Welcome.</div>
+			</div></td>
+			
+			<td style="display:table-cell;vertical-align:middle;"><div id="bannerright">
+				<div id="links">
+					<!-- <a class="bannerLink" href="/">Back to JPH2</a>&nbsp&nbsp|&nbsp -->
+					<a class="bannerLink" href="#" id="menuLink">Menu</a>&nbsp&nbsp
 				</div>
-			</div>
-		</div>
+			</div></td></tr>
+		</table>
 		
-		<div id="newPoiModal" style="z-index:10000;display:none;position:absolute;height:100%;width:100%;overflow:hidden;pointer-events:none;">
-			<div style="display:table-cell;vertical-align:middle;pointer-events:none;">
-				<div class="innerModal">
-					<h3>Create a Point of Interest!</h3>
-					<h4>Position: <div id="poiLongitude"></div>, <div id="poiLatitude"></div></h4>
-					<input type="text" placeholder="location label" id="poiLabel"><br>
-					<input type="text" placeholder="location description" id="poiDescription"><br>
-					<input id="savePoi" type="button" value="Save"/>
-					<input id="cancelPoi" type="button" value="Cancel/Close"/>
-				</div>
-			</div>
-		</div>
+		<div id="loginModal" class="outerModal"><div class="middleModal"><div class="innerModal">
+			<h3>Login to save your points of interest!</h3>
+			<form autocomplete="true">
+				<input id="username" type="text" placeholder="username"><br>
+				<input id="password" type="password" placeholder="password"><br>
+				<input id="loginButton" type="button" value="Login"/>
+				<input id="cancelLoginButton" type="button" value="Maybe Later"/>
+			</form>
+			<h4>Or maybe you need to...</h4>
+			<input id="goToSignup" type="button" value="Signup"/>
+		</div></div></div>
 		
-		<div id="poiModal" style="z-index:10000;display:none;position:absolute;height:100%;width:100%;overflow:hidden;pointer-events:none;">
-			<div style="display:table-cell;vertical-align:middle;pointer-events:none;">
-				<div class="innerModal">
-					<h3>Point of Interest:</h3>
-					<h4>Position: <div id="editPoiLongitude"></div>, <div id="editPoiLatitude"></div></h4>
-					<input type="text" placeholder="location label" id="editPoiLabel"><br>
-					<input type="text" placeholder="location description" id="editPoiDescription"><br>
-					<input id="editPoi" type="button" value="Save"/>
-					<input id="deleteEditPoi" type="button" value="Delete"/><br>
-					<input id="cancelEditPoi" type="button" value="Cancel/Close"/>
-				</div>
-			</div>
-		</div>
+		<div id="newPoiModal" class="outerModal"><div class="middleModal"><div class="innerModal">
+			<h3>Create a Point of Interest!</h3>
+			<h4>Position: <div id="poiLongitude"></div>, <div id="poiLatitude"></div></h4>
+			<input type="text" placeholder="location label" id="poiLabel"><br>
+			<input type="text" placeholder="location description" id="poiDescription"><br>
+			<input id="savePoi" type="button" value="Save"/>
+			<input id="cancelPoi" type="button" value="Cancel/Close"/>
+		</div></div></div>
 		
-		<div id="banner">
-			<h4 style="margin: 4px;"><div id="status" style="float: right">Welcome!</div></h4>
-		</div>
+		<div id="poiModal" class="outerModal"><div class="middleModal"><div class="innerModal">
+			<h3>Point of Interest:</h3>
+			<h4>Position: <div id="editPoiLongitude"></div>, <div id="editPoiLatitude"></div></h4>
+			<a id="editPoiLink" href="">Link to POI</a><br>
+			<input type="text" placeholder="location label" id="editPoiLabel"><br>
+			<input type="text" placeholder="location description" id="editPoiDescription"><br>
+			<input id="updatePoi" type="button" value="Save"/>
+			<input id="deletePoi" type="button" value="Delete"/><br>
+			<input id="cancelEditPoi" type="button" value="Cancel/Close"/>
+		</div></div></div>
+		
+		<div id="menuModal" class="outerModal"><div class="middleModal"><div class="innerModal">
+			<h3>Menu</h3>
+			<input id="back" type="button" value="Back to JPH2"/><br>
+			<input id="findUserPoi" type="button" value="Find User POI"/><br>
+			<input id="logoutButton" type="button" value="Logout"/><br>
+		</div></div></div>
 
 		<div id="theMap"></div>
 	</body>
