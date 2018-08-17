@@ -2,7 +2,9 @@
 	<head>
 		<title>Points of Interest</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=0.8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.7">
+		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=0.7" />
+		<!-- <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=0.7" /> -->
 		
 		<link rel="shortcut icon" type="image/x-icon" href="/poi/favicon.ico"/>
 		
@@ -14,25 +16,28 @@
 	</head>
 
 	<body>
-		<table id="banner">
-			<tr><td><div id="bannerleft">
-				<div id="icon"><img src="/poi/favicon.ico"/></div>
-				<div id="status">Welcome.</div>
-			</div></td>
-			
-			<td style="display:table-cell;vertical-align:middle;"><div id="bannerright">
-				<div id="links">
-					<!-- <a class="bannerLink" href="/">Back to JPH2</a>&nbsp&nbsp|&nbsp -->
-					<a class="bannerLink" href="#" id="menuLink">Menu</a>&nbsp&nbsp
-				</div>
-			</div></td></tr>
-		</table>
+		<div style="position:fixed;display:block;width:100%;overflow-x:auto;" class="outerModal"><div style="display:block;width:100%;" class="middleModal"><div style="border-right:none;border-left:none;border-top:none;width:100%;margin:0;padding:0;" class="innerModal">
+			<table id="banner">
+				<tr><td><div id="bannerleft">
+					<div id="icon"><img src="/poi/favicon.ico"/></div>
+					<div id="status">Welcome.</div>
+				</div></td>
+		
+				<td style="display:table-cell;vertical-align:middle;"><div id="bannerright">
+					<div id="links">
+						<!-- <a class="bannerLink" href="/">Back to JPH2</a>&nbsp&nbsp|&nbsp -->
+						<a class="bannerLink" href="#" id="zoomOutLink">Zoom Out</a>&nbsp&nbsp|&nbsp
+						<a class="bannerLink" href="#" id="menuLink">Menu</a>&nbsp&nbsp
+					</div>
+				</div></td></tr>
+			</table>
+		</div></div></div>
 		
 		<div id="loginModal" class="outerModal"><div class="middleModal"><div class="innerModal">
-			<h3>Login to save your points of interest!</h3>
+			<h2>Login to save your Points of Interest:</h2>
 			<form autocomplete="true">
-				<input id="username" type="text" placeholder="username"><br>
-				<input id="password" type="password" placeholder="password"><br>
+				<input id="username" autocomplete="true" type="text" placeholder="username"><br>
+				<input id="password" autocomplete="true" type="password" placeholder="password"><br>
 				<input id="loginButton" type="button" value="Login"/>
 				<input id="cancelLoginButton" type="button" value="Maybe Later"/>
 			</form>
@@ -41,27 +46,29 @@
 		</div></div></div>
 		
 		<div id="newPoiModal" class="outerModal"><div class="middleModal"><div class="innerModal">
-			<h3>Create a Point of Interest!</h3>
-			<h4>Position: <div id="poiLongitude"></div>, <div id="poiLatitude"></div></h4>
-			<input type="text" placeholder="location label" id="poiLabel"><br>
-			<input type="text" placeholder="location description" id="poiDescription"><br>
+			<h2>Create a Point of Interest:</h2>
+			<h4>Location: <div id="poiLongitude"></div>, <div id="poiLatitude"></div></h4>
+			<input id="zoomToNewPoi" type="button" value="Zoom In"/><br>
+			Label: <input type="text" id="poiLabel"><br>
+			Description:<br><textarea id="poiDescription" cols="40" rows="4"></textarea><br>
 			<input id="savePoi" type="button" value="Save"/>
 			<input id="cancelPoi" type="button" value="Cancel/Close"/>
 		</div></div></div>
 		
 		<div id="poiModal" class="outerModal"><div class="middleModal"><div class="innerModal">
-			<h3>Point of Interest:</h3>
-			<h4>Position: <div id="editPoiLongitude"></div>, <div id="editPoiLatitude"></div></h4>
-			<a id="editPoiLink" href="">Link to POI</a><br>
-			<input type="text" placeholder="location label" id="editPoiLabel"><br>
-			<input type="text" placeholder="location description" id="editPoiDescription"><br>
+			<h2>Point of Interest:</h2>
+			<h4>Location: <div id="editPoiLongitude"></div>, <div id="editPoiLatitude"></div></h4>
+			<input id="zoomToPoi" type="button" value="Zoom In"/><br>
+			Label: <input type="text" id="editPoiLabel"><br>
+			Description:<br><textarea id="editPoiDescription" cols="40" rows="4"></textarea><br>
 			<input id="updatePoi" type="button" value="Save"/>
-			<input id="deletePoi" type="button" value="Delete"/><br>
-			<input id="cancelEditPoi" type="button" value="Cancel/Close"/>
+			<input id="deletePoi" type="button" value="Delete"/>
+			<input id="cancelEditPoi" type="button" value="Cancel/Close"/><br>
+			<a id="editPoiLink" href="">Link to POI</a>
 		</div></div></div>
 		
 		<div id="menuModal" class="outerModal"><div class="middleModal"><div class="innerModal">
-			<h3>Menu</h3>
+			<h2>Menu</h2>
 			<input id="back" type="button" value="Back to JPH2"/><br>
 			<input id="findUserPoi" type="button" value="Find User POI"/><br>
 			<input id="logoutButton" type="button" value="Logout"/><br>

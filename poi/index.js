@@ -24,13 +24,17 @@ var editPoiLabel = document.getElementById("editPoiLabel");
 var editPoiDescription = document.getElementById("editPoiDescription");
 
 var menu = document.getElementById("menuModal");
+var theMap = document.getElementById("theMap");
+
+var mobile = false;
+if('ontouchstart' in theMap){
+	mobile = true;
+}
 
 //START MAP SCRIPT
 
-map = new OpenLayers.Map("theMap",{
-	theme: false
-});
-
+map = new OpenLayers.Map("theMap",{});
+map.addControl(new OpenLayers.Control.PanZoomBar());
 map.addLayer(new OpenLayers.Layer.OSM(
 	"OpenStreetMap", 
 	[
@@ -41,8 +45,22 @@ map.addLayer(new OpenLayers.Layer.OSM(
 	], 
 	null
 ));
+map.getNumZoomLevels = function(){
+	return 19;
+};
 
-var size = new OpenLayers.Size(21, 25);
+// Start in the four corners.
+var start_position = new OpenLayers.LonLat(-109.04518, 36.99896);
+start_position.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+map.setCenter(start_position, 6);
+
+// Bigger markers on mobile.
+var size;
+if(mobile){
+	size = new OpenLayers.Size(50, 50);
+}else{
+	size = new OpenLayers.Size(25, 25);
+}
 var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
 var icon = new OpenLayers.Icon("https://maps.google.com/intl/en_us/mapfiles/ms/micons/orange-dot.png", size, offset);
 
@@ -51,7 +69,14 @@ map.addLayer(markers);
 var currentmarker = null;
 
 var json_markers = [];
+var selected_poi_index = null;
 var selected_poi_id = null;
+var new_position = null;
+
+var threshold = 10;
+if(mobile){
+	threshold = 25;
+}
 
 function map_click(e){
 	menu.style.display = "none";
@@ -62,14 +87,13 @@ function map_click(e){
 		markers.removeMarker(currentmarker);
 	}
 	
-	var position = map.getLonLatFromPixel(e.xy);
-	
 	for(i in json_markers){
 		var position_check = new OpenLayers.LonLat(json_markers[i].location.coordinates[0], json_markers[i].location.coordinates[1]);
 		position_check.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
 		var pixel = map.getPixelFromLonLat(position_check);
 		
-		if(Math.abs(e.clientX - pixel.x) <= 20 && Math.abs(e.clientY - pixel.y - 15) <= 20){
+		if(Math.abs(e.xy.x - pixel.x) <= threshold && Math.abs(e.xy.y - pixel.y + 10) <= threshold){
+			selected_poi_index = i;
 			selected_poi_id = json_markers[i].id;
 			editLink.href = "/poi?id=" + json_markers[i].id;
 			editPoiLabel.value = json_markers[i].label;
@@ -83,31 +107,67 @@ function map_click(e){
 	}
 	
 	if(localStorage.getItem(localStorageTokenKey) === null){
+		status.innerHTML = "Login to save and share POI.";
 		login.style.display = "block";
 		username.focus();
 	}else{
+		var position = map.getLonLatFromPixel(e.xy);
 		currentmarker = new OpenLayers.Marker(position, icon.clone());
 		markers.addMarker(currentmarker);
 		
+		new_position = [position.lon, position.lat];
 		position.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
+		
+		
 		poiLabel.value = "";
 		poiDescription.value = "";
 		poiLongitude.innerHTML = position.lon.toFixed(5);
 		poiLatitude.innerHTML = position.lat.toFixed(5);
 
 		newPoi.style.display = "block";
+		
+		selected_poi_id = null;
+		poiLabel.focus();
 	}
 }
 
+
+// Clear markers when the map moves and you haven't selected a POI.
+map.events.register("movestart", map, function(e){
+	status.innerHTML = "Mapping...";
+
+	if(selected_poi_id === null){
+		newPoi.style.display = "none";
+		poi.style.display = "none";
+		menu.style.display = "none";
+		login.style.display = "none";
+		if(currentmarker != null){
+			markers.removeMarker(currentmarker);
+		}
+	}
+});
+
+// Regular click.
 map.events.register("click", map, map_click);
-map.events.register("touchend", map, map_click);
 
-map.zoomToMaxExtent();
+// Track mobile touch.
+var touch_moved = false;
+map.events.register("touchmove", map, function(e){
+	touch_moved = true;
+});
 
+// If mobile touch is moving the map, dont click!
+map.events.register("touchend", map, function(e){
+	if(touch_moved){
+		touch_moved = false;
+	}else{
+		map_click(e);
+	}
+});
 
 function logout(){
 	localStorage.removeItem(localStorageTokenKey);
-	status.innerHTML = "Welcome! You are not logged in.";
+	status.innerHTML = "Welcome! Logged out.";
 	markers.clearMarkers();
 	newPoi.style.display = "none";
 	menu.style.display = "none";
@@ -122,8 +182,8 @@ function getMarkerFromLocation(location){
 function updateMarkers(){
 	callAPI("POST", "/my/poi", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 		if(typeof(response.error) === 'undefined'){
-		
-		
+			
+			
 			markers.clearMarkers();
 			for(var i = 0, len = response.length; i < len; i++){
 				response[i].location = JSON.parse(response[i].location);
@@ -142,11 +202,12 @@ function updateMarkers(){
 //LOGIN MODAL SCRIPT
 
 function authSuccess(){
-	status.innerHTML = "Welcome! You are logged in as " + localStorage.getItem(localStorageUsernameKey);
+	status.innerHTML = "Welcome, " + localStorage.getItem(localStorageUsernameKey) + "!";
 	updateMarkers();
 }
 
 document.getElementById("loginButton").onclick = function(){
+	status.innerHTML = "Logging...";
 	callAPI("POST", "/login", {"username": username.value, "password": password.value}, function(response){
 		if(typeof(response.error) === 'undefined'){
 			localStorage.setItem(localStorageUsernameKey, username.value);
@@ -160,7 +221,6 @@ document.getElementById("loginButton").onclick = function(){
 };
 
 document.getElementById("cancelLoginButton").onclick = function(){
-	login.style.display = "none";
 	login.style.display = "none";
 };
 
@@ -178,6 +238,7 @@ localStorage.getItem(localStorageTokenKey) !== "undefined"){
 //POI MODAL SCRIPT
 
 document.getElementById("savePoi").onclick = function(){
+	status.innerHTML = "Saving...";
 	callAPI("POST", "/poi", {"token": localStorage.getItem(localStorageTokenKey), "values":
 	{"label": poiLabel.value,
 	"description": poiDescription.value,
@@ -194,6 +255,7 @@ document.getElementById("savePoi").onclick = function(){
 };
 
 document.getElementById("cancelPoi").onclick = function(){
+	selected_poi_id = null;
 	markers.removeMarker(currentmarker);
 	newPoi.style.display = "none";
 };
@@ -206,7 +268,43 @@ document.getElementById("logoutButton").onclick = function(){
 	logout();
 };
 
+document.getElementById("zoomOutLink").onclick = function(){
+	map.zoomToMaxExtent();
+};
+
+document.getElementById("zoomToNewPoi").onclick = function(){
+	var lonlat = new OpenLayers.LonLat(new_position[0], new_position[1]);
+	
+	console.log(map.getZoom());
+	if(map.getZoom() < 4){
+		map.setCenter(lonlat, 5);
+	}else if(map.getZoom() < 8){
+		map.setCenter(lonlat, 9);
+	}else if(map.getZoom() < 12){
+		map.setCenter(lonlat, 13);
+	}else if(map.getZoom() < 16){
+		map.setCenter(lonlat, 17);
+	}
+}
+document.getElementById("zoomToPoi").onclick = function(){
+	var lonlat = new OpenLayers.LonLat(json_markers[selected_poi_index].location.coordinates[0], json_markers[selected_poi_index].location.coordinates[1]);
+	lonlat.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+	markers.addMarker(new OpenLayers.Marker(lonlat, icon.clone()));
+	
+	console.log(map.getZoom());
+	if(map.getZoom() < 4){
+		map.setCenter(lonlat, 5);
+	}else if(map.getZoom() < 8){
+		map.setCenter(lonlat, 9);
+	}else if(map.getZoom() < 12){
+		map.setCenter(lonlat, 13);
+	}else if(map.getZoom() < 16){
+		map.setCenter(lonlat, 17);
+	}
+};
+
 document.getElementById("updatePoi").onclick = function(){
+	status.innerHTML = "Saving...";
 	callAPI("PUT", "/poi", {"token": localStorage.getItem(localStorageTokenKey), "id": selected_poi_id, "values":
 	{"label": editPoiLabel.value,
 	"description": editPoiDescription.value}}, function(response){
@@ -224,6 +322,7 @@ document.getElementById("deletePoi").onclick = function(){
 		return;
 	}
 	
+	status.innerHTML = "Deleting...";
 	callAPI("DELETE", "/poi", {"token": localStorage.getItem(localStorageTokenKey), "id": selected_poi_id}, function(response){
 		if(typeof(response.error) === 'undefined'){
 			status.innerHTML = "POI deleted.";
@@ -241,6 +340,7 @@ document.getElementById("findUserPoi").onclick = function(){
 		return;
 	}
 	
+	status.innerHTML = "Loading...";
 	callAPI("GET", "/poi/by/username?username=" + find_username, {}, function(response){
 		if(typeof(response.error) === 'undefined'){
 		
@@ -275,6 +375,8 @@ document.getElementById("goToSignup").onclick = function(){
 };
 
 if("id" in urlParams){
+	
+	status.innerHTML = "Seeking...";
 	callAPI("GET", "/poi?id=" + urlParams["id"], {}, function(response){
 	
 		if(typeof(response.error) === 'undefined'){
@@ -284,8 +386,19 @@ if("id" in urlParams){
 				lonlat.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
 				markers.addMarker(new OpenLayers.Marker(lonlat, icon.clone()));
 				
-				map.setCenter(lonlat, 10);
+				map.setCenter(lonlat, 13);
 				json_markers.push(response[i]);
+				
+				selected_poi_index = i;
+				selected_poi_id = response[i].id;
+				editLink.href = "/poi?id=" + response[i].id;
+				editPoiLabel.value = response[i].label;
+				editPoiDescription.value = response[i].description
+				editPoiLongitude.innerHTML = response[i].location.coordinates[0].toFixed(5);
+				editPoiLatitude.innerHTML = response[i].location.coordinates[1].toFixed(5);
+			
+				poi.style.display = "block";
+				status.innerHTML = "Check out this Point!";
 			}
 		}else{
 			status.innerHTML = response.error;
