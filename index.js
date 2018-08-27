@@ -14,6 +14,7 @@ window.onpopstate = function () {
 		urlParams[decode(match[1])] = decode(match[2]);
 }();
 
+var status;
 var state = {};
 var sub_scripts = [];
 var flashed;
@@ -43,7 +44,11 @@ function callAPI(method, route, data, callback){
 		//console.log("RECV: " + http.responseText);
 		if(http.readyState == 4){
 			if(http.status == 200){
-				callback(JSON.parse(http.responseText));
+				try{
+					callback(JSON.parse(http.responseText));
+				}catch(e){
+					callback(http.responseText);
+				}
 			}else{
 				console.log(http.status);
 				callback({"error":"Bad response from server..."});
@@ -79,7 +84,7 @@ function redirect_flash(url, flash){
 }
 
 window.onload = function() {
-	status = document.getElementById("status");
+	var status = document.getElementById("status");
 
 	flashed = false;
 

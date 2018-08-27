@@ -2,7 +2,7 @@
 	<head>
 		<title>Chat</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=0.8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.6">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -73,7 +73,7 @@ User:&nbsp
 </td></tr>
 <tr><td>
 <br>
-<input id="submitButton" type="button" value="Send">
+<input id="submitButton" type="button" style="width:10%;" value="Send">
 <input id="messageField" type="text" style="width:80%;" placeholder="enter to send message">
 </td></tr>
 <tr><td style="height:100%;vertical-align:top;">
@@ -88,6 +88,7 @@ User:&nbsp
 		var submitButton = document.getElementById("submitButton");
 		var messages = document.getElementById("messages");
 		
+		var currentMessagesHtml = "";
 		var ding = new Audio('/chat/ding.mp3');
 		
 		function get_colored_star(color){
@@ -109,11 +110,10 @@ User:&nbsp
 							newhtml += "<p>" + response.messages[i].handle + ": " + response.messages[i].message + "</p>";
 						}
 					}
-					console.log(messages.innerHTML);
-					console.log(newhtml);
-					if(messages.innerHTML !== newhtml && !myUpdate){
+					if(currentMessagesHtml !== newhtml && !myUpdate){
 						ding.play();
 					}
+					currentMessagesHtml = newhtml;
 					messages.innerHTML = newhtml;
 				}else{
 					status.innerHTML = "Disconnected.";

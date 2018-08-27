@@ -2,7 +2,7 @@
 	<head>
 		<title>Content Management</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=0.8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.6">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -137,13 +137,11 @@
 	sub_scripts.push(function(){
 		callAPI("POST", "/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 			if(typeof(response.error) === 'undefined'){
-				console.log('a');
 				document.getElementById("username").innerHTML = response[0]["username"];
 				document.getElementById("email").innerHTML = response[0]["email"];
 				document.getElementById("first_name").innerHTML = response[0]["first_name"];
 				document.getElementById("last_name").innerHTML = response[0]["last_name"];
 				document.getElementById("color").innerHTML = response[0]["color"];
-				console.log('b');
 			}else{
 				status.innerHTML = response.error;
 			}

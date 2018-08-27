@@ -1,0 +1,139 @@
+{TITLE:API}
+<h2>API Testing</h2>
+<h4>If you are logged in, your login token will automatically be included in the submitted data.</h4>
+
+<hr>
+
+<div id="selectRoute" style="display:none;">
+	<h3>Select a route:</h3>
+	<div id="routeRadios">
+	</div>
+</div>
+
+<div id="requestRoute" style="display:none;">
+	<input id="selectAnotherRoute" type="button" value="Select Another Route"/>
+	<h3 id="selectedRoute"></h3>
+	<h4 id="routeRateLimit"></h4>
+	<h4 id="routeParameters"></h4>
+	<label for="routeData">Raw JSON Formatted Data (all string values):</label>
+	<br>
+	<textarea id="routeData" cols="80" rows="8"></textarea>
+	<br>
+	<br>
+	<input id="submitRoute" type="button" value="Submit"/>
+	<div id="routeResponse">
+		<h3>Response: </h3>
+		<pre id="routeResponseData"></pre>
+	</div>
+</div>
+
+<script>
+	var status = document.getElementById("status");
+	var selectRoute = document.getElementById("selectRoute");
+	var routeRadios = document.getElementById("routeRadios");
+	
+	var requestRoute = document.getElementById("requestRoute");
+	var selectAnotherRoute = document.getElementById("selectAnotherRoute");
+	var selectedRoute = document.getElementById("selectedRoute");
+	var routeRateLimit = document.getElementById("routeRateLimit");
+	var routeParameters = document.getElementById("routeParameters");
+	var routeData = document.getElementById("routeData");
+	var submitRoute = document.getElementById("submitRoute");
+	var routeResponse = document.getElementById("routeResponse");
+	
+	var selectedRouteKey;
+	var routes = {};
+	
+	function routeSelected(route){
+		selectRoute.style.display = "none";
+		
+		selectedRouteKey = route;
+		
+		selectedRoute.innerHTML = "Selected Route: " + route;
+		routeRateLimit.innerHTML = "Rate Limit: " + routes[route].rate_limit + "ms";
+		if(routes[route].parameters.length === 0){
+			routeParameters.innerHTML = "Required Parameters: None"	;
+		}else{
+			routeParameters.innerHTML = "Required Parameters: " + routes[route].parameters;
+		}
+		routeData.innerHTML = "";
+		
+		console.log(routes[route]);
+		
+		requestRoute.style.display = "block";
+		routeResponse.style.display = "none";
+	}
+	
+	function selectNewRoute(){
+		selectRoute.style.display = "block";
+		requestRoute.style.display = "none";
+		routeResponse.style.display = "none";
+	}
+	selectNewRoute();
+	selectAnotherRoute.onclick = selectNewRoute;
+	
+	submitRoute.onclick = function(){
+		var status = document.getElementById("status");
+		var data;
+		try{
+			if(routeData.value.trim() === ""){
+				data = {};
+			}else{
+				data = JSON.parse(routeData.value);
+			}
+		}catch(e){
+			status.innerHTML = "Bad JSON.";
+			console.log(e);
+			return;
+		}
+		
+		var useToken = false;
+		for(param in routes[selectedRouteKey].parameters){
+			if(routes[selectedRouteKey].parameters[param] === "token"){
+				console.log("USE TOKEN");
+				useToken = true;
+				break;
+			}
+		}
+		if(useToken){
+			if(localStorage.getItem(localStorageTokenKey) !== null &&
+			localStorage.getItem(localStorageTokenKey) !== "undefined"){
+				data["token"] = localStorage.getItem(localStorageTokenKey);
+			}else{
+				status.innerHTML = "This route requires you to be logged in.";
+				return;
+			}
+		}
+		
+		var splitRoute = selectedRouteKey.split(' ');
+		
+		callAPI(splitRoute[0], splitRoute[1].substr(4), data, function(response){
+			if(typeof(response.error) === 'undefined'){
+				routeResponse.style.display = "block";
+				routeResponseData.innerHTML = JSON.stringify(response, null, 5);
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	};
+	
+	function api_routing_subscript(){
+		callAPI("GET", "/routes", {}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				Object.keys(response).sort().reverse().forEach(function(route) {
+					routes[route] = response[route];
+				});
+			
+				var new_html = "";
+				for(var route in routes){
+					new_html += "<input type='radio' name='routes' value='" + route + "' onclick='routeSelected(\"" + route + "\");'>" + route + "<br>";
+				}
+				routeRadios.innerHTML = new_html;
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	}
+	
+	sub_scripts.push(api_routing_subscript);
+</script>
