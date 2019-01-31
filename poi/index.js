@@ -334,14 +334,9 @@ document.getElementById("deletePoi").onclick = function(){
 	});
 };
 
-document.getElementById("findUserPoi").onclick = function(){
-	var find_username = prompt("Enter a username to find:", "");
-	if(find_username === null){
-		return;
-	}
-	
+function loadPoiFromUsername(from_username){
 	status.innerHTML = "Loading...";
-	callAPI("GET", "/poi/by/username?username=" + find_username, {}, function(response){
+	callAPI("GET", "/poi/by/username?username=" + from_username, {}, function(response){
 		if(typeof(response.error) === 'undefined'){
 		
 			for(var i = 0, len = response.length; i < len; i++){
@@ -350,13 +345,25 @@ document.getElementById("findUserPoi").onclick = function(){
 				json_markers.push(response[i]);
 			}
 			
-			status.innerHTML = "Loaded POI from user " + find_username + "!";
+			status.innerHTML = "Loaded POI from user " + from_username + "!";
 			menu.style.display = "none";
 			
 		}else{
 			status.innerHTML = response.error;
 		}
 	});
+}
+
+if("username" in urlParams){
+	loadPoiFromUsername(urlParams["username"]);
+}
+
+document.getElementById("findUserPoi").onclick = function(){
+	var find_username = prompt("Enter a username to find:", "");
+	if(find_username === null){
+		return;
+	}
+	loadPoiFromUsername(find_username);
 };
 
 document.getElementById("menuLink").onclick = function(){
@@ -375,7 +382,6 @@ document.getElementById("goToSignup").onclick = function(){
 };
 
 if("id" in urlParams){
-	
 	status.innerHTML = "Seeking...";
 	callAPI("GET", "/poi?id=" + urlParams["id"], {}, function(response){
 	
