@@ -17,7 +17,7 @@ window.onpopstate = function () {
 var status;
 var state = {};
 var sub_scripts = [];
-var flashed;
+var flashed = false;
 
 var localStorageUsernameKey = "JPH2_USERNAME_KEY";
 var localStorageTokenKey = "JPH2_TOKEN_KEY";
@@ -86,15 +86,24 @@ function redirect_flash(url, flash){
 window.onload = function() {
 	var status = document.getElementById("status");
 
-	flashed = false;
+	if(status !== null && status !== "undefined"){
+		if(localStorage.getItem(localStorageFlashKey) !== null &&
+		localStorage.getItem(localStorageFlashKey) !== "undefined"){
+			status.innerHTML = localStorage.getItem(localStorageFlashKey);
+			localStorage.removeItem(localStorageFlashKey);
+			flashed = true;
+		}
 
-	if(status !== null && status !== "undefined" &&
-	localStorage.getItem(localStorageFlashKey) !== null &&
-	localStorage.getItem(localStorageFlashKey) !== "undefined"){
-		status.innerHTML = localStorage.getItem(localStorageFlashKey);
-		localStorage.removeItem(localStorageFlashKey);
-		flashed = true;
-	}
+		if(status.innerHTML === "{status}"){
+			status.innerHTML = "";
+		}else{
+			status.style.display = "block";
+			status.style.textAlign = "center";
+			status.style.margin = "auto";
+			status.style.padding = "10px";
+			status.style.borderBottom = "2px solid crimson";
+		}
+	} 
 
 	for(var i = sub_scripts.length - 1; i >= 0; i--){
 		sub_scripts[i](status);

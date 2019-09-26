@@ -1,0 +1,80 @@
+<html>
+	<head>
+		<title>Applications</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.6">
+		
+		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
+		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+		<link rel="stylesheet" type="text/css" href="/index.css">
+		
+		<script src="/websocket.js"></script>
+		<script src="/index.js"></script>
+	</head>
+	<body>
+		<div class="header">
+			<a href="/" class="logo"><img style="margin: 10px; height: 50px;" src="/jph2.svg"></a>
+			<div class="header-right">
+				<a href="/">Home</a>
+				<a href="/apps">Apps</a>
+				<a href="/contact.html">Contact</a>
+			</div>
+		</div>
+		<div id="status">{status}</div>
+		<div style="margin:auto;" id="content">
+			
+<h1>Applications</h1>
+<hr>
+<ul>
+	<li><h4><a href="/cms">Content Management System (CMS)</a></h4>
+		<p>Users are welcome to register for a CMS account, manage threads, and manage messages associated with threads. These accounts are used across other site applications in unique ways.</p>
+	</li>
+	<li><h4><a href="/poi">Points of Interest (POI)</a></h4>
+		<p>This is a mapping application using OpenStreetMaps. Keep track of your favorite places around the world.</p>
+		<p>My personal POI can be viewed using <a href="/poi/?username=bwackwat">this link</a>.</p>
+	</li>
+	<li><h4><a href="/tanks">Tanks</a></h4>
+		<p>A multi-user, WebGL, Websocket application. Minimalistic implementation. Click with the mouse to start. Try playing with a friend!</p>
+	</li>
+	<li><h4><a href="/chat">Chat</a></h4>
+		<p>A simple multi-user chat application. Messages are not recorded in a database.</p>
+	</li>
+	<li><h4><a href="/routes.html">API Explorer</a></h4>
+		<p>A dynamically generated API explorer. Work in progress.</p>
+	</li>
+	<li><h4><a href="/index">Site Index</a></h4>
+		<p>A dynamically generated site index.</p>
+	</li>
+	<li><h4><a href="/lisp">LISP Experiment</a></h4>
+		<p>A cool example of how simple programming can be. An easily extensible LISP interpreter using JavaScript.</p>
+	</li>
+	<li><h4><a href="/blog">Personal Blog</a></h4>
+		<p>A longstanding blog which tracks progress developing libjaypea, and some of my favorite findings. Data is managed via the CMS above.</p>
+	</li>
+	<li><h4><a href="/teamchat">Webcam and Microphone Test</a></h4>
+		<p>A work in progress.</p>
+	</li>
+</ul>
+<hr>
+<h2>Java</h2>
+<p>Java is the language where I first had the chance to explore a wide variety of technical avenues.</p>
+<p>You can find an assortment of organized, working projects in my <a href="https://github.com/bwackwat/javagasm">javagasm</a> repository.</p>
+<p>I recreated one of my favorite old games in high school, Asteroids!</p>
+<p>Download it here: <a href="asteroids.jar">asteroids.jar</a></p>
+<img style="width:100%;" src="/media/asteroids-screenshot.png">
+
+			<hr>
+		</div>
+		
+	</body>
+	<script>
+		sub_scripts.push(function(){
+			var navigation = document.getElementsByClassName("header-right")[0].getElementsByTagName("a");
+			for(var i = 0; i < navigation.length; i++) {
+				if(navigation[i].getAttribute("href") === window.location.pathname){
+					navigation[i].className += "active";
+				}
+			}
+		});
+	</script>
+</html>

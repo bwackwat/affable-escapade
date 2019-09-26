@@ -12,68 +12,29 @@
 		<script src="/index.js"></script>
 	</head>
 	<body>
-		<!--
-		
-		Set to display:table; to show this loading screen.
-		
-		<div style="z-index:1;background-color:white;display:none;position:absolute;height:100%;width:100%;overflow:hidden;">
-			<div style="display:table-cell;vertical-align:middle;">
-				<div style="margin-left:auto;margin-right:auto;width:100%;text-align:center;">
-					<svg style="width:80;height:80;">
-						<rect x="0" y="0" height="16" width="16" style="fill:crimson;">
-							<animate id="box1a1" attributeName="x"
-								from="0"  to="60"
-								begin="0s; box1a2.end" dur="1s"
-								fill="freeze"/>
-							<animate id="box1a2" attributeName="y"
-								from="0"  to="60"
-								begin="box1a1.end" dur="750ms"
-								fill="remove"/>
-						</rect>
-						<rect x="60" y="60" height="16" width="16" style="fill:crimson;">
-							<animate id="box2a1" attributeName="x"
-								from="60"  to="0"
-								begin="0s; box2a2.end" dur="1s"
-								fill="freeze"/>
-							<animate id="box2a2" attributeName="y"
-								from="60"  to="0"
-								begin="box2a1.end;" dur="750ms"
-								fill="remove"/>
-						</rect>
-					</svg>
-				</div>
+		<div class="header">
+			<a href="/" class="logo"><img style="margin: 10px; height: 50px;" src="/jph2.svg"></a>
+			<div class="header-right">
+				<a href="/">Home</a>
+				<a href="/apps">Apps</a>
+				<a href="/contact.html">Contact</a>
 			</div>
 		</div>
-		
-		-->
-		
-		<table id="banner">
-			<tr><td><div id="bannerleft">
-				<div id="icon"><img src="/favicon.ico"/></div>
-				<div id="status">Welcome.</div>
-			</div></td>
-			
-			<td style="display:table-cell;vertical-align:middle;"><div id="bannerright">
-				<div id="links">
-					<a class="bannerLink" href="/cms/">Manage</a>&nbsp&nbsp|&nbsp
-					<a class="bannerLink" href="/poi/?username=bwackwat">Points of Interest</a>&nbsp&nbsp|&nbsp
-					<a class="bannerLink" href="/chat/">Chat</a>&nbsp&nbsp
-				</div>
-			</div></td></tr>
-		</table>
-		
-		<div id="contentborder">
-			<div id="content">
-				{CONTENT}
-			</div>
+		<div id="status">{status}</div>
+		<div style="margin:auto;" id="content">
+			{CONTENT}
+			<hr>
 		</div>
+		
 	</body>
 	<script>
 		sub_scripts.push(function(){
-			var icon = document.getElementById("icon");
-			icon.onclick = function(){
-				window.location = "/index.html";
-			};
+			var navigation = document.getElementsByClassName("header-right")[0].getElementsByTagName("a");
+			for(var i = 0; i < navigation.length; i++) {
+				if(navigation[i].getAttribute("href") === window.location.pathname){
+					navigation[i].className += "active";
+				}
+			}
 		});
 	</script>
 </html>
