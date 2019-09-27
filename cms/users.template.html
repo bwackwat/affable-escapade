@@ -1,15 +1,15 @@
-<h3>Manage Users</h3>
+<h2>Manage Users</h2>
 <div id="users"></div>
 <script>
 	sub_scripts.push(function(){
 		var status = document.getElementById("status");
 		callAPI("POST", "/get/users", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 			if(typeof(response.error) === 'undefined'){
-				var newhtml = "<h4>Users:</h4>";
+				var newhtml = "<h3>Users:</h3>";
 				if(response.length == 0){
 					newhtml += "No users?";
 				}else{
-					newhtml += "<table style='text-align:center;'><tr><th style='width:50px;'><b>id</b></th><th style='width:100px;'><b>Username</b></th><th style='width:100px;'><b>Email</b></th><th style='width:100px;'><b>First Name</b></th><th style='width:100px;'><b>Last Name</b></th></tr>";
+					newhtml += "<table style='text-align:center;width:100%;'><tr><th style='width:20%;'><b>id</b></th><th style='width:20%;'><b>Username</b></th><th style='width:20%;'><b>Email</b></th><th style='width:20%;'><b>First Name</b></th><th style='width:20%;'><b>Last Name</b></th></tr>";
 					for(var i = 0, len = response.length; i < len; i++){
 						newhtml += "<tr><td>" + response[i].id + "</td>";
 						newhtml += "<td>" + response[i].username + "</td>";

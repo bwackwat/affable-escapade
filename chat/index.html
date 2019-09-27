@@ -1,1 +1,163 @@
-Chat
+<html>
+	<head>
+		<title>Chat</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
+		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+		<link rel="stylesheet" type="text/css" href="/index.css"/>
+		
+		<script src="/websocket.js"></script>
+		<script src="/index.js"></script>
+	</head>
+	<body>
+		<div class="header">
+			<a href="/" class="logo"><img style="margin: 10px; height: 50px;" src="/jph2.svg"></a>
+			<div class="header-right">
+				<a href="/">Home</a>
+				<a href="/apps">Apps</a>
+				<a href="/hobbies.html">Hobbies</a>
+				<a href="/contact.html">Contact</a>
+			</div>
+		</div>
+		<div id="status">{status}</div>
+		<div style="margin:auto;" id="content">
+			
+<h1>Chat</h1>
+<table style="height:auto;width:100%;">
+<tr><td id="handleOrUsername">
+User:<input id="handleField" autocomplete="on" type="text" size="20" placeholder="handle">
+</td></tr>
+<tr><td>
+<input id="submitButton" type="button" style="width:10%;" value="Send">
+<input id="messageField" type="text" style="width:80%;" placeholder="enter to send message">
+</td></tr>
+<tr><td style="height:100%;vertical-align:top;">
+<hr>
+<div id="messages"></div>
+</td></tr></table>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		var handleField = document.getElementById("handleField");
+		var messageField = document.getElementById("messageField");
+		var submitButton = document.getElementById("submitButton");
+		var messages = document.getElementById("messages");
+		
+		var currentMessagesHtml = "";
+		var ding = new Audio('/chat/ding.mp3');
+		
+		function get_colored_star(color){
+			return '<svg width="16px" height="16px" viewBox="0 0 51 48"><path fill="' + color + '" stroke="black" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/></svg>&nbsp';
+		}
+		
+		handleField.value = get_anonymous_name();
+		
+		function updateChat(myUpdate = false){
+			callAPI("GET", "/chat", {}, function(response){
+				if(typeof response.messages !== 'undefined'){
+					var newhtml = "";
+					for(var i = 0, len = response.messages.length; i < len; i++){
+						//console.log(msg.messages[i]);
+						if(typeof response.messages[i].color !== "undefined"){
+							//console.log(get_colored_star(msg.messages[i].color));
+							newhtml += "<p>" + get_colored_star(response.messages[i].color) + response.messages[i].handle + ": " + response.messages[i].message + "</p>";
+						}else{
+							newhtml += "<p>" + response.messages[i].handle + ": " + response.messages[i].message + "</p>";
+						}
+					}
+					if(currentMessagesHtml !== newhtml && !myUpdate){
+						ding.play();
+					}
+					currentMessagesHtml = newhtml;
+					messages.innerHTML = newhtml;
+				}else{
+					status.innerHTML = "Disconnected.";
+				}
+			});
+		}
+		
+		var pinger = setInterval(updateChat, 1000);
+		
+		if(localStorage.getItem(localStorageTokenKey) !== null){
+			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+				if(typeof(response.error) !== 'undefined'){
+					localStorage.removeItem(localStorageUsernameKey);
+					localStorage.removeItem(localStorageTokenKey);
+				
+					window.location.reload();
+				}else{
+				
+					callAPI("POST", "/my/user", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
+						if(typeof(response.error) === 'undefined'){
+							document.getElementById("handleOrUsername").innerHTML = "Using login handle: " + response[0]["username"];
+						}else{
+							window.location.reload();
+						}
+					});
+				}
+			});
+		}
+
+		function send(){
+			if(localStorage.getItem(localStorageTokenKey) !== null){
+				callAPI("POST", "/user/chat", {"token": localStorage.getItem(localStorageTokenKey),
+				"message": messageField.value}, function(response){
+					messageField.value = "";
+					messageField.focus();
+				
+					if(typeof(response.error) !== 'undefined'){
+						status.innerHTML = response.error;
+					}else{
+						status.innerHTML = response.status;
+					}
+				});
+			}else{
+				callAPI("POST", "/chat", {"handle": handleField.value,
+				"message": messageField.value}, function(response){
+					messageField.value = "";
+					messageField.focus();
+				
+					if(typeof(response.error) !== 'undefined'){
+						status.innerHTML = response.error;
+					}else{
+						status.innerHTML = response.status;
+					}
+				});
+			}
+			updateChat(true);
+			clearInterval(pinger);
+			pinger = setInterval(updateChat, 1000);
+		}
+		
+		document.getElementById("submitButton").onclick = send;
+		
+		window.onkeypress = function(e){
+			if(e.code === "Enter" || e.key === "Enter"){
+				send();
+			}else{
+				//console.log(e.code);
+			}
+		}
+		
+		messageField.focus();
+	});
+</script>
+
+
+			<hr>
+		</div>
+		
+	</body>
+	<script>
+		sub_scripts.push(function(){
+			var navigation = document.getElementsByClassName("header-right")[0].getElementsByTagName("a");
+			for(var i = 0; i < navigation.length; i++) {
+				if(navigation[i].getAttribute("href") === window.location.pathname){
+					navigation[i].className += "active";
+				}
+			}
+		});
+	</script>
+</html>

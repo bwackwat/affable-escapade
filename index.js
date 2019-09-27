@@ -103,7 +103,7 @@ window.onload = function() {
 			status.style.padding = "10px";
 			status.style.borderBottom = "2px solid crimson";
 		}
-	} 
+	}
 
 	for(var i = sub_scripts.length - 1; i >= 0; i--){
 		sub_scripts[i](status);

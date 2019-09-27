@@ -2,67 +2,36 @@
 	<head>
 		<title>Loading Screen</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=0.6">
-		
-		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
-		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
-		<link rel="stylesheet" type="text/css" href="/index.css">
-		
-		<script src="/websocket.js"></script>
-		<script src="/index.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
-	<body>
-		<div class="header">
-			<a href="/" class="logo"><img style="margin: 10px; height: 50px;" src="/jph2.svg"></a>
-			<div class="header-right">
-				<a href="/">Home</a>
-				<a href="/apps">Apps</a>
-				<a href="/contact.html">Contact</a>
+	<body style="height:100%;width:100%;overflow:hidden;">
+		<div style="display:table;z-index:1;background-color:white;position:absolute;height:100%;width:100%;overflow:hidden;">
+			<div style="display:table-cell;vertical-align:middle;">
+				<div style="margin-left:auto;margin-right:auto;width:100%;text-align:center;">
+					<svg style="width:80;height:80;">
+						<rect x="0" y="0" height="16" width="16" style="fill:crimson;">
+							<animate id="box1a1" attributeName="x"
+								from="0"  to="60"
+								begin="0s; box1a2.end" dur="1s"
+								fill="freeze"/>
+							<animate id="box1a2" attributeName="y"
+								from="0"  to="60"
+								begin="box1a1.end" dur="750ms"
+								fill="remove"/>
+						</rect>
+						<rect x="60" y="60" height="16" width="16" style="fill:crimson;">
+							<animate id="box2a1" attributeName="x"
+								from="60"  to="0"
+								begin="0s; box2a2.end" dur="1s"
+								fill="freeze"/>
+							<animate id="box2a2" attributeName="y"
+								from="60"  to="0"
+								begin="box2a1.end;" dur="750ms"
+								fill="remove"/>
+						</rect>
+					</svg>
+				</div>
 			</div>
 		</div>
-		<div id="status">{status}</div>
-		<div style="margin:auto;" id="content">
-			
-<div style="display:table;z-index:1;background-color:white;position:absolute;height:100%;width:100%;overflow:hidden;">
-	<div style="display:table-cell;vertical-align:middle;">
-		<div style="margin-left:auto;margin-right:auto;width:100%;text-align:center;">
-			<svg style="width:80;height:80;">
-				<rect x="0" y="0" height="16" width="16" style="fill:crimson;">
-					<animate id="box1a1" attributeName="x"
-						from="0"  to="60"
-						begin="0s; box1a2.end" dur="1s"
-						fill="freeze"/>
-					<animate id="box1a2" attributeName="y"
-						from="0"  to="60"
-						begin="box1a1.end" dur="750ms"
-						fill="remove"/>
-				</rect>
-				<rect x="60" y="60" height="16" width="16" style="fill:crimson;">
-					<animate id="box2a1" attributeName="x"
-						from="60"  to="0"
-						begin="0s; box2a2.end" dur="1s"
-						fill="freeze"/>
-					<animate id="box2a2" attributeName="y"
-						from="60"  to="0"
-						begin="box2a1.end;" dur="750ms"
-						fill="remove"/>
-				</rect>
-			</svg>
-		</div>
-	</div>
-</div>
-			<hr>
-		</div>
-		
 	</body>
-	<script>
-		sub_scripts.push(function(){
-			var navigation = document.getElementsByClassName("header-right")[0].getElementsByTagName("a");
-			for(var i = 0; i < navigation.length; i++) {
-				if(navigation[i].getAttribute("href") === window.location.pathname){
-					navigation[i].className += "active";
-				}
-			}
-		});
-	</script>
 </html>

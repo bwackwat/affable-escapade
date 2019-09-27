@@ -1,4 +1,4 @@
-<h3 id="threadNameField"></h3>
+<h2 id="threadNameField"></h2>
 <div id="threadDescriptionField"></div>
 <br>
 <a id="backButton" href="#">Back</a> | <a id="newMessageButton" href="#">New Message</a> | <a id="editThreadButton" href="#">Edit</a> | <a id="deleteThreadButton" href="#">Delete</a>
@@ -32,7 +32,7 @@
 			
 				callAPI("GET", "/thread/messages?id=" + urlParams["id"], {}, function(response){
 					if(typeof(response.error) === 'undefined'){
-						var newhtml = "<h4>Messages:</h4>";
+						var newhtml = "<h3>Messages:</h3>";
 						if(response.length == 0){
 							newhtml += "No messages.";
 						}

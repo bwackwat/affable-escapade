@@ -2,11 +2,11 @@
 	<head>
 		<title>Content Management System</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=0.6">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
-		<link rel="stylesheet" type="text/css" href="/index.css">
+		<link rel="stylesheet" type="text/css" href="/index.css"/>
 		
 		<script src="/websocket.js"></script>
 		<script src="/index.js"></script>
@@ -17,6 +17,7 @@
 			<div class="header-right">
 				<a href="/">Home</a>
 				<a href="/apps">Apps</a>
+				<a href="/hobbies.html">Hobbies</a>
 				<a href="/contact.html">Contact</a>
 			</div>
 		</div>
@@ -78,7 +79,7 @@
 		}
 	});
 </script>
-<h3 id="threadNameField"></h3>
+<h2 id="threadNameField"></h2>
 <div id="threadDescriptionField"></div>
 <br>
 <a id="backButton" href="#">Back</a> | <a id="newMessageButton" href="#">New Message</a> | <a id="editThreadButton" href="#">Edit</a> | <a id="deleteThreadButton" href="#">Delete</a>
@@ -112,7 +113,7 @@
 			
 				callAPI("GET", "/thread/messages?id=" + urlParams["id"], {}, function(response){
 					if(typeof(response.error) === 'undefined'){
-						var newhtml = "<h4>Messages:</h4>";
+						var newhtml = "<h3>Messages:</h3>";
 						if(response.length == 0){
 							newhtml += "No messages.";
 						}

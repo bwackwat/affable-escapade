@@ -1,0 +1,48 @@
+<html>
+	<head>
+		<title>Hobbies</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
+		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+		<link rel="stylesheet" type="text/css" href="/index.css"/>
+		
+		<script src="/websocket.js"></script>
+		<script src="/index.js"></script>
+	</head>
+	<body>
+		<div class="header">
+			<a href="/" class="logo"><img style="margin: 10px; height: 50px;" src="/jph2.svg"></a>
+			<div class="header-right">
+				<a href="/">Home</a>
+				<a href="/apps">Apps</a>
+				<a href="/hobbies.html">Hobbies</a>
+				<a href="/contact.html">Contact</a>
+			</div>
+		</div>
+		<div id="status">{status}</div>
+		<div style="margin:auto;" id="content">
+			<h1>Kombucha Brewing Documentation</h1>
+<div style="text-align: justify">
+	<p>1. You've got a "starter" culture.<br><br>It is likely that someone has provided you a SCOBY (or a Symbiotic Colony Of Bacteria and Yeast) in a jar. These starters should be balanced for the SCOBY between acids and sugars. It should be relatively fresh and active with bacteria and yeast. These starters are generally just hanging out and require no maintentance. Don't try to refridgerate them or cook them in the sun.</p>
+	<p><br>2. Preparing sweet tea for a new brew.<br><br>Kombucha is a fermented beverage, which is normally created by letting a SCOBY feed on sweetened green, black, or herbal tea(s). The starter acts as a buffer for the SCOBY to get introduced to a new home (glass jar) and a new food source (sugary tea). To start a new brew you can take about six bags of your favorite tea (I use Jasmine Green Tea of the same variety each time), and one cup of sugar (I use Trader Joe's Raw Turbinado Sugar) per one gallon of brew. These are estimates. If you use a more caffineated team, or more sugar your brew might have a higher chance of inviting unwanted bacteria, or it might simply brew faster. I use 12 green tea bags and 2 cups of sugar for about a 2 gallon brew (in a 2.5 gallon glass jar). Brew your tea on the stove, mix in the appropriate about of sugar, avoid contaminants in the tea, and let cool for about 8 hours or simply until room temperature is reached.</p>
+	<p><br>3. Start the Kombucha brew itself.<br><br>With your room temperature sweet tea, an anticipating starter SCOBY culture, and a suitable glass jar, you should be ready to start a brew. Simply put the tea into the jar, and then pour the starter culture on top. If you already have your starter relaxing in a suitable jar, then just pour its new food supply in! Let it settle, cover the jar with a paper towel, and seal the towel with a rubber band, string, or loose lid. Your SCOBY also needs air to breathe, so a sealed jar is no good. Place the brew preparation in a closet away from smoke or other conaminants including bright sunlight, other yeasts, chemicals, or extreme temperatures. The SCOBY will grow steadily and you should see a certain difference after about a week of letting it feed on it's new food source. It is often recommended to check your SCOBY every few days for growth, taste testing, or contamination. You can even poke her with a sterile stick to mix around yeast and deflate bubbles underneath. Don't be alarmed by surprising growth.</p>
+	<p><br>4. Complete the brew.<br><br>After 10-20 days (usually two weeks is perfect for me, but it depends on the environment) your SCOBY has likely consumed enough sugar from the tea that you are ready to prepare your Kombucha bottles. In return for consuming sugars, the SCOBY has created a variety of acids, bacteria, and yeast. As you prefer, Kombucha can be more sweeter with sugar our more sour with acids to your taste depending on fermentation time. If you allow the ferment to go for too long, you'll end up with a sour, perhaps harmful, acidic vinegar. Only in an extreme case will this harm the SCOBY, but diluting overly acidic Kombucha is recommended. To complete your brew you want to take out the good stuff from your fermentation jar, bottle it for consumption or second fermentation, and then restart the process to allow the SCOBY to continue growing. I use a tube to siphon the Kombucha out from my fermentation jar into bottles. I use a funnel to avoid making a mess, 22oz glass bottles, and a simple metal seive to catch yeast. I am aware of others who simple pour the ready Kombucha out of their jar and into their funnel or bottle. Leave at least 10-20% of the Kombucha to remain with the SCOBY--this is your starter for the next batch!</p>
+	<p><br>5. Optional, secondary fermentation.<br><br>You've completed your first fermentation and your SCOBY is relaxing in it's starter. In the meantime, you have bottled Kombucha. If you haven't already, you can put additional sugars into these bottles to re-excite the bacteria and make a stronger, more flavorful Kombucha. I've siphoned ready Kombucha from my first fermentation into bottles containing: raspberries, blueberries, honey, orange juice, altoids, lemons, ginger candy, strawberries, apples, cinnamon, and strawberries. I've found that bioavailable and perhaps yeasty fruits and berries work the best. Raspberries and oranges have created delightfully fizzy and flavorful secondary fermentations. You can also drink ready Kombucha straight from your first fermentation. It will not be so fizzy. You can let a second fermentation go from as few as 3 to as many as 14 days. You can refridgerate your bottles to calm and slow down the yeast inside. Beware of bottles getting to fizzy! Open the pop-top seal every few days to avoid excess carbonation and exploding bottles. Finally, go back to step #2 because your starter is waiting for a new batch of food!</p>
+</div>
+			<hr>
+		</div>
+		
+	</body>
+	<script>
+		sub_scripts.push(function(){
+			var navigation = document.getElementsByClassName("header-right")[0].getElementsByTagName("a");
+			for(var i = 0; i < navigation.length; i++) {
+				if(navigation[i].getAttribute("href") === window.location.pathname){
+					navigation[i].className += "active";
+				}
+			}
+		});
+	</script>
+</html>
