@@ -1,0 +1,42 @@
+<html>
+	<head>
+		<title>Hobbies</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
+		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+		<link rel="stylesheet" type="text/css" href="/index.css"/>
+		
+		<script src="/websocket.js"></script>
+		<script src="/index.js"></script>
+	</head>
+	<body>
+		<div class="header">
+			<a href="/" class="logo"><img style="margin: 10px; height: 50px;" src="/jph2.svg"></a>
+			<div class="header-right">
+				<a href="/">Home</a>
+				<a href="/apps">Apps</a>
+				<a href="/hobbies.html">Hobbies</a>
+				<a href="/contact.html">Contact</a>
+			</div>
+		</div>
+		<div id="status">{status}</div>
+		<div style="margin:auto;" id="content">
+			<h1>404</h1>
+<h2>Ouch, you were sent to no valid resource.</h2>
+			<hr>
+		</div>
+		
+	</body>
+	<script>
+		sub_scripts.push(function(){
+			var navigation = document.getElementsByClassName("header-right")[0].getElementsByTagName("a");
+			for(var i = 0; i < navigation.length; i++) {
+				if(navigation[i].getAttribute("href") === window.location.pathname){
+					navigation[i].className += "active";
+				}
+			}
+		});
+	</script>
+</html>
