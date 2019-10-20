@@ -104,9 +104,7 @@ window.onload = function() {
 			flashed = true;
 		}
 
-		if(status_element.innerHTML === "{status}"){
-			status_element.innerHTML = "";
-		}else{
+		if(status_element.innerHTML !== "{{{status}}}" && status_element.innerHTML !== ""){
 			status_element.style.display = "block";
 		}
 	}
