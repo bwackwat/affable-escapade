@@ -22,6 +22,7 @@ var flashed = false;
 var localStorageUsernameKey = "JPH2_USERNAME_KEY";
 var localStorageTokenKey = "JPH2_TOKEN_KEY";
 var localStorageFlashKey = "JPH2_FLASH_KEY";
+var localStorageSessionKey = "libjaypea-session";
 
 var apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api";
 function callAPI(method, route, data, callback){
@@ -39,18 +40,21 @@ function callAPI(method, route, data, callback){
 	
 	var http = new XMLHttpRequest();
 	http.open(method, apiUrl + route, true);
-	http.setRequestHeader("Content-type", "application/json");
+	http.setRequestHeader("Content-Type", "application/json");
+	if(localStorage.getItem(localStorageSessionKey) !== null){
+		http.setRequestHeader(localStorageSessionKey, localStorage.getItem(localStorageSessionKey));
+	}
 	http.onreadystatechange = function(){
 		//console.log("RECV: " + http.responseText);
 		if(http.readyState == 4){
 			if(http.status == 200){
+				localStorage.setItem(localStorageSessionKey, http.getResponseHeader(localStorageSessionKey));
 				try{
 					callback(JSON.parse(http.responseText));
 				}catch(e){
 					callback(http.responseText);
 				}
 			}else{
-				console.log(http.status);
 				callback({"error":"Bad response from server..."});
 			}
 		}else if(http.readyState == 3){
@@ -98,10 +102,6 @@ window.onload = function() {
 			status.innerHTML = "";
 		}else{
 			status.style.display = "block";
-			status.style.textAlign = "center";
-			status.style.margin = "auto";
-			status.style.padding = "10px";
-			status.style.borderBottom = "2px solid crimson";
 		}
 	}
 

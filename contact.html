@@ -21,23 +21,43 @@
 				<a href="/contact.html">Contact</a>
 			</div>
 		</div>
-		<div id="status">{status}</div>
+		<div id="status" style="display:none;text-align:center;border-bottom:2px solid crimson;margin:auto;padding:10px;">{status}</div>
 		<div style="margin:auto;" id="content">
 			
 <h1>Contact</h1>
 <form method="POST" action="/contact.html">
-	<input name="secret" id="secret" type="hidden" value="wip" autocomplete="off">
 	<label for="name">Name:</label>
 	<input name="name" id="name" type="text" autocomplete="off">
 	<br>
 	<label for="email">Email:</label>
 	<input name="email" id="email" type="text" autocomplete="off">
 	<br>
+	<div id="captcha_img"></div>
+	<label for="captcha">Enter the CAPTCHA:</label>
+	<input name="captcha" id="captcha" type="text" autocomplete="off">
+	<br>
 	<label for="message">Message:</label>
 	<br>
 	<textarea name="message" id="message" rows="10"></textarea>
 	<input type="submit" value="Submit">
 </form>
+<script>
+	sub_scripts.push(function(){
+		var status = document.getElementById("status");
+		var captcha = document.getElementById("captcha_img");
+		callAPI("GET", "/captcha", {}, function(response){
+			if(typeof(response.error) === 'undefined'){
+				if(response.startsWith("<img src='data:image/png;base64,")){
+					captcha.innerHTML = response;
+				}else{
+					captcha.innerHTML = "<h2>Couldn't load the CAPTCHA, please try again soon.</h2>";
+				}
+			}else{
+				status.innerHTML = response.error;
+			}
+		});
+	});
+</script>
 			<hr>
 		</div>
 		
