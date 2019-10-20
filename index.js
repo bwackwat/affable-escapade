@@ -87,26 +87,32 @@ function redirect_flash(url, flash){
 	window.location.href = url;
 }
 
-window.onload = function() {
-	var status = document.getElementById("status");
+function status(html){
+	var status_element = document.getElementById("status");
+	status_element.innerHTML = html;
+	status_element.style.display = "block";
+}
 
-	if(status !== null && status !== "undefined"){
+window.onload = function() {
+	var status_element = document.getElementById("status");
+
+	if(status_element !== null && status_element !== "undefined"){
 		if(localStorage.getItem(localStorageFlashKey) !== null &&
 		localStorage.getItem(localStorageFlashKey) !== "undefined"){
-			status.innerHTML = localStorage.getItem(localStorageFlashKey);
+			status(localStorage.getItem(localStorageFlashKey));
 			localStorage.removeItem(localStorageFlashKey);
 			flashed = true;
 		}
 
-		if(status.innerHTML === "{status}"){
-			status.innerHTML = "";
+		if(status_element.innerHTML === "{status}"){
+			status_element.innerHTML = "";
 		}else{
-			status.style.display = "block";
+			status_element.style.display = "block";
 		}
 	}
 
 	for(var i = sub_scripts.length - 1; i >= 0; i--){
-		sub_scripts[i](status);
+		sub_scripts[i](status_element);
 	}
 }
 
@@ -118,5 +124,3 @@ function get_anonymous_name(){
 	return adjectives[Math.floor(Math.random() * adjectives.length)] + " " + 
 		nouns[Math.floor(Math.random() * nouns.length)];
 };
-
-

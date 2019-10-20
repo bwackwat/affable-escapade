@@ -38,8 +38,6 @@
 <hr>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
-	
 		document.getElementById("logoutButton").onclick = function() {
 			localStorage.removeItem(localStorageUsernameKey);
 			localStorage.removeItem(localStorageTokenKey);
@@ -54,7 +52,7 @@
 			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					if(!flashed){
-						status.innerHTML = "Logged in as " + localStorage.getItem(localStorageUsernameKey);
+						status("Logged in as " + localStorage.getItem(localStorageUsernameKey));
 					}
 			
 					loggedInLinks.style.display = "inline";
@@ -102,7 +100,7 @@
 				document.getElementById("last_name").innerHTML = response[0]["last_name"];
 				document.getElementById("color").innerHTML = response[0]["color"];
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
 		});
 		
@@ -124,7 +122,7 @@
 				}
 				document.getElementById("access").innerHTML = newhtml;
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
 		});
 	});

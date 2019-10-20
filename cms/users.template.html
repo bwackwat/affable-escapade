@@ -2,7 +2,6 @@
 <div id="users"></div>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
 		callAPI("POST", "/get/users", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 			if(typeof(response.error) === 'undefined'){
 				var newhtml = "<h3>Users:</h3>";
@@ -21,7 +20,7 @@
 				}
 				document.getElementById("users").innerHTML = newhtml;
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
 		});
 	});

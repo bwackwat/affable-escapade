@@ -11,8 +11,6 @@
 <input id="createThreadButton" type="button" value="Create"/>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
-		
 		document.getElementById("backToThreadButton").onclick = function() {
 			window.location.href = "/cms/threads.html";
 		}
@@ -26,7 +24,7 @@
 		localStorage.getItem("threadDescriptionDraft") !== "undefined"){
 			threadNameField.value = localStorage.getItem("threadNameDraft");
 			threadDescriptionField.value = localStorage.getItem("threadDescriptionDraft");
-			status.innerHTML = "Draft loaded.";
+			status("Draft loaded.");
 		}
 		
 		setInterval(function(){
@@ -36,7 +34,7 @@
 		}, 5000);
 		
 		document.getElementById("createThreadButton").onclick = function() {
-			status.innerHTML = "Creating...";
+			status("Creating...");
 			callAPI("POST", "/thread", {"token": localStorage.getItem(localStorageTokenKey),
 			"values": {"name": threadNameField.value, "description": threadDescriptionField.value}}, function(response){
 				if(typeof(response.error) === 'undefined'){
@@ -44,7 +42,7 @@
 					localStorage.removeItem("threadDescriptionDraft");
 					redirect_flash("/cms/threads.html", "Thread created!");
 				}else{
-					status.innerHTML = response.error;
+					status(response.error);
 				}
 			});
 		};

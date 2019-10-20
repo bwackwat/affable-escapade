@@ -1,10 +1,6 @@
 
 sub_scripts.push(function(){
 
-var status = document.getElementById("status");
-
-//ELEMENTS
-
 var login = document.getElementById("loginModal");
 var loginResult = document.getElementById("loginResult");
 var username = document.getElementById("username");
@@ -107,7 +103,7 @@ function map_click(e){
 	}
 	
 	if(localStorage.getItem(localStorageTokenKey) === null){
-		status.innerHTML = "Login to save and share POI.";
+		status("Login to save and share POI.");
 		login.style.display = "block";
 		username.focus();
 	}else{
@@ -134,7 +130,7 @@ function map_click(e){
 
 // Clear markers when the map moves and you haven't selected a POI.
 map.events.register("movestart", map, function(e){
-	status.innerHTML = "Mapping...";
+	status("Mapping...");
 
 	if(selected_poi_id === null){
 		newPoi.style.display = "none";
@@ -167,7 +163,7 @@ map.events.register("touchend", map, function(e){
 
 function logout(){
 	localStorage.removeItem(localStorageTokenKey);
-	status.innerHTML = "Welcome! Logged out.";
+	status("Welcome! Logged out.");
 	markers.clearMarkers();
 	newPoi.style.display = "none";
 	menu.style.display = "none";
@@ -193,7 +189,7 @@ function updateMarkers(){
 			
 			
 		}else{
-			status.innerHTML = response.error;
+			status(response.error);
 			logout();
 		}
 	});
@@ -202,12 +198,12 @@ function updateMarkers(){
 //LOGIN MODAL SCRIPT
 
 function authSuccess(){
-	status.innerHTML = "Welcome, " + localStorage.getItem(localStorageUsernameKey) + "!";
+	status("Welcome, " + localStorage.getItem(localStorageUsernameKey) + "!");
 	updateMarkers();
 }
 
 document.getElementById("loginButton").onclick = function(){
-	status.innerHTML = "Logging...";
+	status("Logging...");
 	callAPI("POST", "/login", {"username": username.value, "password": password.value}, function(response){
 		if(typeof(response.error) === 'undefined'){
 			localStorage.setItem(localStorageUsernameKey, username.value);
@@ -215,7 +211,7 @@ document.getElementById("loginButton").onclick = function(){
 			login.style.display = "none";
 			authSuccess();
 		}else{
-			status.innerHTML = response.error;
+			status(response.error);
 		}
 	});
 };
@@ -238,7 +234,7 @@ localStorage.getItem(localStorageTokenKey) !== "undefined"){
 //POI MODAL SCRIPT
 
 document.getElementById("savePoi").onclick = function(){
-	status.innerHTML = "Saving...";
+	status("Saving...");
 	callAPI("POST", "/poi", {"token": localStorage.getItem(localStorageTokenKey), "values":
 	{"label": poiLabel.value,
 	"description": poiDescription.value,
@@ -246,10 +242,10 @@ document.getElementById("savePoi").onclick = function(){
 	"latitude": poiLatitude.innerHTML}}, function(response){
 		if(typeof(response.error) === 'undefined'){
 			newPoi.style.display = "none";
-			status.innerHTML = "Successfully saved the POI!";
+			status("Successfully saved the POI!");
 			updateMarkers();
 		}else{
-			status.innerHTML = response.error;
+			status(response.error);
 		}
 	});
 };
@@ -304,15 +300,15 @@ document.getElementById("zoomToPoi").onclick = function(){
 };
 
 document.getElementById("updatePoi").onclick = function(){
-	status.innerHTML = "Saving...";
+	status("Saving...");
 	callAPI("PUT", "/poi", {"token": localStorage.getItem(localStorageTokenKey), "id": selected_poi_id, "values":
 	{"label": editPoiLabel.value,
 	"description": editPoiDescription.value}}, function(response){
 		if(typeof(response.error) === 'undefined'){
-			status.innerHTML = "Successfully saved the POI!";
+			status("Successfully saved the POI!");
 			updateMarkers();
 		}else{
-			status.innerHTML = response.error;
+			status(response.error);
 		}
 	});
 };
@@ -322,20 +318,20 @@ document.getElementById("deletePoi").onclick = function(){
 		return;
 	}
 	
-	status.innerHTML = "Deleting...";
+	status("Deleting...");
 	callAPI("DELETE", "/poi", {"token": localStorage.getItem(localStorageTokenKey), "id": selected_poi_id}, function(response){
 		if(typeof(response.error) === 'undefined'){
-			status.innerHTML = "POI deleted.";
+			status("POI deleted.");
 			poi.style.display = "none";
 			updateMarkers();
 		}else{
-			status.innerHTML = response.error;
+			status(response.error);
 		}
 	});
 };
 
 function loadPoiFromUsername(from_username){
-	status.innerHTML = "Loading...";
+	status("Loading...");
 	callAPI("GET", "/poi/by/username?username=" + from_username, {}, function(response){
 		if(typeof(response.error) === 'undefined'){
 		
@@ -345,11 +341,11 @@ function loadPoiFromUsername(from_username){
 				json_markers.push(response[i]);
 			}
 			
-			status.innerHTML = "Loaded POI from user " + from_username + "!";
+			status("Loaded POI from user " + from_username + "!");
 			menu.style.display = "none";
 			
 		}else{
-			status.innerHTML = response.error;
+			status(response.error);
 		}
 	});
 }
@@ -382,7 +378,7 @@ document.getElementById("goToSignup").onclick = function(){
 };
 
 if("id" in urlParams){
-	status.innerHTML = "Seeking...";
+	status("Seeking...");
 	callAPI("GET", "/poi?id=" + urlParams["id"], {}, function(response){
 	
 		if(typeof(response.error) === 'undefined'){
@@ -404,10 +400,10 @@ if("id" in urlParams){
 				editPoiLatitude.innerHTML = response[i].location.coordinates[1].toFixed(5);
 			
 				poi.style.display = "block";
-				status.innerHTML = "Check out this Point!";
+				status("Check out this Point!");
 			}
 		}else{
-			status.innerHTML = response.error;
+			status(response.error);
 		}
 	});
 }

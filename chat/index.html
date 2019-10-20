@@ -39,7 +39,6 @@ User:<input id="handleField" autocomplete="on" type="text" size="20" placeholder
 </td></tr></table>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
 		var handleField = document.getElementById("handleField");
 		var messageField = document.getElementById("messageField");
 		var submitButton = document.getElementById("submitButton");
@@ -73,7 +72,7 @@ User:<input id="handleField" autocomplete="on" type="text" size="20" placeholder
 					currentMessagesHtml = newhtml;
 					messages.innerHTML = newhtml;
 				}else{
-					status.innerHTML = "Disconnected.";
+					status("Disconnected.");
 				}
 			});
 		}
@@ -108,9 +107,9 @@ User:<input id="handleField" autocomplete="on" type="text" size="20" placeholder
 					messageField.focus();
 				
 					if(typeof(response.error) !== 'undefined'){
-						status.innerHTML = response.error;
+						status(response.error);
 					}else{
-						status.innerHTML = response.status;
+						status(response.status);
 					}
 				});
 			}else{
@@ -120,9 +119,9 @@ User:<input id="handleField" autocomplete="on" type="text" size="20" placeholder
 					messageField.focus();
 				
 					if(typeof(response.error) !== 'undefined'){
-						status.innerHTML = response.error;
+						status(response.error);
 					}else{
-						status.innerHTML = response.status;
+						status(response.status);
 					}
 				});
 			}

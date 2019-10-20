@@ -12,7 +12,6 @@
 </div>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
 		if(!("tid" in urlParams) || !("mid" in urlParams)){
 			window.location.href = "/cms/threads.html";
 		}
@@ -30,17 +29,17 @@
 				messageTitleField.value = response[0]["title"];
 				messageContentField.value = response[0]["content"];
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
 		});
 	
 		document.getElementById("saveMessageButton").onclick = function() {
-			status.innerHTML = "Saving...";
+			status("Saving...");
 			callAPI("PUT", "/message", {"token": localStorage.getItem(localStorageTokenKey), "id": state.mid, "values": {"title": messageTitleField.value, "content": messageContentField.value}}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					redirect_flash("/cms/message.html?mid=" + urlParams["mid"] + "&tid=" + urlParams["tid"], "Message saved!");
 				}else{
-					status.innerHTML = response.error;
+					status(response.error);
 				}
 			});
 		};

@@ -21,7 +21,7 @@
 				document.getElementById("last_name").innerHTML = response[0]["last_name"];
 				document.getElementById("color").innerHTML = response[0]["color"];
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
 		});
 		
@@ -43,7 +43,7 @@
 				}
 				document.getElementById("access").innerHTML = newhtml;
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
 		});
 	});

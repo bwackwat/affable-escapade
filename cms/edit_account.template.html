@@ -27,8 +27,6 @@
 <br>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
-		
 		document.getElementById("passwordCheckbox").onchange = function(){
 			if(document.getElementById("passwordCheckbox").checked){
 				document.getElementById("showPasswordField").style.display = "block";
@@ -45,7 +43,7 @@
 				lastNameField.value = response[0]["last_name"];
 				colorField.value = response[0]["color"];
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
 		});
 		
@@ -60,14 +58,14 @@
 				new_values["password"] = document.getElementById("passwordField").value;
 			}
 		
-			status.innerHTML = "Saving...";
+			status("Saving...");
 			callAPI("PUT", "/user", {"token": localStorage.getItem(localStorageTokenKey), "values": new_values}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					localStorage.setItem(localStorageUsernameKey, document.getElementById("usernameField").value);
 					localStorage.setItem(localStorageTokenKey, response.token);
 					redirect_flash("/cms/account.html", "Account details, saved!");
 				}else{
-					status.innerHTML = response.error;
+					status(response.error);
 				}
 			});
 		};

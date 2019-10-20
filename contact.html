@@ -34,7 +34,8 @@
 	<br>
 	<div id="captcha_img"></div>
 	<label for="captcha">Enter the CAPTCHA:</label>
-	<input name="captcha" id="captcha" type="text" autocomplete="off">
+	<input name="captcha" id="captcha" type="text" autocomplete="off"><br>
+	(If this CAPTCHA is weird click <a href="#" onclick="newCaptcha();">here</a> to get a new one.)<br>
 	<br>
 	<label for="message">Message:</label>
 	<br>
@@ -43,9 +44,9 @@
 </form>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
 		var captcha = document.getElementById("captcha_img");
-		callAPI("GET", "/captcha", {}, function(response){
+
+		handleCaptcha = function(response){
 			if(typeof(response.error) === 'undefined'){
 				if(response.startsWith("<img src='data:image/png;base64,")){
 					captcha.innerHTML = response;
@@ -53,9 +54,15 @@
 					captcha.innerHTML = "<h2>Couldn't load the CAPTCHA, please try again soon.</h2>";
 				}
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
-		});
+		}
+
+		callAPI("GET", "/captcha", {}, handleCaptcha);
+
+		newCaptcha = function(){
+			callAPI("GET", "/captcha?new=true", {}, handleCaptcha);
+		}
 	});
 </script>
 			<hr>

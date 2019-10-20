@@ -9,12 +9,11 @@
 </form>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
 		var usernameField = document.getElementById("usernameField");
 		var passwordField = document.getElementById("passwordField");
 		
 		function login() {
-			status.innerHTML = "Logging...";
+			status("Logging...");
 
 			callAPI("POST", "/login", {"username": usernameField.value, "password": passwordField.value}, function(response){
 				if(typeof(response.error) === 'undefined'){
@@ -22,7 +21,7 @@
 					localStorage.setItem(localStorageTokenKey, response.token);
 					window.location.href = "/cms/account.html";
 				}else{
-					status.innerHTML = response.error;
+					status(response.error);
 				}
 			});
 		};

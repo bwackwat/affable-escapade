@@ -38,8 +38,6 @@
 <hr>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
-	
 		document.getElementById("logoutButton").onclick = function() {
 			localStorage.removeItem(localStorageUsernameKey);
 			localStorage.removeItem(localStorageTokenKey);
@@ -54,7 +52,7 @@
 			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					if(!flashed){
-						status.innerHTML = "Logged in as " + localStorage.getItem(localStorageUsernameKey);
+						status("Logged in as " + localStorage.getItem(localStorageUsernameKey));
 					}
 			
 					loggedInLinks.style.display = "inline";
@@ -92,7 +90,6 @@
 <input id="createMessageButton" type="button" value="Create"/>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
 		if(!("tid" in urlParams)){
 			window.location.href = "/cms/threads.html";
 		}
@@ -110,7 +107,7 @@
 		localStorage.getItem(urlParams["tid"] + ":messageContentDraft") !== "undefined"){
 			messageTitleField.value = localStorage.getItem(urlParams["tid"] + ":messageTitleDraft");
 			messageContentField.value = localStorage.getItem(urlParams["tid"] + ":messageContentDraft");
-			status.innerHTML = "Draft loaded.";
+			status("Draft loaded.");
 		}
 		
 		setInterval(function(){
@@ -120,7 +117,7 @@
 		}, 5000);
 	
 		document.getElementById("createMessageButton").onclick = function() {
-			status.innerHTML = "Creating...";
+			status("Creating...");
 			callAPI("POST", "/message", {"token": localStorage.getItem(localStorageTokenKey),
 			"values": {"thread_id": urlParams["tid"], "title": messageTitleField.value, "content": messageContentField.value}}, function(response){
 				if(typeof(response.error) === 'undefined'){
@@ -128,7 +125,7 @@
 					localStorage.removeItem(urlParams["tid"] + ":messageContentDraft");
 					redirect_flash("/cms/thread.html?id=" + urlParams["tid"], "Message created!");
 				}else{
-					status.innerHTML = response.error;
+					status(response.error);
 				}
 			});
 		};

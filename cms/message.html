@@ -38,8 +38,6 @@
 <hr>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
-	
 		document.getElementById("logoutButton").onclick = function() {
 			localStorage.removeItem(localStorageUsernameKey);
 			localStorage.removeItem(localStorageTokenKey);
@@ -54,7 +52,7 @@
 			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					if(!flashed){
-						status.innerHTML = "Logged in as " + localStorage.getItem(localStorageUsernameKey);
+						status("Logged in as " + localStorage.getItem(localStorageUsernameKey));
 					}
 			
 					loggedInLinks.style.display = "inline";
@@ -85,7 +83,6 @@
 <div id="messageContentField"></div>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
 		if(!("tid" in urlParams) || !("mid" in urlParams)){
 			window.location.href = "/cms/threads.html";
 		}
@@ -104,7 +101,7 @@
 				document.getElementById("messageTitleField").innerHTML = response[0]["title"];
 				document.getElementById("messageContentField").innerHTML = response[0]["content"];
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
 		});
 	
@@ -114,7 +111,7 @@
 					if(typeof(response.error) === 'undefined'){
 						redirect_flash("/cms/thread.html?id=" + urlParams["tid"], "Message deleted!");
 					}else{
-						status.innerHTML = response.error;
+						status(response.error);
 					}
 				});
 			}
