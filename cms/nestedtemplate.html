@@ -1,20 +1,18 @@
-{TITLE:Content Management}
-<h2>Content Management</h2>
+{TITLE:Content Management System}
+<h1>Content Management System</h1>
 <div style="display:none;" id="loggedInLinks">
-<a href="/cms/account.html">Account</a>&nbsp|
-<a href="/cms/threads.html">Threads</a>&nbsp|
-<a id="logoutButton" href="#">Logout</a>
-<br>
+	<a href="/cms/account.html">Account</a>&nbsp|
+	<a href="/cms/threads.html">Threads</a>&nbsp|
+	<a id="logoutButton" href="#">Logout</a>
+	<br>
 </div>
 <div style="display:none;" id="loggedOutLinks">
-<a href="/cms/login.html">Login</a>&nbsp|&nbsp
-<a href="/cms/register.html">Register</a>
+	<a href="/cms/login.html">Login</a>&nbsp|&nbsp
+	<a href="/cms/register.html">Register</a>
 </div>
 <hr>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
-	
 		document.getElementById("logoutButton").onclick = function() {
 			localStorage.removeItem(localStorageUsernameKey);
 			localStorage.removeItem(localStorageTokenKey);
@@ -29,7 +27,7 @@
 			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					if(!flashed){
-						status.innerHTML = "Logged in as " + localStorage.getItem(localStorageUsernameKey);
+						status("Logged in as " + localStorage.getItem(localStorageUsernameKey));
 					}
 			
 					loggedInLinks.style.display = "inline";

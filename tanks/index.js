@@ -456,5 +456,3 @@ sub_scripts.push(function(){
 		}
 	}, 16);
 });
-
-

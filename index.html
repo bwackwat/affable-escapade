@@ -1,96 +1,106 @@
 <html>
 	<head>
-		<title>libjaypea</title>
+		<title>Homepage</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=0.6">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
-		<link rel="stylesheet" type="text/css" href="/index.css">
+		<link rel="stylesheet" type="text/css" href="/index.css"/>
 		
 		<script src="/websocket.js"></script>
 		<script src="/index.js"></script>
 	</head>
 	<body>
-		<!--
-		
-		Set to display:table; to show this loading screen.
-		
-		<div style="z-index:1;background-color:white;display:none;position:absolute;height:100%;width:100%;overflow:hidden;">
-			<div style="display:table-cell;vertical-align:middle;">
-				<div style="margin-left:auto;margin-right:auto;width:100%;text-align:center;">
-					<svg style="width:80;height:80;">
-						<rect x="0" y="0" height="16" width="16" style="fill:crimson;">
-							<animate id="box1a1" attributeName="x"
-								from="0"  to="60"
-								begin="0s; box1a2.end" dur="1s"
-								fill="freeze"/>
-							<animate id="box1a2" attributeName="y"
-								from="0"  to="60"
-								begin="box1a1.end" dur="750ms"
-								fill="remove"/>
-						</rect>
-						<rect x="60" y="60" height="16" width="16" style="fill:crimson;">
-							<animate id="box2a1" attributeName="x"
-								from="60"  to="0"
-								begin="0s; box2a2.end" dur="1s"
-								fill="freeze"/>
-							<animate id="box2a2" attributeName="y"
-								from="60"  to="0"
-								begin="box2a1.end;" dur="750ms"
-								fill="remove"/>
-						</rect>
-					</svg>
-				</div>
+		<div class="header">
+			<a href="/" class="logo"><img style="margin: 10px; height: 50px;" src="/jph2.svg"></a>
+			<div class="header-right">
+				<a href="/">Home</a>
+				<a href="/apps">Apps</a>
+				<a href="/hobbies.html">Hobbies</a>
+				<a href="/contact.html">Contact</a>
 			</div>
 		</div>
-		
-		-->
-		
-		<table id="banner">
-			<tr><td><div id="bannerleft">
-				<div id="icon"><img src="/favicon.ico"/></div>
-				<div id="status">Welcome.</div>
-			</div></td>
+		<div id="status" style="display:none;text-align:center;border-bottom:2px solid crimson;margin:auto;padding:10px;">{{{status}}}</div>
+		<div style="margin:auto;" id="content">
 			
-			<td style="display:table-cell;vertical-align:middle;"><div id="bannerright">
-				<div id="links">
-					<a class="bannerLink" href="/cms/">Manage</a>&nbsp&nbsp|&nbsp
-					<a class="bannerLink" href="/poi/?username=bwackwat">Points of Interest</a>&nbsp&nbsp|&nbsp
-					<a class="bannerLink" href="/chat/">Chat</a>&nbsp&nbsp
-				</div>
-			</div></td></tr>
-		</table>
-		
-		<div id="contentborder">
-			<div id="content">
-				
-<p>Here you can find some internet tools.</p>
-<p>Are you looking for a <a href="/portfolio">portfolio</a>?
+<h1>John Paul Hayes II</h1>
+<div>
+	<a href="/media/IMG_1885-trimmed.jpg"><img style="margin-right:20px;margin-bottom:20px;float:left; width: 30%;" src="/media/IMG_1885-trimmed.jpg"></a>
+	<p style="float:right;">
+		<h3>Welcome to my software development platform.</h3>
+		<p>I'm a software professional, creative thinker, and outdoor enthusiast.</p>
+		<p>On this site you can find a career summary, see photos and descriptions of hobbies, and explore some personally developed applications.</p>
+	</p>
+</div>
 <hr>
-<table><tr><td style="width:100%;">
-<h3>Links</h3>
-<ul>
-<li><a href="/index">Site Index</a></li>
-<li><a href="/routes.html">API</a></li>
-<li><a href="/tanks">Tanks</a></li>
-<li><a href="/asteroids">Asteroids!</a></li>
-<li><a href="/lisp"><b>L</b>isp <b>I</b>s <b>S</b>yntactically <b>P</b>ure</a></li>
-<li><a href="/teamchat">Team Chat</a> (Simple test.)</li>
-</ul>
-</td><td>
-<img style="float:right;" src="/media/favicon.png" alt="Jay got pea." width=160px height=160px>
-</tr></table>
+<div>
+	<img style="margin:35px 10px 10px 10px;float:right; width: 25%;" src="/media/favicon.png">
+	<p style="float:left;">
+		<h2>Showcase Project: libjaypea</h2>
+		<p><a target="_blank" href="https://github.com/bwackwat/libjaypea">libjaypea</a> is a custom C++ networking library; an expression of my technological practice.</p>
+		<p>All non-static content at this domain is served and processed via libjaypea.</p>
+		<p>This is a continuous project about simplicity, learning, and staying true to my original passions.</p>
+	</p>
+</div>
+<hr>
+<div>
+	<h2>Professional Portfolio</h2>
+	<h3>Links</h3>
+	<ul>
+		<li><a target="_blank" href="https://www.linkedin.com/in/johnpaulhayes2/">LinkedIn</a></li>
+		<li><a target="_blank" href="https://github.com/bwackwat?tab=repositories">GitHub</a></li>
+		<li><a target="_blank" href="https://twitter.com/bwackwat">Twitter</a></li>
+	</ul>
+	<h3>Timeline</h3>
+	
+	<h4>2018 - Present: Noventum Custom Software, <a target="_blank" href="https://www.noventum.us/">noventum.us</a></h4>
+	<p>Remotely develops custom software. Here are some examples:</p>
+	<ul>
+		<li><a target="_blank" href="https://www.noventum.us/portfolio/management-web-application/">Homeless Management Web Application</a></li>
+		<li><a target="_blank" href="https://www.noventum.us/portfolio/sitespinner-wordpress-plugin/">SiteSpinner WordPress Plugin</a></li>
+		<li><a target="_blank" href="https://www.noventum.us/portfolio/dreadnought-project/">Dreadnought Project</a></li>
+		<li><a target="_blank" href="https://www.noventum.us/portfolio/image-processing/">Python Image Processing</a></li>
+		<li><a target="_blank" href="https://www.noventum.us/portfolio/ows/">Online Web Services</a></li>
+		<li><a target="_blank" href="https://www.noventum.us/portfolio/mydbr-cakephp-apex-evaluation/">Apex Evaluation CakePHP</a></li>
+		<li><a target="_blank" href="https://www.noventum.us/portfolio/apex-website/">Apex Website</a></li>
+		<li><a target="_blank" href="https://www.noventum.us/portfolio/trend-magazine/">TREND MAGAZINE</a></li>
+		<li><a target="_blank" href="https://www.noventum.us/portfolio/i18n-with-transifex/">i18n with Transifex</a></li>
+	</ul>
+	<h4>2017: HRnext, <a target="_blank" href="http://www.hrnext.com/">hrnext.com</a></h4>
+	<p>Remotely developed a C# web application.</p>
+	<h4>2017: Chat With Ben, ben.co</h4>
+	<p>Remotely developed a Python web application.</p>
+	<h4>2016 - 2017: Northern California Institute for Research and Education</h4>
+	<p>Managed servers, developed administrative scripts, and wrote Python processing code.</p>
+	<h4>2015: Currents, Inc. </h4>
+	<p>Remotely developed a Scala web application.</p>
+	<h4>2014 - 2015 Wells Fargo & Co.</h4>
+	<p>Researched human-computer interaction solutions using C++. Developed a C# desktop application.</p>
+	<h4>2013 - 2014 MINDBODY Inc.</h4>
+	<p>Developed C# testing frameworks, ASP.NET pages, and WCF services.</p>
+	<h4>2010 - 2013 (CalPoly, CDM Tech.)</h4>
+	<p>Developed Python GUI testing framework using Sikuli.</p>
+	<h4>2006 - 2010</h4>
+	<p>High school was a time to play video games, and to deepen my understanding of how they worked on the inside. I made sample Java applications; investigated and used Java Swing, data structures, algorithms, file I/O, and some socket and servlet programming. As a sophomore, a group of classmates and I from a Computer Science course won the 2008 <a href="/media/teamdefendvictory.JPG">NDIA STEM TeamDefend Competition</a>! It was fun and I learned some odd things about supercomputers hacking slightly-vulnerable Windows Server 2003 services.</p>
+	<h4>2004 - 2006</h4>
+	<p>I fondly remember learning about the C++ programming language with a friend. I touched on polymorphism, variables, methods, language syntax, APIs, and other fundamentals such as stdin/stdout. We worked together on a rudimentary project in which users enjoyed a tree of "paths" (text RPG) and responded to queries, all in the console.</p>
+	<h4>1992 - 2004</h4>
+	<p>I played Windows 95/98 video games such as Mech Warrior, Uprising, and Lemmings. I remember playing old Macintosh Apple games and other ancient games on Windows 3.0. Windows XP came out into excellent releases such as Starcraft, Warcraft III (TFT), Unreal Tournament 2004, Half-Life 2, and Doom 3. In the back of my mind the whole time I wondered how these worlds and scenes were rendering. I thought about the filesystem, the internet, and the underlying systems.</p>
+</div>
 
-			</div>
+			<hr>
 		</div>
+		
 	</body>
 	<script>
 		sub_scripts.push(function(){
-			var icon = document.getElementById("icon");
-			icon.onclick = function(){
-				window.location = "/index.html";
-			};
+			var navigation = document.getElementsByClassName("header-right")[0].getElementsByTagName("a");
+			for(var i = 0; i < navigation.length; i++) {
+				if(navigation[i].getAttribute("href") === window.location.pathname){
+					navigation[i].className += "active";
+				}
+			}
 		});
 	</script>
 </html>

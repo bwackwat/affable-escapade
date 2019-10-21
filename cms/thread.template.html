@@ -1,4 +1,4 @@
-<h3 id="threadNameField"></h3>
+<h2 id="threadNameField"></h2>
 <div id="threadDescriptionField"></div>
 <br>
 <a id="backButton" href="#">Back</a> | <a id="newMessageButton" href="#">New Message</a> | <a id="editThreadButton" href="#">Edit</a> | <a id="deleteThreadButton" href="#">Delete</a>
@@ -7,7 +7,6 @@
 <div id="threadMessages"></div>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
 		if(!("id" in urlParams)){
 			window.location.href = "/cms/threads.html";
 		}
@@ -32,7 +31,7 @@
 			
 				callAPI("GET", "/thread/messages?id=" + urlParams["id"], {}, function(response){
 					if(typeof(response.error) === 'undefined'){
-						var newhtml = "<h4>Messages:</h4>";
+						var newhtml = "<h3>Messages:</h3>";
 						if(response.length == 0){
 							newhtml += "No messages.";
 						}
@@ -41,11 +40,11 @@
 						}
 						document.getElementById("threadMessages").innerHTML = newhtml;
 					}else{
-						status.innerHTML = response.error;
+						status(response.error);
 					}
 				});
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
 		});
 		
@@ -55,7 +54,7 @@
 					if(typeof(response.error) === 'undefined'){
 						redirect_flash("/cms/threads.html", "Thread deleted!");
 					}else{
-						status.innerHTML = response.error;
+						status(response.error);
 					}
 				});
 			}

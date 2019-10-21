@@ -1,86 +1,43 @@
 <html>
 	<head>
-		<title>Content Management</title>
+		<title>Content Management System</title>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=0.6">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
 		<link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
-		<link rel="stylesheet" type="text/css" href="/index.css">
+		<link rel="stylesheet" type="text/css" href="/index.css"/>
 		
 		<script src="/websocket.js"></script>
 		<script src="/index.js"></script>
 	</head>
 	<body>
-		<!--
-		
-		Set to display:table; to show this loading screen.
-		
-		<div style="z-index:1;background-color:white;display:none;position:absolute;height:100%;width:100%;overflow:hidden;">
-			<div style="display:table-cell;vertical-align:middle;">
-				<div style="margin-left:auto;margin-right:auto;width:100%;text-align:center;">
-					<svg style="width:80;height:80;">
-						<rect x="0" y="0" height="16" width="16" style="fill:crimson;">
-							<animate id="box1a1" attributeName="x"
-								from="0"  to="60"
-								begin="0s; box1a2.end" dur="1s"
-								fill="freeze"/>
-							<animate id="box1a2" attributeName="y"
-								from="0"  to="60"
-								begin="box1a1.end" dur="750ms"
-								fill="remove"/>
-						</rect>
-						<rect x="60" y="60" height="16" width="16" style="fill:crimson;">
-							<animate id="box2a1" attributeName="x"
-								from="60"  to="0"
-								begin="0s; box2a2.end" dur="1s"
-								fill="freeze"/>
-							<animate id="box2a2" attributeName="y"
-								from="60"  to="0"
-								begin="box2a1.end;" dur="750ms"
-								fill="remove"/>
-						</rect>
-					</svg>
-				</div>
+		<div class="header">
+			<a href="/" class="logo"><img style="margin: 10px; height: 50px;" src="/jph2.svg"></a>
+			<div class="header-right">
+				<a href="/">Home</a>
+				<a href="/apps">Apps</a>
+				<a href="/hobbies.html">Hobbies</a>
+				<a href="/contact.html">Contact</a>
 			</div>
 		</div>
-		
-		-->
-		
-		<table id="banner">
-			<tr><td><div id="bannerleft">
-				<div id="icon"><img src="/favicon.ico"/></div>
-				<div id="status">Welcome.</div>
-			</div></td>
+		<div id="status" style="display:none;text-align:center;border-bottom:2px solid crimson;margin:auto;padding:10px;">{{{status}}}</div>
+		<div style="margin:auto;" id="content">
 			
-			<td style="display:table-cell;vertical-align:middle;"><div id="bannerright">
-				<div id="links">
-					<a class="bannerLink" href="/cms/">Manage</a>&nbsp&nbsp|&nbsp
-					<a class="bannerLink" href="/poi/">Points of Interest</a>&nbsp&nbsp|&nbsp
-					<a class="bannerLink" href="/chat/">Chat</a>&nbsp&nbsp
-				</div>
-			</div></td></tr>
-		</table>
-		
-		<div id="contentborder">
-			<div id="content">
-				
-<h2>Content Management</h2>
+<h1>Content Management System</h1>
 <div style="display:none;" id="loggedInLinks">
-<a href="/cms/account.html">Account</a>&nbsp|
-<a href="/cms/threads.html">Threads</a>&nbsp|
-<a id="logoutButton" href="#">Logout</a>
-<br>
+	<a href="/cms/account.html">Account</a>&nbsp|
+	<a href="/cms/threads.html">Threads</a>&nbsp|
+	<a id="logoutButton" href="#">Logout</a>
+	<br>
 </div>
 <div style="display:none;" id="loggedOutLinks">
-<a href="/cms/login.html">Login</a>&nbsp|&nbsp
-<a href="/cms/register.html">Register</a>
+	<a href="/cms/login.html">Login</a>&nbsp|&nbsp
+	<a href="/cms/register.html">Register</a>
 </div>
 <hr>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
-	
 		document.getElementById("logoutButton").onclick = function() {
 			localStorage.removeItem(localStorageUsernameKey);
 			localStorage.removeItem(localStorageTokenKey);
@@ -95,7 +52,7 @@
 			callAPI("POST", "/token", {"token": localStorage.getItem(localStorageTokenKey)}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					if(!flashed){
-						status.innerHTML = "Logged in as " + localStorage.getItem(localStorageUsernameKey);
+						status("Logged in as " + localStorage.getItem(localStorageUsernameKey));
 					}
 			
 					loggedInLinks.style.display = "inline";
@@ -120,38 +77,30 @@
 		}
 	});
 </script>
-<label for="usernameField">Username:&nbsp&nbsp</label>
+<label for="usernameField">Username:</label>
 <input type="text" autocomplete="off" id="usernameField">
 <br>
-<br>
-<label for="passwordField">Password:&nbsp&nbsp</label>
+<label for="passwordField">Password:</label>
 <input type="password" autocomplete="off" id="passwordField">
 <br>
-<br>
-<label for="emailField">Email:&nbsp&nbsp</label>
+<label for="emailField">Email:</label>
 <input type="text" autocomplete="off" id="emailField">
 <br>
-<br>
-<label for="firstNameField">First Name:&nbsp&nbsp</label>
+<label for="firstNameField">First Name:</label>
 <input type="text" autocomplete="off" id="firstNameField">
 <br>
-<br>
-<label for="lastNameField">Last Name:&nbsp&nbsp</label>
+<label for="lastNameField">Last Name:</label>
 <input type="text" autocomplete="off" id="lastNameField">
 <br>
-<br>
-<label for="colorField">Color (e.g. "gold" or "#ffd700"):&nbsp&nbsp</label>
+<label for="colorField">Color (e.g. "gold" or "#ffd700"):</label>
 <input type="text" autocomplete="off" id="colorField">
-<br>
 <br>
 <input id="registerButton" type="button" value="Register">
 <br>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
-		
 		document.getElementById("registerButton").onclick = function() {
-			status.innerHTML = "Registering...";
+			status("Registering...");
 			callAPI("POST", "/user", {"values":
 			{"username": document.getElementById("usernameField").value,
 			"password": document.getElementById("passwordField").value,
@@ -162,7 +111,7 @@
 				if(typeof(response.error) === 'undefined'){
 					redirect_flash("/cms/login.html", "You signed up successfully!");
 				}else{
-					status.innerHTML = response.error;
+					status(response.error);
 				}
 			});
 		};
@@ -170,15 +119,18 @@
 </script>
 
 
-			</div>
+			<hr>
 		</div>
+		
 	</body>
 	<script>
 		sub_scripts.push(function(){
-			var icon = document.getElementById("icon");
-			icon.onclick = function(){
-				window.location = "/index.html";
-			};
+			var navigation = document.getElementsByClassName("header-right")[0].getElementsByTagName("a");
+			for(var i = 0; i < navigation.length; i++) {
+				if(navigation[i].getAttribute("href") === window.location.pathname){
+					navigation[i].className += "active";
+				}
+			}
 		});
 	</script>
 </html>

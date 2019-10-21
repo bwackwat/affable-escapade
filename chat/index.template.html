@@ -1,10 +1,9 @@
+<h1>Chat</h1>
 <table style="height:auto;width:100%;">
 <tr><td id="handleOrUsername">
-User:&nbsp
-<input id="handleField" autocomplete="on" type="text" size="20" placeholder="handle">
+User:<input id="handleField" autocomplete="on" type="text" size="20" placeholder="handle">
 </td></tr>
 <tr><td>
-<br>
 <input id="submitButton" type="button" style="width:10%;" value="Send">
 <input id="messageField" type="text" style="width:80%;" placeholder="enter to send message">
 </td></tr>
@@ -14,7 +13,6 @@ User:&nbsp
 </td></tr></table>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
 		var handleField = document.getElementById("handleField");
 		var messageField = document.getElementById("messageField");
 		var submitButton = document.getElementById("submitButton");
@@ -48,7 +46,7 @@ User:&nbsp
 					currentMessagesHtml = newhtml;
 					messages.innerHTML = newhtml;
 				}else{
-					status.innerHTML = "Disconnected.";
+					status("Disconnected.");
 				}
 			});
 		}
@@ -83,9 +81,9 @@ User:&nbsp
 					messageField.focus();
 				
 					if(typeof(response.error) !== 'undefined'){
-						status.innerHTML = response.error;
+						status(response.error);
 					}else{
-						status.innerHTML = response.status;
+						status(response.status);
 					}
 				});
 			}else{
@@ -95,9 +93,9 @@ User:&nbsp
 					messageField.focus();
 				
 					if(typeof(response.error) !== 'undefined'){
-						status.innerHTML = response.error;
+						status(response.error);
 					}else{
-						status.innerHTML = response.status;
+						status(response.status);
 					}
 				});
 			}

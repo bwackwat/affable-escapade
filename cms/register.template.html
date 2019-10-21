@@ -1,35 +1,27 @@
-<label for="usernameField">Username:&nbsp&nbsp</label>
+<label for="usernameField">Username:</label>
 <input type="text" autocomplete="off" id="usernameField">
 <br>
-<br>
-<label for="passwordField">Password:&nbsp&nbsp</label>
+<label for="passwordField">Password:</label>
 <input type="password" autocomplete="off" id="passwordField">
 <br>
-<br>
-<label for="emailField">Email:&nbsp&nbsp</label>
+<label for="emailField">Email:</label>
 <input type="text" autocomplete="off" id="emailField">
 <br>
-<br>
-<label for="firstNameField">First Name:&nbsp&nbsp</label>
+<label for="firstNameField">First Name:</label>
 <input type="text" autocomplete="off" id="firstNameField">
 <br>
-<br>
-<label for="lastNameField">Last Name:&nbsp&nbsp</label>
+<label for="lastNameField">Last Name:</label>
 <input type="text" autocomplete="off" id="lastNameField">
 <br>
-<br>
-<label for="colorField">Color (e.g. "gold" or "#ffd700"):&nbsp&nbsp</label>
+<label for="colorField">Color (e.g. "gold" or "#ffd700"):</label>
 <input type="text" autocomplete="off" id="colorField">
-<br>
 <br>
 <input id="registerButton" type="button" value="Register">
 <br>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
-		
 		document.getElementById("registerButton").onclick = function() {
-			status.innerHTML = "Registering...";
+			status("Registering...");
 			callAPI("POST", "/user", {"values":
 			{"username": document.getElementById("usernameField").value,
 			"password": document.getElementById("passwordField").value,
@@ -40,7 +32,7 @@
 				if(typeof(response.error) === 'undefined'){
 					redirect_flash("/cms/login.html", "You signed up successfully!");
 				}else{
-					status.innerHTML = response.error;
+					status(response.error);
 				}
 			});
 		};

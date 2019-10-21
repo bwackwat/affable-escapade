@@ -1,21 +1,17 @@
 <div id="threadEdit">
 <a id="backToThreadButton" href="#">Back</a>
 <br>
-<br>
-<label for="threadNameField">Name:&nbsp&nbsp</label>
+<label for="threadNameField">Name:</label>
 <input type="text" id="threadNameField"/>
-<br>
 <br>
 <label for="threadDescriptionField">Description:</label>
 <br>
 <textarea id="threadDescriptionField" style="width:100%;" rows="4"></textarea>
 <br>
-<br>
 <input id="saveThreadButton" type="button" value="Save"/>
 </div>
 <script>
 	sub_scripts.push(function(){
-		var status = document.getElementById("status");
 		if(!("id" in urlParams)){
 			window.location.href = "/cms/threads.html";
 		}
@@ -33,17 +29,17 @@
 				threadName.value = response[0]["name"];
 				threadDescription.value = response[0]["description"];
 			}else{
-				status.innerHTML = response.error;
+				status(response.error);
 			}
 		});
 	
 		document.getElementById("saveThreadButton").onclick = function() {
-			status.innerHTML = "Saving...";
+			status("Saving...");
 			callAPI("PUT", "/thread", {"token": localStorage.getItem(localStorageTokenKey), "id": state.tid, "values": {"name": threadName.value, "description": threadDescription.value}}, function(response){
 				if(typeof(response.error) === 'undefined'){
 					redirect_flash("/cms/threads.html", "Thread saved!");
 				}else{
-					status.innerHTML = response.error;
+					status(response.error);
 				}
 			});
 		};

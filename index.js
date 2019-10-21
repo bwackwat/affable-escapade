@@ -17,11 +17,12 @@ window.onpopstate = function () {
 var status;
 var state = {};
 var sub_scripts = [];
-var flashed;
+var flashed = false;
 
 var localStorageUsernameKey = "JPH2_USERNAME_KEY";
 var localStorageTokenKey = "JPH2_TOKEN_KEY";
 var localStorageFlashKey = "JPH2_FLASH_KEY";
+var localStorageSessionKey = "libjaypea-session";
 
 var apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api";
 function callAPI(method, route, data, callback){
@@ -39,18 +40,21 @@ function callAPI(method, route, data, callback){
 	
 	var http = new XMLHttpRequest();
 	http.open(method, apiUrl + route, true);
-	http.setRequestHeader("Content-type", "application/json");
+	http.setRequestHeader("Content-Type", "application/json");
+	if(localStorage.getItem(localStorageSessionKey) !== null){
+		http.setRequestHeader(localStorageSessionKey, localStorage.getItem(localStorageSessionKey));
+	}
 	http.onreadystatechange = function(){
 		//console.log("RECV: " + http.responseText);
 		if(http.readyState == 4){
 			if(http.status == 200){
+				localStorage.setItem(localStorageSessionKey, http.getResponseHeader(localStorageSessionKey));
 				try{
 					callback(JSON.parse(http.responseText));
 				}catch(e){
 					callback(http.responseText);
 				}
 			}else{
-				console.log(http.status);
 				callback({"error":"Bad response from server..."});
 			}
 		}else if(http.readyState == 3){
@@ -83,21 +87,30 @@ function redirect_flash(url, flash){
 	window.location.href = url;
 }
 
+function status(html){
+	var status_element = document.getElementById("status");
+	status_element.innerHTML = html;
+	status_element.style.display = "block";
+}
+
 window.onload = function() {
-	var status = document.getElementById("status");
+	var status_element = document.getElementById("status");
 
-	flashed = false;
+	if(status_element !== null && status_element !== "undefined"){
+		if(localStorage.getItem(localStorageFlashKey) !== null &&
+		localStorage.getItem(localStorageFlashKey) !== "undefined"){
+			status(localStorage.getItem(localStorageFlashKey));
+			localStorage.removeItem(localStorageFlashKey);
+			flashed = true;
+		}
 
-	if(status !== null && status !== "undefined" &&
-	localStorage.getItem(localStorageFlashKey) !== null &&
-	localStorage.getItem(localStorageFlashKey) !== "undefined"){
-		status.innerHTML = localStorage.getItem(localStorageFlashKey);
-		localStorage.removeItem(localStorageFlashKey);
-		flashed = true;
+		if(status_element.innerHTML !== "{{{status}}}" && status_element.innerHTML !== ""){
+			status_element.style.display = "block";
+		}
 	}
 
 	for(var i = sub_scripts.length - 1; i >= 0; i--){
-		sub_scripts[i](status);
+		sub_scripts[i](status_element);
 	}
 }
 
@@ -109,5 +122,3 @@ function get_anonymous_name(){
 	return adjectives[Math.floor(Math.random() * adjectives.length)] + " " + 
 		nouns[Math.floor(Math.random() * nouns.length)];
 };
-
-

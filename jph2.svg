@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<svg viewBox="0 0 16 16" style="background-color:crimson;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<a xlink:href="/">
+		<rect x="0" y="0" width="16" height="16" style="fill:crimson;stroke:none;"/>
+		<polygon style="fill:white;stroke:none;" points="2,2, 7,2, 7,3, 6,3, 6,7, 2,7, 2,4, 3,4, 3,6, 5,6, 5,3, 2,3"/>
+		<polygon style="fill:white;stroke:none;" points="9,2, 14,2, 14,5, 10,5, 10,7, 9,7"/>
+		<polygon style="fill:crimson;stroke:none;" points="10,3, 13,3, 13,4, 10,4"/>
+		<polygon style="fill:white;stroke:none;" points="2,9, 3,9, 3,11, 6,11, 6,9, 7,9, 7,14, 6,14, 6,12, 3,12, 3,14, 2,14"/>
+		<polygon style="fill:white;stroke:none;" points="9,9, 14,9, 14,12, 10,12, 10,13, 14,13, 14,14, 9,14, 9,11, 13,11, 13,10, 9,10"/>
+	</a>
+</svg>

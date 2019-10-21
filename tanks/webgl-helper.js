@@ -372,5 +372,3 @@ initialize_webgl = function(glcanvas, textcanvas, show_fps = false){
 	
 	return glworld;
 }
-
-

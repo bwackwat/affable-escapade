@@ -1,0 +1,38 @@
+{TITLE:Contact}
+<h1>Contact</h1>
+<form method="POST" action="/contact.html">
+	<label for="name">Name:</label>
+	<input name="name" id="name" type="text" autocomplete="off" value="{{{name}}}">
+	<br>
+	<label for="email">Email:</label>
+	<input name="email" id="email" type="text" autocomplete="off" value="{{{email}}}">
+	<br>
+	<div id="captcha_img"></div>
+	<label for="captcha">Enter the CAPTCHA:</label>
+	<input name="captcha" id="captcha" type="text" autocomplete="off" value="{{{captcha}}}"><br>
+	(If this CAPTCHA is weird click <a href="#" onclick="newCaptcha();">here</a> to get a new one.)<br>
+	<br>
+	<label for="message">Message:</label>
+	<br>
+	<textarea name="message" id="message" autocomplete="off" rows="10">{{{message}}}</textarea>
+	<input type="submit" value="Submit">
+</form>
+<script>
+	sub_scripts.push(function(){
+		var captcha_img = document.getElementById("captcha_img");
+
+		handleCaptcha = function(response){
+			if(typeof(response.error) === 'undefined'){
+				captcha_img.innerHTML = response;
+			}else{
+				status(response.error);
+			}
+		}
+
+		callAPI("GET", "/captcha", {}, handleCaptcha);
+
+		newCaptcha = function(){
+			callAPI("GET", "/captcha?new=true", {}, handleCaptcha);
+		}
+	});
+</script>
